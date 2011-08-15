@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                                  http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                                  http://www.springframework.org/schema/security
+                                  http://www.springframework.org/schema/security/spring-security-2.0.xsd">
+
+    <security:http auto-config="true">
+        <security:intercept-url pattern="/login" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <security:intercept-url pattern="/hello" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <security:intercept-url pattern="/static/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <security:intercept-url pattern="/**" access="ROLE_USER" />
+
+        <security:form-login login-page="/login"
+                             login-processing-url="/loginProcess"
+                             default-target-url="/app"
+                             authentication-failure-url="/login?error=1" />
+
+        <security:remember-me key="89bb2c17d69fcf1db5b20a27813f1ff3887e531393c3174608a422bbfd638685"/>
+
+        <security:logout logout-url="/logout" logout-success-url="/hello" />
+    </security:http>
+
+    <security:authentication-provider user-service-ref="authenticationService"/>
+</beans>

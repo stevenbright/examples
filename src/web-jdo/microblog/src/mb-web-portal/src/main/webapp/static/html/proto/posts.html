@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <title>Posts proto</title>
+
+    <link rel="stylesheet" type="text/css" href="../../css/style.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+    <script type="text/javascript" src="../../js/ns.js"></script>
+
+    <style type="text/css">
+        #wrapper {
+            background: #555753;
+            min-height: 800px;
+        }
+
+        #message-list {
+            list-style: none outside none;
+        }
+
+        .message-item {
+            border-bottom: 1px solid #555753;
+            background: #ffffff;
+        }
+
+        .message-item > table {
+            border-collapse: collapse;
+        }
+
+        .message-header {
+            background: #eeeeec;
+        }
+
+        .message-header > td {
+            padding: 4px;
+        }
+
+        .message-item h3 {
+            /*color: #204a87;*/
+        }
+
+        .message-content {
+            padding: 5px 4px 1px 4px;
+        }
+
+        .message-comments {
+            padding: 4px;
+        }
+
+        .comments-link {
+            font-size: 60%;
+        }
+    </style>
+
+    <script type="text/javascript">
+        (function ($) {
+
+            function cloneMessages() {
+                var u = $(".message-item");
+                if (u.length != 1) {
+                    throw new Error("Too few messages")
+                }
+                var p = u.parent();
+                u.remove();
+
+                var MAX = 4;
+                var i;
+                for (i = 0; i < MAX; ++i) {
+                    var c = u.clone();
+                    $("h3", c).text("Message #" + i);
+                    p.append(c)
+                }
+            }
+
+            /**
+             * Entry point
+             */
+            $(document).ready(function () {
+                try {
+                    console.log("Entering posts proto");
+                    cloneMessages();
+                } catch (e) {
+                    alert(e);
+                    console.log(e);
+                }
+            })
+        })(jQuery);
+    </script>
+</head>
+<body>
+
+<div id="header">
+    <ul class="hor-list user">
+        <li><a href="#">Login</a></li>
+    </ul>
+</div>
+
+<div id="wrapper">
+    <ul id="message-list">
+        <li class="message-item">
+            <table>
+                <tr class="message-header">
+                    <td><h3>Title Placeholder</h3></td>
+                    <td>Author</td>
+                    <td>Rating</td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div class="message-content">
+                            <p>
+                                Content Placeholder Content Placeholder Content Placeholder Content Placeholder Content Placeholder Content Placeholder
+                                Content Placeholder Content Placeholder Content Placeholder
+                            </p>
+                            <p>Content Placeholder</p>
+                        </div>
+                        <div class="message-comments">
+                            <a href="#" class="comments-link">Comments (54) &raquo;</a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

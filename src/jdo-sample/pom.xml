@@ -1,0 +1,162 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mysite.jdosample</groupId>
+    <artifactId>jdo-sample</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.0</version>
+    <name>jdo-sample</name>
+    <url>http://maven.apache.org</url>
+
+    <!-- version numbers -->
+    <properties>
+        <log4j.version>1.2.16</log4j.version>
+        <junit.version>4.8.1</junit.version>
+        <hsqldb.version>1.8.0.7</hsqldb.version>
+        <datanucleus.version>2.1.4</datanucleus.version>
+        <datanucleus-enhancer.version>2.1.3</datanucleus-enhancer.version>
+
+        <!--  compiler settings -->
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+
+        <!-- encoding settings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- log -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>${hsqldb.version}</version>
+        </dependency>
+
+        <!-- jdo -->
+        <dependency>
+            <groupId>javax.jdo</groupId>
+            <artifactId>jdo-api</artifactId>
+            <version>3.0</version>
+        </dependency>
+
+        <!-- jta -->
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>transaction-api</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <!-- datanucleus -->
+        <dependency>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-core</artifactId>
+            <version>${datanucleus.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.transaction</groupId>
+                    <artifactId>transaction-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>datanucleus-rdbms</artifactId>
+            <version>${datanucleus.version}</version>
+        </dependency>
+
+        <!-- test scope -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- datanucleus enhancer -->
+            <plugin>
+                <groupId>org.datanucleus</groupId>
+                <artifactId>maven-datanucleus-plugin</artifactId>
+                <version>2.1.0-release</version>
+                <configuration>
+                    <log4jConfiguration>${basedir}/src/main/resources/log4j.properties</log4jConfiguration>
+                    <verbose>true</verbose>
+                    <props>${basedir}/src/main/resources/datanucleus.properties</props>
+                    <!--<metadataIncludes>package.jdo</metadataIncludes>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>enhance</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.datanucleus</groupId>
+                        <artifactId>datanucleus-core</artifactId>
+                        <version>${datanucleus.version}</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>javax.transaction</groupId>
+                                <artifactId>transaction-api</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.datanucleus</groupId>
+                        <artifactId>datanucleus-rdbms</artifactId>
+                        <version>${datanucleus.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.datanucleus</groupId>
+                        <artifactId>datanucleus-enhancer</artifactId>
+                        <version>${datanucleus-enhancer.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!-- maven run plugin (sets the default entry point to our App,main) -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.1</version>
+                <configuration>
+                    <mainClass>com.mysite.jdosample.App</mainClass>
+                    <!--<systemProperties>-->
+                    <!--<systemProperty>-->
+                    <!--<key>log4j.configuration</key>-->
+                    <!--<value>file:${basedir}/log4j.properties</value>-->
+                    <!--</systemProperty>-->
+                    <!--</systemProperties>-->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- DataNucleus repos -->
+    <repositories>
+        <repository>
+            <id>DN_M2_Repo</id>
+            <name>DataNucleus Repository</name>
+            <url>http://www.datanucleus.org/downloads/maven2</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>DataNucleus_2</id>
+            <url>http://www.datanucleus.org/downloads/maven2/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>

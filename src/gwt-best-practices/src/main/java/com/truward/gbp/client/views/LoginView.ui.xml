@@ -1,0 +1,17 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <g:FlowPanel>
+        <g:FlowPanel>
+            <g:Label ui:field="errorLabel"/>
+            <g:InlineLabel text="Login"/>
+            <g:TextBox width="195px" ui:field="loginBox"/>
+        </g:FlowPanel>
+        <g:FlowPanel>
+            <g:InlineLabel text="Password"/>
+            <g:PasswordTextBox ui:field="passwordBox"/>
+        </g:FlowPanel>
+        <g:FlowPanel>
+            <g:Button ui:field="loginButton">Login</g:Button>
+        </g:FlowPanel>
+    </g:FlowPanel>
+</ui:UiBinder>

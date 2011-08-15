@@ -1,0 +1,16 @@
+
+
+1) mvn archetype:generate -DarchetypeGroupId=org.codehaus.mojo -DarchetypeArtifactId=gwt-maven-plugin -DarchetypeVersion=1.2 -DgroupId=com.mysite.gwtspringmvc -DartifactId=gwt-springmvc-int
+
+2) Edit pom.xml:
+2-1) Modify gwt.version in pom.xml to 2.0.4
+2-2) Setup web.xml location ([optional] setup copying source WEB-INF as well)
+2-3) [optional] setup jetty server configuration - to enable jetty:run-war command
+2-4) [optional] setup additional clean step - to delete war directory
+
+3) Edit web.xml, add {spring}-context.xml files
+
+4) Add spring controller
+
+5) Add appropriate mapping as well as other spring config
+

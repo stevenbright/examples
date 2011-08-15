@@ -1,0 +1,22 @@
+<!DOCTYPE module PUBLIC "//gwt-module/" "http://google-web-toolkit.googlecode.com/svn/tags/1.6.2/distro-source/core/src/gwt-module.dtd">
+<module>
+
+    <!-- Inherit the core Web Toolkit stuff. -->
+    <inherits name='com.google.gwt.user.User'/>
+
+    <!--  Inherit source CSS-based theme. -->
+    <inherits name='com.google.gwt.user.theme.standard.Standard'/>
+
+    <!-- Specify the app entry point class. -->
+    <entry-point class='com.truward.gbp.client.Application'/>
+
+    <!-- App-specific stylesheet -->
+    <stylesheet src='Application.css' />
+
+    <servlet path="/AppService" class="com.truward.gbp.server.services.AppServiceImpl"/>
+
+    <!-- Convertible sources -->
+    <source path="shared"/>
+    <source path="client"/>
+
+</module>

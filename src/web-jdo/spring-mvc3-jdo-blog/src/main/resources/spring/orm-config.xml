@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- JDO persistence manager factory -->
+    <bean id="persistenceManagerFactory" factory-method="getPersistenceManagerFactory" class="javax.jdo.JDOHelper">
+        <constructor-arg value="jdo/datanucleus.properties"/>
+    </bean>
+
+    <!-- Transaction Manager for PMF -->
+    <bean id="transactionManager" class="org.springframework.orm.jdo.JdoTransactionManager">
+        <property name="persistenceManagerFactory">
+            <ref local="persistenceManagerFactory"/>
+        </property>
+    </bean>
+
+    <!-- Typical DAO -->
+    <!--<bean id="blogDao" class="com.truward.jdoblog.services.service.BlogDao">-->
+        <!--<property name="persistenceManagerFactory">-->
+            <!--<ref local="persistenceManagerFactory"/>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!-- Business service -->
+    <bean id="blogService" class="com.truward.jdoblog.services.service.BlogService">
+        <property name="persistenceManagerFactory">
+            <ref local="persistenceManagerFactory"/>
+        </property>
+    </bean>
+
+    <!-- Transaction Interceptor for Business Services -->
+    <bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref local="transactionManager"/>
+        </property>
+        <property name="target" ref="blogService"/>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="save*">PROPAGATION_REQUIRED</prop>
+                <prop key="update*">PROPAGATION_REQUIRED</prop>
+                <prop key="add*">PROPAGATION_REQUIRED</prop>
+                <prop key="remove*">PROPAGATION_REQUIRED</prop>
+                <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+            </props>
+        </property>
+    </bean>
+</beans>

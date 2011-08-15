@@ -1,0 +1,7 @@
+/** Add css rules here for your application. */
+
+button {
+    display: block;
+    font-family: sans-serif;
+    font-size: 16pt;
+}

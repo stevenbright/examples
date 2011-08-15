@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_mysite_roospring_domain_Profile" object="${profile}" path="/profiles" z="tnyxVvDQrX/hgFn28hxt+vxnZfw=">
+        <field:display field="displayName" id="s_com_mysite_roospring_domain_Profile_displayName" object="${profile}" z="qsvdARS+JPJumflpOkptvt0E/uI="/>
+        <field:display field="age" id="s_com_mysite_roospring_domain_Profile_age" object="${profile}" z="kQjAer8Ste3L/rh4d+z3xDxrzKY="/>
+    </page:show>
+</div>

@@ -1,0 +1,15 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>blogboard-parent</artifactId>
+        <groupId>com.truward.blogboard</groupId>
+        <version>1.0.0.root</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.truward.blogboard</groupId>
+    <artifactId>blogboard-domain</artifactId>
+    <version>${blogboard-domain.version}</version>
+    <packaging>jar</packaging>
+    <name>Blogboard Domain</name>
+</project>

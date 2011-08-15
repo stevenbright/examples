@@ -1,0 +1,5 @@
+
+The sample archetype would be generated as follows:
+
+
+mvn archetype:generate -DarchetypeGroupId=com.truward.maven.archetypes -DarchetypeArtifactId=spring-sec-web-app -DarchetypeVersion=1.0 -DgroupId=org.gnu -DartifactId=shadoweb -Dversion=1.0-SNAPSHOT

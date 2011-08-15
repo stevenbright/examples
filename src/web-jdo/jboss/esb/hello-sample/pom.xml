@@ -1,0 +1,69 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mysite.jbossesb</groupId>
+    <artifactId>hello-sample</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>ESB Hello World</name>
+
+    <properties>
+        <!--  compiler settings -->
+        <maven.compiler.source>1.5</maven.compiler.source>
+        <maven.compiler.target>1.5</maven.compiler.target>
+
+        <!-- encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jboss</id>
+            <name>JBoss</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public-jboss</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jboss-packaging-maven-plugin</artifactId>
+                <version>2.1.1</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <archiveName>Quickstart_helloworld</archiveName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>build-esb</id>
+                        <goals>
+                            <goal>esb</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jboss.soa.bpel.dependencies.esb</groupId>
+            <artifactId>jbossesb-rosetta</artifactId>
+            <version>4.9</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+            <version>1.1</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+

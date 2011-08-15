@@ -1,0 +1,87 @@
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #fff;
+    color: #2e3436;
+    font-family: Lucida Grande, Arial, sans-serif;
+    font-size: 100%;
+}
+
+.monospaced {
+    font-family: Consolas, monospace;
+}
+
+button {
+    padding: 4px 8px 4px 8px;
+    min-width: 160px;
+}
+
+a:link {
+    color: #204a87;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #5c3566;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul.hor-list {
+    list-style: none outside none;
+}
+
+ul.hor-list li {
+    display: inline;
+}
+
+
+.message {
+    padding: 10px;
+    margin-bottom: 8px;
+    background-color: #eeeeec;
+    font-family: Consolas, monospace;
+    font-size: 80%;
+}
+
+.message.info {
+    border: 1px solid #babdb6;
+}
+
+.message.error {
+    color: #a40000;
+    border: 1px solid #ef2929;
+}
+
+
+
+/*
+ * custom page decorations
+ */
+
+#header {
+    padding: 4px 12px 4px 4px;
+    border-bottom: 1px solid #babdb6;
+    background-color: #eeeeec;
+    font-size: 80%;
+    clear: both;
+    overflow: hidden;
+}
+
+#header .user {
+    float: right;
+}
+
+#header .user li {
+    clear: both;
+}
+
+#wrapper {
+    padding: 12px;
+}

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+        <property name="url" value="jdbc:hsqldb:mem:data/blogboard-hsql-hibernate-db" />
+        <property name="username" value="sa" />
+        <property name="password" value="" />
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceXmlLocation" value="classpath:/persistence.xml"/>
+        <property name="persistenceUnitName" value="BlogboardPersistenceUnit"/>
+        <property name="dataSource" ref="dataSource"/>
+
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <!--<property name="generateDdl" value="true"/>-->
+                <!--<property name="showSql" value="true"/>-->
+            </bean>
+        </property>
+
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+                <prop key="hibernate.show.sql">true</prop>
+                <!--<prop key="hibernate.hbm2ddl.auto">create</prop>-->
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <bean id="blogboardDao" class="com.truward.blogboard.impl.dao.BlogboardDaoImpl">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <aop:config>
+        <aop:pointcut id="userDaoMethods"
+                      expression="execution(* com.truward.blogboard.impl.dao.BlogboardDaoImpl.*(..))"/>
+        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="userDaoMethods"/>
+    </aop:config>
+
+    <!-- transactions are necessary to get DAO work -->
+    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!-- all methods starting with 'get' are read-only -->
+            <tx:method name="get*" read-only="true"/>
+
+            <!-- all methods starting with 'set', 'save' and 'remove' uses REQUIRED transaction semantics -->
+            <tx:method name="set*" propagation="REQUIRED"/>
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="remove*" propagation="REQUIRED"/>
+
+            <!--<tx:method name="update" propagation="REQUIRED"/>-->
+            <!--<tx:method name="remove" propagation="REQUIRED"/>-->
+
+            <!-- other methods use the default transaction settings (see below) -->
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+</beans>

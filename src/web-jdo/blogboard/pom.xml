@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.truward.blogboard</groupId>
+    <artifactId>blogboard-parent</artifactId>
+
+    <version>1.0.0.root</version>
+
+    <name>Blogboard Parent</name>
+    <url>http://truward.com</url>
+
+    <packaging>pom</packaging>
+
+    <description>Blogboard Parent Package</description>
+
+    <properties>
+        <!-- project artifacts versions -->
+        <blogboard-domain.version>1.0.1</blogboard-domain.version>
+        <blogboard-services.version>1.0.2</blogboard-services.version>
+        <blogboard-web-portal.version>1.0.3</blogboard-web-portal.version>
+
+        <!-- common libraries dependencies -->
+        <log4j.version>1.2.16</log4j.version>
+        <slf4j.version>1.6.1</slf4j.version>
+        <junit.version>4.8.1</junit.version>
+        <spring.version>3.0.5.RELEASE</spring.version>
+
+        <!--  compiler settings -->
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+
+        <!-- encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- common libs -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <modules>
+        <module>blogboard-domain</module>
+        <module>blogboard-services</module>
+        <module>blogboard-web-portal</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.truward.blogboard</groupId>
+                <artifactId>blogboard-domain</artifactId>
+                <version>${blogboard-domain.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.truward.blogboard</groupId>
+                <artifactId>blogboard-services</artifactId>
+                <version>${blogboard-services.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.truward.blogboard</groupId>
+                <artifactId>blogboard-web-portal</artifactId>
+                <version>${blogboard-web-portal.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>
+
+
+

@@ -1,0 +1,18 @@
+/** GWT App CSS */
+
+body {
+    font-family: sans-serif;
+}
+
+button {
+    display: block;
+    font-size: 16pt;
+}
+
+.widePanel {
+    width: 100%
+}
+
+img {
+    margin-top: 20px;
+}

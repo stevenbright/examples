@@ -1,0 +1,8 @@
+package numholder;
+
+option java_package = "com.alexshabanov.restcomp.model";
+option java_outer_classname = "NumHolderProtobuf";
+
+message NumHolder {
+    required int32 number = 1;
+}

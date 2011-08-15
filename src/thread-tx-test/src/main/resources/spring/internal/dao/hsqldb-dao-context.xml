@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${txtest.dao.hsqldb.dataSource.driverClassName}"/>
+        <property name="url" value="${txtest.dao.hsqldb.dataSource.url}"/>
+        <property name="username" value="${txtest.dao.hsqldb.dataSource.username}"/>
+        <property name="password" value="${txtest.dao.hsqldb.dataSource.password}"/>
+    </bean>
+
+    <bean class="net.threadtxtest.service.internal.dao.impl.hsqldb.HsqldbDbInitializer">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- DAO -->
+    <bean id="userDao" class="net.threadtxtest.service.internal.dao.impl.hsqldb.UserDaoHsqldbImpl">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="bankOperationDao" class="net.threadtxtest.service.internal.dao.impl.hsqldb.BankOperationDaoHsqldbImpl">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+</beans>

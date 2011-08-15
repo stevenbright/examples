@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    <context:spring-configured/>
+    <context:annotation-config/>
+
+    <!-- This configuration shall be used in opposite to ejb-config.xml, when the socializer is accessible in the local jar, instead of EJB -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:/google-api.properties</value>
+                <!--<value>file:/etc/gdata-webapp-test.properties</value>-->
+                <!--<value>file:/etc/gdata-webapp-test-${gdata-webapp-test.version}.properties</value>-->
+            </list>
+        </property>
+    </bean>
+
+    <util:map id="appProperties" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="google.clientId" value="${google.clientId}"/>
+        <entry key="google.clientSecret" value="${google.clientSecret}"/>
+    </util:map>
+
+    <!--<import resource="global-config.xml"/>-->
+    <!--<import resource="security-config.xml"/>-->
+</beans>

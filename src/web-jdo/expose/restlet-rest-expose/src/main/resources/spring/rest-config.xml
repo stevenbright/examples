@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!--
+        Defines the socializer REST API.
+    -->
+
+    <bean id="socializerComponent" class="org.restlet.ext.spring.SpringComponent">
+        <property name="defaultTarget" ref="helloApplication" />
+    </bean>
+
+    <bean id="helloApplication" class="com.truward.web.hello.HelloApplication">
+        <property name="inboundRoot" ref="router" />
+    </bean>
+
+    <!--  Define the router -->
+    <bean name="router" class="org.restlet.ext.spring.SpringBeanRouter" />
+
+    <!-- Define all the routes -->
+    <bean name="/sample" class="com.truward.web.hello.SampleResource" scope="prototype" />
+    <bean name="/calc" class="com.truward.web.hello.CalcResource" scope="prototype" />
+</beans>

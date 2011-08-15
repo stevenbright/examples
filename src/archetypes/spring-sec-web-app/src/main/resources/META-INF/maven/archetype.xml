@@ -1,0 +1,48 @@
+<archetype xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype/1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype/1.0.0 http://maven.apache.org/xsd/archetype-1.0.0.xsd">
+    <id>quickstart</id>
+
+    <sources>
+        <source>src/main/java/controller/AdminController.java</source>
+        <source>src/main/java/controller/ProfileController.java</source>
+        <source>src/main/java/controller/PublicController.java</source>
+        <source>src/main/java/model/Hello.java</source>
+        <source>src/main/java/service/HelloService.java</source>
+        <source>src/main/java/service/HelloServiceImpl.java</source>
+    </sources>
+
+    <resources>
+        <resource>src/main/resources/logging.properties</resource>
+        <resource>src/main/resources/messages.properties</resource>
+        <resource>src/main/resources/messages_ru.properties</resource>
+        <resource>src/main/resources/spring/root-context.xml</resource>
+
+        <resource>src/main/webapp/redir.htm</resource>
+        <resource>src/main/webapp/static/css/style.css</resource>
+        <resource>src/main/webapp/static/js/ns.js</resource>
+
+        <resource>src/main/webapp/WEB-INF/web.xml</resource>
+        <resource>src/main/webapp/WEB-INF/spring/webmvc-context.xml</resource>
+        <resource>src/main/webapp/WEB-INF/spring/security-context.xml</resource>
+        <resource>src/main/webapp/WEB-INF/tags/errorPageWrapper.tag</resource>
+        <resource>src/main/webapp/WEB-INF/tags/pageWrapper.tag</resource>
+
+        <resource>src/main/webapp/WEB-INF/views/index.jsp</resource>
+        <resource>src/main/webapp/WEB-INF/views/hello.jsp</resource>
+        <resource>src/main/webapp/WEB-INF/views/login.jsp</resource>
+        <resource>src/main/webapp/WEB-INF/views/admin/main.jsp</resource>
+        <resource>src/main/webapp/WEB-INF/views/profile/view.jsp</resource>
+        <resource>src/main/webapp/WEB-INF/views/errors/403.jsp</resource>
+        <resource>src/main/webapp/WEB-INF/views/errors/404.jsp</resource>
+    </resources>
+
+    <testSources>
+        <source>src/test/java/DummyTest.java</source>
+    </testSources>
+
+    <testResources>
+        <resource>src/test/resources/logging.properties</resource>
+        <resource>src/test/resources/spring/dummy-test-context.xml</resource>
+    </testResources>
+</archetype>

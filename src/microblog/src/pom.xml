@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.microblog</groupId>
+    <artifactId>mb-root</artifactId>
+    <version>1.0-root</version>
+    <packaging>pom</packaging>
+    <name>Microblog Project Root</name>
+    <description>Root of the microblog web project.</description>
+
+    <repositories>
+        <!-- jersey lies within JBOSS repository -->
+        <repository>
+            <id>Glassfish</id>
+            <name>Glassfish Repository</name>
+            <url>http://maven.glassfish.org/content/groups/glassfish</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <!-- Project version -->
+        <mb.version>1.0.2</mb.version>
+
+        <!-- common libraries dependencies -->
+        <slf4j.version>1.6.1</slf4j.version>
+        <!-- -->
+        <aspectj.version>1.6.9</aspectj.version>
+        <spring.version>3.0.5.RELEASE</spring.version>
+        <commons-logging.version>1.1.1</commons-logging.version> <!-- This is to exclude commons logging completely -->
+        <jersey.version>1.6</jersey.version>
+
+        <jta.version>1.1</jta.version>
+
+        <!--  compiler settings -->
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+
+        <!-- encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <modules>
+        <module>mb-exposure</module>
+        <module>mb-service</module>
+        <module>mb-web-portal</module>
+    </modules>
+
+    <dependencyManagement>
+
+        <dependencies>
+            <!-- Child projects -->
+            <dependency>
+                <artifactId>mb-exposure</artifactId>
+                <groupId>org.microblog</groupId>
+                <version>${mb.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>mb-service</artifactId>
+                <groupId>org.microblog</groupId>
+                <version>${mb.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>mb-web-portal</artifactId>
+                <groupId>org.microblog</groupId>
+                <version>${mb.version}</version>
+            </dependency>
+
+
+
+            <!--                Third party dependencies                        -->
+
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>2.2</version>
+            </dependency>
+
+
+            <!-- Logging -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-jdk14</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <!-- No commons logging -->
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons-logging.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>0.9.24</version>
+            </dependency>
+
+            <!-- AspectJ dependencies -->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjrt</artifactId>
+                <version>${aspectj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj.version}</version>
+            </dependency>
+
+            <!-- Spring context and webmvc -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
+            <!-- Spring security -->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-web</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-taglibs</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
+            <!-- Spring Aspects, TX and ORM dependencies -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aspects</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
+
+            <!-- transaction API -->
+            <dependency>
+                <groupId>javax.transaction</groupId>
+                <artifactId>jta</artifactId>
+                <version>${jta.version}</version>
+            </dependency>
+
+            <!-- DB Drivers -->
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>1.8.0.10</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.6</version>
+            </dependency>
+
+
+            <!-- Common WEB dependencies -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.5</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>jsp-api</artifactId>
+                <version>2.1</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <version>1.2</version>
+            </dependency>
+            <dependency>
+                <artifactId>standard</artifactId>
+                <groupId>taglibs</groupId>
+                <version>1.1.2</version>
+                <type>jar</type>
+                <scope>runtime</scope>
+            </dependency>
+
+            <!--
+                GAE - J2EE Servlet API. Shall be used in GAE projects in case of explicit using Servlets
+            -->
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-servlet_2.5_spec</artifactId>
+                <version>1.2</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- Google JSON library -->
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>1.4</version>
+            </dependency>
+
+            <!-- Jersey's JAX RS (no XML, no JSON marshallers) -->
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-core</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-server</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey.jersey-test-framework</groupId>
+                <artifactId>jersey-test-framework-grizzly2</artifactId>
+                <version>${jersey.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- Testing -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.8.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>3.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- jetty for local testing -->
+                <plugin>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>maven-jetty-plugin</artifactId>
+                    <version>6.1.16</version>
+                    <configuration>
+                        <connectors>
+                            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                                <port>9090</port>
+                                <maxIdleTime>60000</maxIdleTime>
+                            </connector>
+                        </connectors>
+                        <requestLog implementation="org.mortbay.jetty.NCSARequestLog">
+                            <filename>target/yyyy_mm_dd.request.log</filename>
+                            <retainDays>90</retainDays>
+                            <append>true</append>
+                            <extended>false</extended>
+                            <logTimeZone>GMT</logTimeZone>
+                        </requestLog>
+                    </configuration>
+                </plugin>
+
+                <!-- JAX WS -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>jaxws-maven-plugin</artifactId>
+                    <version>1.10</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

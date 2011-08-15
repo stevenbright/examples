@@ -1,0 +1,23 @@
+
+1. Table graph:
+
+[user] 1:n [role]
+
+[user] n:m [friend]
+
+[user] 1:n [topic]
+
+[user] 1:n [post]
+
+[topic] 1:n [post]
+
+2. Pages:
+
+   [Login] [Register]
+
+[main (topic list, welcome page)]
+[admin] -> [manage-posts] [manage-users]
+[posts]
+[profile]
+[members]
+

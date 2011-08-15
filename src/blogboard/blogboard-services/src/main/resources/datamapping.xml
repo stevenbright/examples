@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+                 version="1.0">
+    <description>JPA Mapping for Blogboard Model</description>
+    <package>com.truward.blogboard.domain</package>
+
+<entity name="ProfileData" class="com.truward.blogboard.domain.ProfileData">
+    <table name="PROFILE_DATA"/>
+    <attributes>
+        <id name="id">
+            <column name="ID"/>
+            <generated-value strategy="TABLE"/>
+        </id>
+        <basic name="username">
+            <column name="USERNAME" nullable="false" length="64"/>
+        </basic>
+        <many-to-many name="referalFriends" fetch="EAGER">
+            <join-table name="FRIEND">
+                <join-column name="TO_ID" referenced-column-name="ID"/>
+                <inverse-join-column name="FROM_ID" referenced-column-name="ID"/>
+            </join-table>
+        </many-to-many>
+        <many-to-many name="friends" fetch="EAGER" mapped-by="referalFriends"/>
+    </attributes>
+</entity>
+
+    <entity name="SipAccount" class="com.truward.blogboard.domain.SipAccount">
+        <table name="SIP_ACCOUNT"/>
+        <attributes>
+            <id name="id">
+                <column name="ID"/>
+                <generated-value strategy="TABLE"/>
+            </id>
+            <basic name="number">
+                <column name="SIP_NUMBER" length="64"/>
+            </basic>
+            <basic name="password">
+                <column name="SIP_PASSWORD" length="32"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <!--&lt;!&ndash; User's profile &ndash;&gt;-->
+    <!--<entity name="Profile" class="com.truward.myblog.model.user.Profile" access="FIELD">-->
+        <!--<attributes>-->
+            <!--<id name="id">-->
+                <!--<generated-value strategy="TABLE"/>-->
+            <!--</id>-->
+            <!--<basic name="login">-->
+                <!--<column length="32"/>-->
+            <!--</basic>-->
+            <!--<basic name="password">-->
+                <!--<column length="32"/>-->
+            <!--</basic>-->
+            <!--<basic name="email">-->
+                <!--<column length="64"/>-->
+            <!--</basic>-->
+            <!--<one-to-many name="comments" fetch="LAZY" mapped-by="author"/>-->
+            <!--<one-to-many name="posts" fetch="LAZY" mapped-by="author"/>-->
+            <!--<many-to-many name="roles" fetch="EAGER">-->
+                <!--<join-table name="ProfileRoles"/>-->
+            <!--</many-to-many>-->
+        <!--</attributes>-->
+    <!--</entity>-->
+
+    <!--&lt;!&ndash; User's roles &ndash;&gt;-->
+    <!--<entity name="Role" class="com.truward.myblog.model.user.Role" access="FIELD">-->
+        <!--<attributes>-->
+            <!--<id name="id">-->
+                <!--<generated-value strategy="TABLE"/>-->
+            <!--</id>-->
+            <!--<basic name="name">-->
+                <!--<column length="32"/>-->
+            <!--</basic>-->
+            <!--<many-to-many name="profiles" mapped-by="roles"/>-->
+        <!--</attributes>-->
+    <!--</entity>-->
+
+    <!--&lt;!&ndash; Blog's post &ndash;&gt;-->
+    <!--<entity name="Post" class="com.truward.myblog.model.blog.Post" access="FIELD">-->
+        <!--<attributes>-->
+            <!--<id name="id">-->
+                <!--<generated-value strategy="TABLE"/>-->
+            <!--</id>-->
+            <!--<basic name="title">-->
+                <!--<column length="64"/>-->
+            <!--</basic>-->
+            <!--<basic name="content">-->
+                <!--<column length="8192"/>-->
+            <!--</basic>-->
+            <!--<many-to-one name="author"/>-->
+            <!--<one-to-many name="comments" fetch="LAZY" mapped-by="post"/>-->
+        <!--</attributes>-->
+    <!--</entity>-->
+
+    <!--<entity class="com.truward.myblog.model.blog.Comment" name="Comment">-->
+        <!--<attributes>-->
+            <!--<id name="id">-->
+                <!--<generated-value strategy="TABLE"/>-->
+            <!--</id>-->
+            <!--<basic name="content">-->
+                <!--<column length="512"/>-->
+            <!--</basic>-->
+            <!--<many-to-one name="author"/>-->
+            <!--<many-to-one name="post"/>-->
+        <!--</attributes>-->
+    <!--</entity>-->
+
+</entity-mappings>

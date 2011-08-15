@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_mysite_roospring_domain_Profile" items="${profiles}" z="iaCPRouXiamhzt7MWgCsg/QCjk0=">
+        <table:table data="${profiles}" id="l_com_mysite_roospring_domain_Profile" path="/profiles" z="37wYMm8fLMYxAl3ZigHPYqu2ppQ=">
+            <table:column id="c_com_mysite_roospring_domain_Profile_displayName" property="displayName" z="0tdmJsAktvw1N456qIwhk271AUw="/>
+            <table:column id="c_com_mysite_roospring_domain_Profile_age" property="age" z="lrxcPS7AZZTJNf2+tEnuOickaJA="/>
+        </table:table>
+    </page:list>
+</div>
