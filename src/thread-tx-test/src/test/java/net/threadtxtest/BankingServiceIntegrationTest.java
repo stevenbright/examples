@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.*;
 
 /**
- * Sample spring-driven test.
+ * Tests banking service in the integration spring context.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/spring/integration-test-context.xml" })
