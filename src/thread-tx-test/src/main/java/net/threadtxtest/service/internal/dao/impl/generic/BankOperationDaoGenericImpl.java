@@ -35,7 +35,7 @@ public abstract class BankOperationDaoGenericImpl extends JdbcDaoSupport impleme
      */
     public long addOperation(long userId, BigDecimal amount) throws DataAccessException {
         getJdbcTemplate().update("insert into BANK_OPERATION (USER_ID, AMOUNT, STATUS, CREATED)\n" +
-                "values (?, ?, ?, ?)", userId, amount, BankOperationStatus.PENDING, new Date());
+                "values (?, ?, ?, ?)", userId, amount, BankOperationStatus.PENDING.getValue(), new Date());
 
         return getIdentityId();
     }
@@ -87,6 +87,6 @@ public abstract class BankOperationDaoGenericImpl extends JdbcDaoSupport impleme
             public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getLong(1);
             }
-        }, BankOperationStatus.PENDING);
+        }, BankOperationStatus.PENDING.getValue());
     }
 }
