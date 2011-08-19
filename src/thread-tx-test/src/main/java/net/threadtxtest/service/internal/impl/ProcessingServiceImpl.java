@@ -10,11 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Implements processing service.
@@ -27,7 +27,7 @@ public final class ProcessingServiceImpl implements ProcessingService, Initializ
 
     private volatile int afterNotificationToken = 0;
 
-    private static final int PROCESSING_SLEEP_DELAY = 5000;
+    private static final int PROCESSING_SLEEP_DELAY = 1000;
 
     private static final int PROCESSING_JOIN_DELAY = PROCESSING_SLEEP_DELAY * 2;
 
@@ -44,45 +44,28 @@ public final class ProcessingServiceImpl implements ProcessingService, Initializ
     private UserDao userDao;
 
 
-    private static enum State {
-        STOP,
-        PROCESS,
-        RUNNING,
-        SLEEPING;
-    }
 
     private final class ProcessingRunner implements Runnable {
-        private volatile State state = State.SLEEPING;
-
-        private boolean nextIteration = false;
+        private final BlockingQueue<Boolean> commands = new ArrayBlockingQueue<Boolean>(100);
 
         public void run() {
-            while (state != State.STOP) {
-                if (nextIteration) {
-                    switch (state) {
-                        case PROCESS:
-                            state = State.RUNNING;
-                            processPendingOperations();
-                            state = State.SLEEPING;
-                            break;
-
-                        case SLEEPING:
-                            // Do nothing - no pending operations are on line
-                            break;
-
-                        default:
-                            LOG.info("Unprocessed state: " + state);
-                    }
-                } else {
-                    nextIteration = true;
-                }
-
+            for (;;) {
                 try {
-                    Thread.sleep(PROCESSING_SLEEP_DELAY);
+                    final Boolean command = commands.take();
+
+                    if (!command) {
+                        // do not wait, exit is requested
+                        return;
+                    }
+
+                    Thread.sleep(PROCESSING_WAIT_SLEEPING);
                 } catch (InterruptedException e) {
-                    // check processing command at once.
-                    LOG.trace("Interrupted - execution of the pending operation");
+                    LOG.trace("Processing thread interrupted, now exiting");
+                    Thread.currentThread().interrupt();
+                    return;
                 }
+
+                processPendingOperations();
             }
         }
     }
@@ -94,7 +77,7 @@ public final class ProcessingServiceImpl implements ProcessingService, Initializ
     /**
      * Processes all the pending operations and moves them to the SUCCEED status.
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_UNCOMMITTED)
+    @Transactional
     public void processPendingOperations() {
         for (final Long operationId : bankOperationDao.getPendingOperations()) {
             final BankOperation operation = bankOperationDao.getOperation(operationId);
@@ -134,24 +117,12 @@ public final class ProcessingServiceImpl implements ProcessingService, Initializ
         try {
             LOG.trace("After operation: token={}, operationId={}", notificationToken, operationId);
 
-            // wait for sleeping state
-            for (int i = 0; i < PROCESSING_WAIT_SLEEPING_ITER; ++i) {
-                if (processingRunner.state == State.SLEEPING) {
-                    LOG.trace("After operation: token={}, operationId={}, invoking PROCESS state",
-                            notificationToken, operationId);
-
-                    processingRunner.state = State.PROCESS;
-                    // interrupt in case thread is still sleeping
-                    processingThread.interrupt();
-                    return;
-                }
-
-                guaranteedSleep(PROCESSING_WAIT_SLEEPING);
+            if (!processingThread.isAlive()) {
+                LOG.error("Attempting to process in the dead thread");
+                return;
             }
 
-            LOG.error("After operation: token={}, operationId={}, timeout when waiting for SLEEP",
-                    notificationToken, operationId);
-            throw new ServiceException("Didn't got to the sleeping state");
+            processingRunner.commands.offer(Boolean.TRUE);
         } finally {
             // mark that this operation gets completed
             afterNotificationToken = notificationToken + 1;
@@ -168,8 +139,10 @@ public final class ProcessingServiceImpl implements ProcessingService, Initializ
             return;
         }
 
-        processingRunner.state = State.STOP;
+        // stop it
+        processingRunner.commands.offer(Boolean.FALSE);
         processingThread.interrupt();
+
         processingThread.join(PROCESSING_JOIN_DELAY);
         LOG.trace("processing thread stopped");
     }
