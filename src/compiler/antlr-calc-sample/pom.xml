@@ -6,7 +6,7 @@
     <artifactId>antlr-calc-sample</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>antlr-calc-sample Application</name>
+    <name>Antlr Sample Application</name>
 
     <properties>
         <!--  compiler settings -->
