@@ -1,0 +1,5 @@
+
+# Run for launching clojure code from java App class:
+mvn exec:java -Dexec.mainClass=org.cljgen.App
+
+
