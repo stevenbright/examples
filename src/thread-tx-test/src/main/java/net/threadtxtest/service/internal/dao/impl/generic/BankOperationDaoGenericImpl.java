@@ -76,7 +76,7 @@ public abstract class BankOperationDaoGenericImpl extends JdbcDaoSupport impleme
      * {@inheritDoc}
      */
     public void updateOperationStatus(long operationId, BankOperationStatus status) throws DataAccessException {
-        getJdbcTemplate().update("update BANK_OPERATION set STATUS=? where operationId=?", status.getValue(), operationId);
+        getJdbcTemplate().update("update BANK_OPERATION set STATUS=? where ID=?", status.getValue(), operationId);
     }
 
     /**
