@@ -1,5 +1,7 @@
 package com.truward.langexp;
 
+import com.truward.langexp.typedisp.domain.ProfileStatus;
+
 import java.io.*;
 
 /**
@@ -54,10 +56,16 @@ public class App {
         System.out.println("obj = " + obj);
     }
 
+    private static void enumConvTest() {
+        final ProfileStatus ps = ProfileStatus.valueOf("DELETED");
+        assert ps == ProfileStatus.DELETED;
+    }
+
     public static void main(String[] args) {
         System.out.println("[App] langexp starts");
 
         try {
+            enumConvTest();
             serializerTest();
         } catch (Exception e) {
             e.printStackTrace();
