@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,9 @@ import java.util.List;
  * Postgres implementation of the UserAccount DAO.
  */
 public final class UserAccountDaoPostgresImpl extends JdbcDaoSupport implements UserAccountDao {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int addUserAccount(String name, BigDecimal balance) {
         return getJdbcTemplate().queryForInt("SELECT f_add_user(?, ?)", name, balance);
@@ -34,19 +38,37 @@ public final class UserAccountDaoPostgresImpl extends JdbcDaoSupport implements 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UserAccount> getUserAccounts(int offset, int limit) {
+        if (limit == 0) {
+            return Collections.emptyList();
+        }
+
         return getJdbcTemplate().query("SELECT " + UserAccountRowMapper.PARAMETERS +
                 " FROM user_account ORDER BY user_id ASC LIMIT ? OFFSET ?",
                 new UserAccountRowMapper(),
                 limit, offset);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserAccount getUserAccountByName(String name) {
         return getJdbcTemplate().queryForObject("SELECT " + UserAccountRowMapper.PARAMETERS +
                 " FROM user_account WHERE user_name = ?",
                 new UserAccountRowMapper(),
                 name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteUser(int id) {
+        getJdbcTemplate().update("DELETE FROM user_account WHERE user_id = ?", id);
     }
 }

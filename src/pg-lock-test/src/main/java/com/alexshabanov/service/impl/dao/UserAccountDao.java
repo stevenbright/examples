@@ -12,4 +12,6 @@ public interface UserAccountDao {
     List<UserAccount> getUserAccounts(int offset, int limit);
 
     UserAccount getUserAccountByName(String name);
+
+    void deleteUser(int id);
 }
