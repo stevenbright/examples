@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
+import static com.alexshabanov.util.DomainUtil.*;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/spring/dao-test-context.xml" })
@@ -25,15 +27,7 @@ public final class DaoIntTest {
     @Resource
     private UserAccountDao userAccountDao;
 
-    private static void assertAccountEquals(int expectedId, String expectedName, BigDecimal expectedBalance,
-                                            UserAccount actual) {
-        assertNotNull(actual);
 
-        assertEquals(expectedId, actual.getId());
-        assertEquals(expectedName, actual.getName());
-        assertEquals(expectedBalance, actual.getBalance());
-        assertNotNull(actual.getCreated());
-    }
 
     @Test
     public void testSaveAndGetUser() {
@@ -42,11 +36,19 @@ public final class DaoIntTest {
         final int id = userAccountDao.addUserAccount(userName, balance);
 
         assertAccountEquals(id, userName, balance, userAccountDao.getUserAccountByName(userName));
+        assertAccountEquals(id, userName, balance, userAccountDao.getUserAccountById(id));
 
         final List<UserAccount> accounts = userAccountDao.getUserAccounts(0, 9);
         assertEquals(1, accounts.size());
 
         assertAccountEquals(id, userName, balance, accounts.get(0));
+
+        final BigDecimal newBalance = balance.add(BigDecimal.valueOf(43534));
+        userAccountDao.updateUserBalance(id, newBalance);
+        assertAccountEquals(id, userName, newBalance, userAccountDao.getUserAccountById(id));
+
+        // select for update test
+        assertAccountEquals(id, userName, newBalance, userAccountDao.getUserAccountByIdForUpdate(id));
     }
 
     @Test
@@ -74,6 +76,7 @@ public final class DaoIntTest {
         assertAccountEquals(id1, userName1, balance1, userAccountDao.getUserAccountByName(userName1));
         try {
             userAccountDao.getUserAccountByName(userName2);
+            fail();
         } catch (EmptyResultDataAccessException ignored) {
             // ok
         }
@@ -103,6 +106,8 @@ public final class DaoIntTest {
         for (int i = 0; i < maxUsers; ++i) {
             assertAccountEquals(ids[i], users[i], balances[i],
                     userAccountDao.getUserAccountByName(users[i]));
+            assertAccountEquals(ids[i], users[i], balances[i],
+                    userAccountDao.getUserAccountById(ids[i]));
         }
 
         // 0..maxUsers

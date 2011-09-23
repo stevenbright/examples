@@ -57,11 +57,41 @@ public final class UserAccountDaoPostgresImpl extends JdbcDaoSupport implements 
      * {@inheritDoc}
      */
     @Override
+    public UserAccount getUserAccountById(int id) {
+        return getJdbcTemplate().queryForObject("SELECT " + UserAccountRowMapper.PARAMETERS +
+                " FROM user_account WHERE user_id = ?",
+                new UserAccountRowMapper(),
+                id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public UserAccount getUserAccountByName(String name) {
         return getJdbcTemplate().queryForObject("SELECT " + UserAccountRowMapper.PARAMETERS +
                 " FROM user_account WHERE user_name = ?",
                 new UserAccountRowMapper(),
                 name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UserAccount getUserAccountByIdForUpdate(int id) {
+        return getJdbcTemplate().queryForObject("SELECT " + UserAccountRowMapper.PARAMETERS +
+                " FROM user_account WHERE user_id = ? FOR UPDATE",
+                new UserAccountRowMapper(),
+                id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateUserBalance(int id, BigDecimal newBalance) {
+        getJdbcTemplate().update("UPDATE user_account SET balance = ? WHERE user_id = ?", newBalance, id);
     }
 
     /**

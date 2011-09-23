@@ -11,7 +11,13 @@ public interface UserAccountDao {
 
     List<UserAccount> getUserAccounts(int offset, int limit);
 
+    UserAccount getUserAccountById(int id);
+
     UserAccount getUserAccountByName(String name);
+
+    UserAccount getUserAccountByIdForUpdate(int id);
+
+    void updateUserBalance(int id, BigDecimal newBalance);
 
     void deleteUser(int id);
 }
