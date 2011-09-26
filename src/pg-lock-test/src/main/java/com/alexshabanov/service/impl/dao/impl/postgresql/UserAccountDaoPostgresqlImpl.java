@@ -1,41 +1,24 @@
-package com.alexshabanov.service.impl.dao.postgres;
+package com.alexshabanov.service.impl.dao.impl.postgresql;
 
 import com.alexshabanov.service.domain.UserAccount;
 import com.alexshabanov.service.impl.dao.UserAccountDao;
-import org.springframework.jdbc.core.RowMapper;
+import com.alexshabanov.service.impl.dao.util.UserAccountRowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 /**
- * Postgres implementation of the UserAccount DAO.
+ * PostgreSQL implementation of the UserAccount DAO.
  */
-public final class UserAccountDaoPostgresImpl extends JdbcDaoSupport implements UserAccountDao {
+public final class UserAccountDaoPostgresqlImpl extends JdbcDaoSupport implements UserAccountDao {
     /**
      * {@inheritDoc}
      */
     @Override
     public int addUserAccount(String name, BigDecimal balance) {
         return getJdbcTemplate().queryForInt("SELECT f_add_user(?, ?)", name, balance);
-    }
-
-    private static final class UserAccountRowMapper implements RowMapper<UserAccount> {
-        static final String PARAMETERS = "user_id, user_name, balance, created";
-
-        @Override
-        public UserAccount mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new UserAccount(
-                    rs.getInt("user_id"),
-                    rs.getString("user_name"),
-                    rs.getBigDecimal("balance"),
-                    new Date(rs.getTimestamp("created").getTime())
-            );
-        }
     }
 
     /**
