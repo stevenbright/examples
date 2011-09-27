@@ -11,6 +11,7 @@
             <list>
                 <value>classpath:/app-default.properties</value>
                 <value>classpath:/app-test.properties</value>
+                <value>file:${user.home}/.pg-lock-test.properties</value>
             </list>
         </property>
     </bean>
@@ -28,10 +29,10 @@
         <entry key="app.dao.oracle.dataSource.username" value="${app.dao.oracle.dataSource.username}"/>
         <entry key="app.dao.oracle.dataSource.password" value="${app.dao.oracle.dataSource.password}"/>
 
-        <entry key="app.dao.postgresql.dataSource.url" value="${app.dao.oracle.dataSource.url}"/>
-        <entry key="app.dao.postgresql.dataSource.driverClassName" value="${app.dao.oracle.dataSource.driverClassName}"/>
-        <entry key="app.dao.postgresql.dataSource.username" value="${app.dao.oracle.dataSource.username}"/>
-        <entry key="app.dao.postgresql.dataSource.password" value="${app.dao.oracle.dataSource.password}"/>
+        <entry key="app.dao.postgresql.dataSource.url" value="${app.dao.postgresql.dataSource.url}"/>
+        <entry key="app.dao.postgresql.dataSource.driverClassName" value="${app.dao.postgresql.dataSource.driverClassName}"/>
+        <entry key="app.dao.postgresql.dataSource.username" value="${app.dao.postgresql.dataSource.username}"/>
+        <entry key="app.dao.postgresql.dataSource.password" value="${app.dao.postgresql.dataSource.password}"/>
 
         <entry key="app.dao.kind" value="${app.dao.kind}"/>
 

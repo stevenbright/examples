@@ -1,0 +1,16 @@
+Demonstrates locking in the different DB.
+
+Configure application via .pg-lock-test.properties in your home (it's setting will override the ones defined in app-default.properties)
+
+Sample configuration would look as follows:
+
+####################### BEGIN #######################
+app.configId=HOME
+app.dao.kind=ORACLE
+app.dao.oracle.dataSource.url=jdbc:oracle:thin:@oracle.hostname.com:1521:ORCL
+#######################  END  #######################
+
+Launching from command line:
+
+mvn exec:java -Dexec.mainClass=com.alexshabanov.App
+

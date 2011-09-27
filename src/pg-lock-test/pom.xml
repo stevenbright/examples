@@ -156,4 +156,19 @@
             </plugin>
         </plugins>
     </build>
+
+
+    <profiles>
+        <profile>
+            <id>enable-oracle</id>
+
+            <dependencies>
+                <dependency>
+                    <groupId>com.oracle</groupId>
+                    <artifactId>ojdbc6</artifactId>
+                    <version>11.2</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

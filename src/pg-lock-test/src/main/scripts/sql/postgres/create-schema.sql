@@ -1,12 +1,5 @@
 
 --
--- Sequences
---
-
-CREATE SEQUENCE seq_user_account;
-CREATE SEQUENCE seq_bank_ops;
-
---
 -- Tables
 --
 
@@ -39,6 +32,14 @@ CREATE TABLE bank_ops (
   CONSTRAINT fk_bank_ops_type_id    FOREIGN KEY (op_type_id) REFERENCES bank_op_type(op_type_id) ON DELETE CASCADE,
   CONSTRAINT fk_bank_ops_user_id    FOREIGN KEY (user_id) REFERENCES user_account(user_id) ON DELETE CASCADE
 );
+
+--
+-- Sequences
+--
+
+CREATE SEQUENCE seq_user_account;
+CREATE SEQUENCE seq_bank_ops;
+
 
 --
 -- Initialization: constants

@@ -1,0 +1,17 @@
+
+-- tablespace
+CREATE BIGFILE TABLESPACE ts_usr_test DATAFILE 'ts_usr_test.dat' SIZE 1M AUTOEXTEND ON;
+
+-- schema owner
+CREATE USER usr_test IDENTIFIED BY test DEFAULT TABLESPACE ts_usr_test;
+
+-- grant priveleges
+ALTER USER usr_test
+  QUOTA UNLIMITED ON ts_usr_test;
+
+GRANT
+  CREATE TABLE, CREATE VIEW, CREATE PROCEDURE, CREATE SEQUENCE, CREATE SESSION
+  TO usr_test WITH ADMIN OPTION;
+
+GRANT CONNECT TO usr_test;
+
