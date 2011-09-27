@@ -5,7 +5,7 @@ import com.alexshabanov.service.domain.UserAccount;
 import java.math.BigDecimal;
 
 public interface UserService {
-    void setDelayMillis(long delayMillis);
+    void setDelayMillis(int delayMillis);
 
     void setUsePessimisticLock(boolean pessimisticLock);
 

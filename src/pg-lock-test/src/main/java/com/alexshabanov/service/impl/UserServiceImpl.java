@@ -8,13 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Random;
 
 @Transactional
 public final class UserServiceImpl implements UserService {
     @Resource
     private UserAccountDao userAccountDao;
 
-    private long updateBalanceDelay = 1L;
+    private int delayMillis = 10;
 
     private boolean pessimisticLock = false;
 
@@ -22,8 +23,8 @@ public final class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void setDelayMillis(long delayMillis) {
-        updateBalanceDelay = delayMillis;
+    public void setDelayMillis(int delayMillis) {
+        this.delayMillis = delayMillis;
     }
 
     /**
@@ -54,29 +55,57 @@ public final class UserServiceImpl implements UserService {
         }
     }
 
+    private final Random random = new Random();
+
+    private static final int DELAY_THRESHOLD = 10;
+
+    private void delay() {
+        try {
+            Thread.sleep(random.nextInt(delayMillis) + DELAY_THRESHOLD);
+        } catch (InterruptedException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    private void addToUserBalanceWithOptimisticLock(int id, BigDecimal balanceDelta) {
+        final UserAccount account = userAccountDao.getUserAccountById(id);
+
+        // imitate long calculations and optimistic lock mechanics
+        delay();
+        {
+            // double check for concurrent modification
+            final UserAccount presentAccount = userAccountDao.getUserAccountById(id);
+            if (!presentAccount.getBalance().equals(account.getBalance())) {
+                System.err.println(">> Optimistic lock violation in thread " + Thread.currentThread().getName() +
+                        " original: " + account.getBalance() + " current: " + presentAccount.getBalance());
+            }
+        }
+        final BigDecimal newBalance = account.getBalance().add(balanceDelta);
+
+        userAccountDao.updateUserBalance(id, newBalance);
+    }
+
+    private void addToUserBalanceWithPessimisticLock(int id, BigDecimal balanceDelta) {
+        final UserAccount account = userAccountDao.getUserAccountByIdForUpdate(id);
+
+        // imitate long calculations
+        delay();
+        final BigDecimal newBalance = account.getBalance().add(balanceDelta);
+
+        userAccountDao.updateUserBalance(id, newBalance);
+    }
+
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void addToUserBalance(int id, BigDecimal balanceDelta) {
-        final UserAccount account;
-
-
         if (pessimisticLock) {
-            account = userAccountDao.getUserAccountByIdForUpdate(id);
+            addToUserBalanceWithPessimisticLock(id, balanceDelta);
         } else {
-            account = userAccountDao.getUserAccountById(id);
+            addToUserBalanceWithOptimisticLock(id, balanceDelta);
         }
-
-        try {
-            Thread.sleep(updateBalanceDelay);
-        } catch (InterruptedException e) {
-            throw new AssertionError(e);
-        }
-
-        final BigDecimal newBalance = account.getBalance().add(balanceDelta);
-
-        userAccountDao.updateUserBalance(id, newBalance);
     }
 
     /**
