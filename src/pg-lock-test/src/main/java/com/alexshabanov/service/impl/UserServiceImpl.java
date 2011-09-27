@@ -22,8 +22,15 @@ public final class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void setUpdateOptions(long delayMillis, boolean pessimisticLock) {
+    public void setDelayMillis(long delayMillis) {
         updateBalanceDelay = delayMillis;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setUsePessimisticLock(boolean pessimisticLock) {
         this.pessimisticLock = pessimisticLock;
     }
 

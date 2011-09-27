@@ -36,7 +36,8 @@
 
         <entry key="app.dao.kind" value="${app.dao.kind}"/>
 
-        <entry key="app.service.processingDelay" value="${app.service.processingDelay}"/>
+        <entry key="app.service.delayMillis" value="${app.service.delayMillis}"/>
+        <entry key="app.service.usePessimisticLock" value="${app.service.usePessimisticLock}"/>
     </util:map>
 
 </beans>

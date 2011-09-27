@@ -14,7 +14,10 @@
     <tx:annotation-driven />
 
     <!-- Services -->
-    <bean id="userService" class="com.alexshabanov.service.impl.UserServiceImpl"/>
+    <bean id="userService" class="com.alexshabanov.service.impl.UserServiceImpl">
+        <property name="delayMillis" value="${app.service.delayMillis}"/>
+        <property name="usePessimisticLock" value="${app.service.usePessimisticLock}"/>
+    </bean>
 
     <!-- Application runner -->
     <import resource="runner-context.xml"/>

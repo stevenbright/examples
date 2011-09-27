@@ -5,7 +5,9 @@ import com.alexshabanov.service.domain.UserAccount;
 import java.math.BigDecimal;
 
 public interface UserService {
-    void setUpdateOptions(long delayMillis, boolean pessimisticLock);
+    void setDelayMillis(long delayMillis);
+
+    void setUsePessimisticLock(boolean pessimisticLock);
 
     int addUserAccount(String name, BigDecimal balance);
 

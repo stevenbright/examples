@@ -119,10 +119,6 @@ public final class ServiceRunner implements Runnable {
 
         userService.deleteAllUsers();
 
-        // change to false for optimistic locking
-        userService.setUpdateOptions(100, true);
-        //userService.setUpdateOptions(200, false);
-
         try {
             checkBalanceScenario1();
         } finally {

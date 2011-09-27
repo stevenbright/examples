@@ -14,3 +14,5 @@ Launching from command line:
 
 mvn exec:java -Dexec.mainClass=com.alexshabanov.App
 
+add -Penable-oracle if you've oracle driver, e.g.: mvn exec:java -Penable-oracle -Dexec.mainClass=com.alexshabanov.App
+

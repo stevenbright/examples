@@ -23,11 +23,9 @@ import static org.junit.Assert.fail;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/spring/dao-test-context.xml" })
 @Transactional
-public final class DaoIntTest {
+public class DaoIntTest {
     @Resource
     private UserAccountDao userAccountDao;
-
-
 
     @Test
     public void testSaveAndGetUser() {
