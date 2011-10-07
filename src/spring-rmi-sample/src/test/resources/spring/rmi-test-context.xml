@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:spring-configured/>
+    <context:annotation-config/>
+
+    <!-- server-side exposure configuration -->
+
+    <bean id="exposedHelloService" class="com.alexshabanov.springrmi.service.HelloServiceImpl"/>
+
+    <bean id="rmiExporter" class="org.springframework.remoting.rmi.RmiServiceExporter">
+        <!-- does not necessarily have to be the same name as the bean to be exported -->
+        <property name="serviceName" value="HelloService"/>
+        <property name="service" ref="exposedHelloService"/>
+        <property name="serviceInterface" value="com.alexshabanov.springrmi.service.HelloService"/>
+        <!-- defaults to 1099 -->
+        <property name="registryPort" value="1100"/>
+    </bean>
+
+    <!-- client side configuration (depends-on is not needed for truly isolated configuration -->
+    <bean id="clientSideHelloService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean" depends-on="rmiExporter">
+        <property name="serviceUrl" value="rmi://127.0.0.1:1100/HelloService"/>
+        <property name="serviceInterface" value="com.alexshabanov.springrmi.service.HelloService"/>
+    </bean>
+</beans>
