@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * DI-driven application entry point.
  */
-@Service
+@Service(value = "appRunner")
 public final class AppRunner implements Runnable {
     @Override
     public void run() {

@@ -1,8 +1,6 @@
 package com.alexshabanov.sched;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -17,8 +15,8 @@ public final class App {
         });
 
         try {
-            final Runnable runnable = context.getBean(Runnable.class);
-            runnable.run();
+            final Runnable appRunner = context.getBean("appRunner", Runnable.class);
+            appRunner.run();
         } finally {
             context.close();
         }
