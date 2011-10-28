@@ -21,10 +21,4 @@ public class HelloServiceTest {
     public void testDummy() {
         assertTrue(true);
     }
-
-    @Test
-    public void testHello() {
-        final HelloService s = new HelloService();
-        assertEquals(3, s.add(1, 2));
-    }
 }

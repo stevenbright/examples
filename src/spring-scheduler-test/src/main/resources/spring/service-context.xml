@@ -2,7 +2,37 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
     <context:spring-configured/>
     <context:annotation-config/>
+
+    <context:component-scan base-package="com.alexshabanov.sched.app" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>
+
+    <!-- Enable @Scheduled annotations processing -->
+    <!--<task:annotation-driven />-->
+
+
+
+    <task:scheduler id="scheduler1" pool-size="1"/>
+
+    <task:scheduled-tasks scheduler="scheduler1">
+        <task:scheduled ref="schedService" method="enqueueSomething" fixed-rate="800"/>
+    </task:scheduled-tasks>
+
+
+    <task:scheduler id="scheduler2" pool-size="1"/>
+
+    <task:scheduled-tasks scheduler="scheduler2">
+        <task:scheduled ref="schedService" method="dequeueSomething" fixed-rate="400"/>
+    </task:scheduled-tasks>
 </beans>
