@@ -19,7 +19,9 @@ import java.util.Collection;
 
 /**
  * Implements bank DAO.
+ * TODO: to research why mandatory propagation doesn't work in some cases.
  */
+//@Transactional(propagation = Propagation.MANDATORY)
 public final class BankDaoImpl extends JdbcDaoSupport implements BankDao {
 
     /**
