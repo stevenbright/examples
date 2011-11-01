@@ -3,40 +3,40 @@
 #include <string.h>
 
 static int g_field[9][9]  = { 0 };
-static int g_frozen[9][9] = { 0 };
 
 static void init_field() {
 	/* 0 line */
 	g_field[0][0] = 2;
-	g_field[2][0] = 4;
-	g_field[4][0] = 7;
-	g_field[6][0] = 9;
-	g_field[8][0] = 1;
+	g_field[0][2] = 4;
+	g_field[0][4] = 7;
+	g_field[0][6] = 9;
+	g_field[0][8] = 1;
 
 	/* 1 line */
 
 	/* 2 line */
-        g_field[1][2] = 5;
+        g_field[2][1] = 5;
         g_field[2][2] = 8;
-        g_field[4][2] = 3;
-        g_field[6][2] = 7;
-        g_field[7][2] = 4;
+        g_field[2][4] = 3;
+        g_field[2][6] = 7;
+        g_field[2][7] = 4;
 
 	/* 3 line */
         g_field[3][3] = 9;
-        g_field[5][3] = 7;
+        g_field[3][5] = 7;
 
 	/* 4 line */
-        g_field[1][4] = 9;
-        g_field[2][4] = 6;
-        g_field[6][4] = 8;
-        g_field[7][4] = 2;
+        g_field[4][1] = 9;
+        g_field[4][2] = 6;
+        g_field[4][6] = 8;
+        g_field[4][7] = 2;
 
 	/* 5 line */
-        g_field[3][5] = 5;
+        g_field[5][3] = 5;
         g_field[5][5] = 2;
 
 	/* 6 line */
+// TODO
         g_field[1][6] = 3;
         g_field[2][6] = 5;
         g_field[4][6] = 1;
@@ -67,16 +67,17 @@ static void print_field() {
 	}
 }
 
+struct coordinate {
+	int h;
+	int v;
+};
 
-static int g_avail_hor[11][9] = { 0 };
-static int g_avail_ver[11][9] = { 0 };
+static struct coordinate g_coords[81] = { 0 }
+static int g_coords_size = 0;
+
 
 static void prepare_field() {
 	for (int i = 0; i < 9; ++i) {
-		/* init counts */
-		g_avail_hor[0][9] = 9;
-		g_avail_ver[0][9] = 9;
-
 		/* init lines */
 		for (int j = 0; j < 9; ++j) {
 			int u = j + 1;
@@ -101,7 +102,7 @@ int main() {
 	init_field();
 	print_field();
 
-	prepare_field();
+	/*prepare_field();*/
 
 	return 0;
 }
