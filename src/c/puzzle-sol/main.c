@@ -3,7 +3,6 @@
 #include <string.h>
 
 static int g_field[9][9]  = { 0 };
-static int g_frozen[9][9] = { 0 };
 
 static void init_field() {
 	/* 0 line */
@@ -67,16 +66,17 @@ static void print_field() {
 	}
 }
 
+struct coordinate {
+	int h;
+	int v;
+};
 
-static int g_avail_hor[11][9] = { 0 };
-static int g_avail_ver[11][9] = { 0 };
+static struct coordinate g_coords[81] = { 0 }
+static int g_coords_size = 0;
+
 
 static void prepare_field() {
 	for (int i = 0; i < 9; ++i) {
-		/* init counts */
-		g_avail_hor[0][9] = 9;
-		g_avail_ver[0][9] = 9;
-
 		/* init lines */
 		for (int j = 0; j < 9; ++j) {
 			int u = j + 1;
@@ -101,7 +101,7 @@ int main() {
 	init_field();
 	print_field();
 
-	prepare_field();
+	/*prepare_field();*/
 
 	return 0;
 }
