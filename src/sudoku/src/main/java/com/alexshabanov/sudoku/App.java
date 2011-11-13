@@ -180,8 +180,6 @@ public final class App {
                 for (int i = 0; i < SIZE; ++i) {
                     final int c = field[i][j];
 
-                    printField(field);
-
                     if (c == 0) {
                         continue;
                     }
@@ -284,7 +282,7 @@ public final class App {
 
         final Finder finder = new Finder(field, coordinates);
 
-        final int RUN_TIMES = 10;
+        final int RUN_TIMES = 16;
         // run test N times
         for (int i = 0; i < RUN_TIMES; ++i) {
             finder.setPrintSolution(i == 0);
@@ -314,18 +312,25 @@ public final class App {
              6 2 7 3 9 8 1 5 4
              4 8 1 7 5 6 2 9 3
 
+mvn exec:java -Dexec.mainClass=com.alexshabanov.restcomp.client.App
 
 Byte flags-driven solution:
 
-Total: 11022000ns
-Total: 10230000ns
-Total: 10496000ns
-Total: 7108000ns
-Total: 512000ns
-Total: 440000ns
+Total: 15943000ns
+Total: 12632000ns
+Total: 9541000ns
+Total: 8360000ns
+Total: 499000ns
+Total: 469000ns
+Total: 463000ns
+Total: 455000ns
 Total: 458000ns
-Total: 449000ns
-Total: 464000ns
+Total: 512000ns
+Total: 447000ns
+Total: 441000ns
+Total: 434000ns
+Total: 452000ns
+Total: 442000ns
 
 ---
 Unoptimized algorithm:
@@ -343,6 +348,62 @@ Total: 17180000ns
 Best times:
 
 18.556 vs 0.440 msec (18 msec is an approximate time for a nerve impulse to travel the length of a human)
+
+=== gcc (comparison to C implementation) - gcc -O0 -g -Wall -std=c99 main.c  -o m:
+
+ 2 6 4 8 7 5 9 3 1
+ 3 7 9 4 2 1 5 6 8
+ 1 5 8 6 3 9 7 4 2
+ 5 4 2 9 8 7 3 1 6
+ 7 9 6 1 4 3 8 2 5
+ 8 1 3 5 6 2 4 7 9
+ 9 3 5 2 1 4 6 8 7
+ 6 2 7 3 9 8 1 5 4
+ 4 8 1 7 5 6 2 9 3
+0 Elapsed time: 1010000 nanoseconds
+1 Elapsed time: 887000 nanoseconds
+2 Elapsed time: 885000 nanoseconds
+3 Elapsed time: 852000 nanoseconds
+4 Elapsed time: 836000 nanoseconds
+5 Elapsed time: 842000 nanoseconds
+6 Elapsed time: 853000 nanoseconds
+7 Elapsed time: 884000 nanoseconds
+8 Elapsed time: 879000 nanoseconds
+9 Elapsed time: 825000 nanoseconds
+10 Elapsed time: 834000 nanoseconds
+11 Elapsed time: 858000 nanoseconds
+12 Elapsed time: 874000 nanoseconds
+13 Elapsed time: 880000 nanoseconds
+14 Elapsed time: 835000 nanoseconds
+15 Elapsed time: 835000 nanoseconds
+
+
+Results with gcc -O3 -Wall -std=c99 main.c  -o m
+ 2 6 4 8 7 5 9 3 1
+ 3 7 9 4 2 1 5 6 8
+ 1 5 8 6 3 9 7 4 2
+ 5 4 2 9 8 7 3 1 6
+ 7 9 6 1 4 3 8 2 5
+ 8 1 3 5 6 2 4 7 9
+ 9 3 5 2 1 4 6 8 7
+ 6 2 7 3 9 8 1 5 4
+ 4 8 1 7 5 6 2 9 3
+0 Elapsed time: 877000 nanoseconds
+1 Elapsed time: 731000 nanoseconds
+2 Elapsed time: 726000 nanoseconds
+3 Elapsed time: 678000 nanoseconds
+4 Elapsed time: 572000 nanoseconds
+5 Elapsed time: 584000 nanoseconds
+6 Elapsed time: 572000 nanoseconds
+7 Elapsed time: 571000 nanoseconds
+8 Elapsed time: 572000 nanoseconds
+9 Elapsed time: 586000 nanoseconds
+10 Elapsed time: 549000 nanoseconds
+11 Elapsed time: 486000 nanoseconds
+12 Elapsed time: 486000 nanoseconds
+13 Elapsed time: 486000 nanoseconds
+14 Elapsed time: 488000 nanoseconds
+15 Elapsed time: 471000 nanoseconds
          */
     }
 }
