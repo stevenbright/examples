@@ -33,7 +33,7 @@
             <span id="richard-2">Richard</span> likes <span id="cola-1">Cola</span>.</br>
             <span id="cola-2">Cola</span> is a drink.</br>
         </div>
-        <canvas id="rel-canvas" class="rel-pane">
+        <canvas id="rel-canvas" class="rel-pane" width='200' height='200'>
             NO CANVAS!!!
         </canvas>
     </div>
@@ -45,13 +45,19 @@
 
         context.fillStyle = '#00f';
         context.strokeStyle = '#f00';
-        context.lineWidth = '2';
+        context.lineWidth = '1';
 
         //context.strokeRect(0, 10, 50, 50);
 
-        var cola1 = document.getElementById("cola-2");
-        var cr = cola1.getBoundingClientRect();
-        context.strokeRect(cr.left - 10, cr.top - 10, cr.width, cr.height);
+        function drawStrokeOverElem(elemId, color) {
+            context.strokeStyle = color;
+            var elem = document.getElementById(elemId);
+            context.strokeRect(elem.offsetLeft, elem.offsetTop, elem.offsetWidth, elem.offsetHeight);
+        }
+
+
+        drawStrokeOverElem("cola-1", "#f90");
+        drawStrokeOverElem("cola-2", "#f90");
     </script>
 </body>
 </html>
