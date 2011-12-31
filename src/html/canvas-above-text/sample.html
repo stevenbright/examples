@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+    <title>Canvas above text</title>
+</head>
+<body>
+    <style type="text/css">
+        .text-pane {
+            /*position: relative;*/
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 200px;
+            height: 200px;
+            background-color: #eeeeec;
+        }
+
+        .rel-pane {
+            position: absolute;
+            /*display: none;*/
+            color: #ff0000;
+            left: 10px;
+            top: 10px;
+            width: 200px;
+            height: 200px;
+            z-index: 1;
+        }
+    </style>
+
+    <div id="wrapper" style="position: relative">
+        <div class="text-pane">
+            His name is <span id="richard-1">Richard</span>.</br>
+            <span id="richard-2">Richard</span> likes <span id="cola-1">Cola</span>.</br>
+            <span id="cola-2">Cola</span> is a drink.</br>
+        </div>
+        <canvas id="rel-canvas" class="rel-pane" width='200' height='200'>
+            NO CANVAS!!!
+        </canvas>
+    </div>
+
+    <script type="text/javascript">
+        var canvas = document.getElementById("rel-canvas");
+        var context = canvas.getContext("2d");
+        window["myctx"] = context;
+
+        context.fillStyle = '#00f';
+        context.strokeStyle = '#f00';
+        context.lineWidth = '1';
+
+        //context.strokeRect(0, 10, 50, 50);
+
+        function drawStrokeOverElem(elemId, color) {
+            context.strokeStyle = color;
+            var elem = document.getElementById(elemId);
+            context.strokeRect(elem.offsetLeft, elem.offsetTop, elem.offsetWidth, elem.offsetHeight);
+        }
+
+
+        drawStrokeOverElem("cola-1", "#f90");
+        drawStrokeOverElem("cola-2", "#f90");
+    </script>
+</body>
+</html>
+
