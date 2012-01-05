@@ -37,8 +37,7 @@ public final class App {
         }
 
         // get the compiled packages (which are serializable)
-        final Collection<KnowledgePackage> pkgs = kbuilder
-                .getKnowledgePackages();
+        final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
 
         // add the packages to a knowledgebase (deploy the knowledge packages).
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -46,8 +45,7 @@ public final class App {
 
         final StatefulKnowledgeSession ksession = kbase
                 .newStatefulKnowledgeSession();
-        ksession.setGlobal( "list",
-                new ArrayList<Object>() );
+        ksession.setGlobal("list", new ArrayList<Object>());
 
         ksession.addEventListener(new DebugAgendaEventListener());
         ksession.addEventListener(new DebugWorkingMemoryEventListener());
