@@ -2,10 +2,7 @@ package ${package}.model;
 
 import java.util.Date;
 
-/**
- * Hello model.
- */
-public class Hello {
+public final class Hello {
     private String greeting;
 
     private String origin;
@@ -40,9 +37,9 @@ public class Hello {
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("Hello");
-        sb.append("{greeting='").append(greeting).append('\'');
-        sb.append(", origin='").append(origin).append('\'');
-        sb.append(", created=").append(created);
+        sb.append("{greeting='").append(getGreeting()).append('\'');
+        sb.append(", origin='").append(getOrigin()).append('\'');
+        sb.append(", created=").append(getCreated());
         sb.append('}');
         return sb.toString();
     }

@@ -6,15 +6,10 @@ import ${package}.model.Hello;
 
 import java.util.Date;
 
-/**
- * An implementation of the hello business service.
- */
 @Service
 public class HelloServiceImpl implements HelloService {
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public Hello getGreeting(String origin) {
         final Hello hello = new Hello();
         hello.setGreeting("Hello, there!");

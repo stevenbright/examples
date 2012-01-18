@@ -4,6 +4,8 @@
     <id>quickstart</id>
 
     <sources>
+        <source>src/main/java/config/ComponentConfig.java</source>
+        <source>src/main/java/config/WebConfig.java</source>
         <source>src/main/java/controller/HelloController.java</source>
         <source>src/main/java/model/Hello.java</source>
         <source>src/main/java/service/HelloService.java</source>
@@ -12,14 +14,12 @@
 
     <resources>
         <resource>src/main/resources/logging.properties</resource>
-        <resource>src/main/resources/spring/root-context.xml</resource>
 
         <resource>src/main/webapp/redir.htm</resource>
         <resource>src/main/webapp/static/css/style.css</resource>
         <resource>src/main/webapp/static/js/ns.js</resource>
 
         <resource>src/main/webapp/WEB-INF/web.xml</resource>
-        <resource>src/main/webapp/WEB-INF/spring/webmvc-context.xml</resource>
         <resource>src/main/webapp/WEB-INF/tags/pageWrapper.tag</resource>
         <resource>src/main/webapp/WEB-INF/views/hello.jsp</resource>
     </resources>
@@ -30,6 +30,5 @@
 
     <testResources>
         <resource>src/test/resources/logging.properties</resource>
-        <resource>src/test/resources/spring/dummy-test-context.xml</resource>
     </testResources>
 </archetype>

@@ -10,19 +10,12 @@ import org.springframework.ui.Model;
 import ${package}.model.Hello;
 import ${package}.service.HelloService;
 
-import java.util.Date;
-
-/**
- * Represents controller that greets user with the warm message.
- */
 @Controller
 public final class HelloController {
     private static final Logger LOG = LoggerFactory.getLogger(HelloController.class);
 
-
     @Autowired
     private HelloService helloService;
-
 
     @RequestMapping("/index.html")
     public String index(Model model) {
