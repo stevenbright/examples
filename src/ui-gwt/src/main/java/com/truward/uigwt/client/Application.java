@@ -3,9 +3,11 @@ package com.truward.uigwt.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.truward.uigwt.client.views.ProgressBarView;
+import com.truward.uigwt.client.views.SimpleFormView;
 
 
 /**
@@ -45,5 +47,9 @@ public class Application implements EntryPoint {
         timer.scheduleRepeating(200);
 
         layoutPanel.add(widget);
+        layoutPanel.add(new Label("Hi there!"));
+        final SimpleFormView f = new SimpleFormView();
+        layoutPanel.add(f.getPanel());
+        f.setText("p", 4);
     }
 }
