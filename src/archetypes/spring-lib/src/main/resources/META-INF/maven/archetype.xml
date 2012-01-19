@@ -8,16 +8,11 @@
         <source>src/main/java/App.java</source>
     </sources>
 
-    <resources>
-        <resource>src/main/resources/spring/service-context.xml</resource>
-    </resources>
-
     <testSources>
         <source>src/test/java/HelloServiceTest.java</source>
     </testSources>
 
     <testResources>
         <resource>src/test/resources/logging.properties</resource>
-        <resource>src/test/resources/spring/service-test-context.xml</resource>
     </testResources>
 </archetype>
