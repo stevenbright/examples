@@ -27,7 +27,7 @@ public class OrmConfig {
         factoryBean.setJpaVendorAdapter(vendorAdapter);
         factoryBean.setPersistenceUnitName("H2-PU");
         factoryBean.setPersistenceXmlLocation("META-INF/persistence.xml");
-        //factoryBean.setJpaProperties( this.additionlProperties() );
+        //factoryBean.setJpaProperties( this.additionProperties() );
 
         return factoryBean;
     }
