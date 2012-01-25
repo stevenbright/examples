@@ -16,14 +16,18 @@ public class UserProfile extends DomainObject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 64)
+    private String password;
+
     @NotNull
     @OneToMany(targetEntity = UserAccount.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Collection<UserAccount> accounts;
 
     public UserProfile() {}
 
-    public UserProfile(Long id, Collection<UserAccount> accounts) {
+    public UserProfile(Long id, String password, Collection<UserAccount> accounts) {
         this.id = id;
+        this.password = password;
         this.accounts = accounts;
     }
 
@@ -35,6 +39,10 @@ public class UserProfile extends DomainObject {
         return accounts;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -44,6 +52,7 @@ public class UserProfile extends DomainObject {
 
         if (accounts != null ? !accounts.equals(that.accounts) : that.accounts != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (password != null ? !password.equals(that.password) : that.password != null) return false;
 
         return true;
     }
@@ -51,6 +60,7 @@ public class UserProfile extends DomainObject {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (accounts != null ? accounts.hashCode() : 0);
         return result;
     }
@@ -59,6 +69,7 @@ public class UserProfile extends DomainObject {
     public String toString() {
         return "UserProfile{" +
                 "id=" + getId() +
+                ", password=" + getPassword() +
                 ", accounts=" + getAccounts() +
                 '}';
     }

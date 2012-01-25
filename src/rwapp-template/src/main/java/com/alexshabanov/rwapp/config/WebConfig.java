@@ -19,7 +19,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Bean
     public ViewResolver viewResolver() {
-        UrlBasedViewResolver viewResolver = new UrlBasedViewResolver();
+        final UrlBasedViewResolver viewResolver = new UrlBasedViewResolver();
         viewResolver.setViewClass(JstlView.class);
         viewResolver.setPrefix("/WEB-INF/views/");
         viewResolver.setSuffix(".jsp");
@@ -29,7 +29,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
     @Bean
     @Override
     public RequestMappingHandlerMapping requestMappingHandlerMapping() {
-        RequestMappingHandlerMapping handlerMapping = super.requestMappingHandlerMapping();
+        final RequestMappingHandlerMapping handlerMapping = super.requestMappingHandlerMapping();
         handlerMapping.setAlwaysUseFullPath(true);
         return handlerMapping;
     }
