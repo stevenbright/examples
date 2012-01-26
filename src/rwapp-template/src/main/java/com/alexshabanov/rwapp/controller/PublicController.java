@@ -12,8 +12,8 @@ import com.alexshabanov.rwapp.model.Hello;
 import com.alexshabanov.rwapp.service.HelloService;
 
 @Controller
-public final class HelloController {
-    private static final Logger LOG = LoggerFactory.getLogger(HelloController.class);
+public final class PublicController {
+    private static final Logger LOG = LoggerFactory.getLogger(PublicController.class);
 
     @Autowired
     private HelloService helloService;
@@ -28,5 +28,10 @@ public final class HelloController {
         LOG.info("Hello object = {}, p = {}", hello, p);
 
         return "hello";
+    }
+
+    @RequestMapping("/login.html")
+    public String login() {
+        return "login";
     }
 }
