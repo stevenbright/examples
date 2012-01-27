@@ -40,6 +40,10 @@ public class UserAccount extends DomainObject {
         this.aliasKind = aliasKind;
     }
 
+    public UserAccount(String alias, Kind aliasKind) {
+        this(null, alias, aliasKind);
+    }
+
     public Long getId() {
         return id;
     }

@@ -18,12 +18,6 @@
     </http>
 
     <authentication-manager>
-        <authentication-provider>
-            <user-service>
-                <user name="admin" password="123" authorities="ROLE_ADMIN,ROLE_USER"/>
-                <user name="user1" password="qwe" authorities="ROLE_USER"/>
-                <user name="user2" password="wer" disabled="true" authorities="ROLE_USER"/>
-            </user-service>
-        </authentication-provider>
+        <authentication-provider user-service-ref="adaptedUserDetailsService" />
     </authentication-manager>
 </beans:beans>

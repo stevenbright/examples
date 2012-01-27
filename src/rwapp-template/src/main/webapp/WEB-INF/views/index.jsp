@@ -7,15 +7,10 @@
     <table>
         <tr>
             <td>Origin</td>
-            <td>${hello.origin}</td>
-        </tr>
-        <tr>
-            <td>Greeting</td>
-            <td>${hello.greeting}</td>
-        </tr>
-        <tr>
-            <td>Created</td>
-            <td>${hello.created}</td>
+            <td>${profile.id}</td>
         </tr>
     </table>
+
+    <hr/>
+    <p><a href="<c:url value="/profile/index.html"/>">Profile Page</a></p>
 </tag:pageWrapper>
