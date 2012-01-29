@@ -3,11 +3,10 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html;charset=UTF-8" language="java" %>
 
 <tag:pageWrapper sectionName="Profile">
-    <p>Profile</p>
-    <table>
+    <table class="std">
         <tr>
-            <td>Id:</td>
-            <td>${profile.id}</td>
+            <td><strong>Profile Object</strong></td>
+            <td>${profile}</td>
         </tr>
     </table>
 </tag:pageWrapper>

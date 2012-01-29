@@ -7,7 +7,7 @@
     <table>
         <tr>
             <td>Origin</td>
-            <td>${profile.id}</td>
+            <td>${profile}</td>
         </tr>
     </table>
 

@@ -11,4 +11,6 @@ public interface UserService {
     UserProfile createProfile(String password, String nickname, String... roleCodes);
     
     void saveRoles(String... roleCodes);
+
+    UserProfile findProfile(long userId);
 }

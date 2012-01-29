@@ -47,7 +47,15 @@ ul.hor-list li {
     border: 1px solid #ef2929;
 }
 
+table.std {
+    margin: 2px;
+    border-collapse: collapse;
+}
 
+table.std td {
+    border: 1px #babdb6 solid;
+    padding: 4px;
+}
 
 /*
  * custom page decorations

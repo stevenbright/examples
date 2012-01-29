@@ -24,7 +24,7 @@ public final class PublicController {
     public String index(Model model) {
         final UserProfile p = new UserProfile("asd",
                 Collections.<UserAccount>emptyList(), Collections.<UserRole>emptySet());
-        model.addAttribute(p);
+        model.addAttribute("profile", p);
 
         log.info("Profile p = {}, greeting = {}", p, helloService.getGreeting("asd"));
 

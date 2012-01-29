@@ -26,12 +26,12 @@ public class UserServiceImpl implements UserService {
     private UserRoleDao roleDao;
 
     @Override
+    @Transactional(readOnly = true)
     public UserProfile findProfileByAlias(String accountAlias) {
         return profileDao.findByAccountAlias(accountAlias);
     }
 
     @Override
-    @Transactional
     public UserProfile createProfile(String password, String nickname, String... roleCodes) {
         final List<UserAccount> accounts = Collections.singletonList(
                 new UserAccount(nickname, UserAccount.Kind.NICKNAME));
@@ -49,10 +49,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public void saveRoles(String... roleCodes) {
         for (final String roleCode : roleCodes) {
             roleDao.save(new UserRole(roleCode));
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserProfile findProfile(long userId) {
+        return profileDao.findOne(userId);
     }
 }
