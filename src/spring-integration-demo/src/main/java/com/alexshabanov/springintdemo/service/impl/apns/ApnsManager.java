@@ -13,21 +13,28 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Takes care of aggregation, release and correlation of the incoming message.
+ */
 @Service
 public class ApnsManager {
 
     private final Logger log = LoggerFactory.getLogger(ApnsManager.class);
 
-    private static final int DEFAULT_MAX_MESSAGES = 2;
+    private static final int DEFAULT_MAX_UNRELEASED_MESSAGES = 2;
 
     @Value("${app.apns.maxUnreleasedMessages}")
-    private int maxMessages = DEFAULT_MAX_MESSAGES;
+    private int maxUnreleasedMessages = DEFAULT_MAX_UNRELEASED_MESSAGES;
 
-    private volatile long correlationId = 0;
+    // we must increment correlation ID each time the messages gets aggregated into the single chunk.
+    // the aggregator specifics guarantees there will be no
+    // TODO: check whether the synchronization is required and what it should be
+    private volatile long correlationId = 1L;
 
     @Aggregator
     public ApnsCompositePayload aggregate(List<ApnsPayload> payloads) {
         ++correlationId;
+
         final List<String> messages = new ArrayList<String>(payloads.size());
 
         for (final ApnsPayload p : payloads) {
@@ -38,9 +45,9 @@ public class ApnsManager {
     }
 
     @ReleaseStrategy
-    public boolean canRelease(List<ApnsPayload> messages) {
-        log.info("Can-release messages {}", messages);
-        return messages.size() >= maxMessages;
+    public boolean canRelease(List<ApnsPayload> unreleasedMessages) {
+        log.info("Can-release messages {}", unreleasedMessages);
+        return unreleasedMessages.size() >= maxUnreleasedMessages;
     }
 
     @CorrelationStrategy
