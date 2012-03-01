@@ -1,4 +1,4 @@
-package com.alexshabanov.springintdemo.service.impl;
+package com.alexshabanov.springintdemo.service.impl.sms;
 
 import org.springframework.integration.Message;
 import org.springframework.integration.MessagingException;

@@ -3,24 +3,71 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:i9n="http://www.springframework.org/schema/integration"
-       xsi:schemaLocation="
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
     <context:spring-configured />
     <context:annotation-config />
 
+    <context:property-placeholder location="classpath:app.properties"/>
+
     <context:component-scan base-package="com.alexshabanov.springintdemo.service.impl" />
 
-    <i9n:channel id="smsChannel">
-        <!--<i9n:queue capacity="2"/>-->
+    <i9n:poller default="true" max-messages-per-poll="10" fixed-delay="100"/>
+
+    <i9n:channel id="smsSenderChannel">
+        <i9n:queue capacity="5"/>
         <i9n:interceptors>
-            <i9n:wire-tap channel="logger"/>
+            <i9n:wire-tap channel="messageLogger"/>
         </i9n:interceptors>
     </i9n:channel>
 
-    <i9n:logging-channel-adapter id="logger" level="INFO"/>
+    <i9n:logging-channel-adapter id="messageLogger" level="INFO"/>
 
     <!-- smsMessageHandler is taken from component scan -->
-    <i9n:outbound-channel-adapter channel="smsChannel" ref="smsMessageHandler" />
+    <i9n:outbound-channel-adapter channel="smsSenderChannel" ref="smsMessageHandler" />
+
+    <!-- apns message channel and aggregator -->
+    <i9n:channel id="apnsSenderChannel" datatype="com.alexshabanov.springintdemo.service.impl.apns.model.ApnsPayload">
+        <i9n:interceptors>
+            <i9n:wire-tap channel="messageLogger"/>
+        </i9n:interceptors>
+    </i9n:channel>
+
+    <!--
+        NOTE:   Timeout limits the lifetime of certain message in the aggregator,
+                if it exceeded the message is thrown away.
+                For now this considered to be the unexpected scenario since term message scheduler work.
+    -->
+    <i9n:aggregator id="apnsAggregator"
+                    input-channel="apnsSenderChannel"
+                    output-channel="outputApnsChannel"
+                    send-timeout="${app.apns.maxProcessingTimeout}"
+                    message-store="apnsMessageStore"
+                    send-partial-result-on-expiry="true"
+                    ref="apnsManager"/>
+
+    <!-- TODO: DB can be emploed here in order to persist messages -->
+    <bean id="apnsMessageStore" class="org.springframework.integration.store.SimpleMessageStore"/>
+
+    <!-- Term messages for correlation groups -->
+    <task:scheduler id="messagingScheduler" pool-size="1"/>
+    <task:scheduled-tasks scheduler="messagingScheduler">
+        <task:scheduled ref="apnsReaper" method="run" fixed-delay="${app.apns.reaperTimeout}"/>
+    </task:scheduled-tasks>
+
+    <bean id="apnsReaper" class="org.springframework.integration.store.MessageGroupStoreReaper">
+        <property name="messageGroupStore" ref="apnsMessageStore"/>
+        <property name="timeout" value="${app.apns.compositionScheduledTimeout}"/>
+    </bean>
+
+    <i9n:channel id="outputApnsChannel" datatype="com.alexshabanov.springintdemo.service.impl.apns.model.ApnsCompositePayload">
+        <i9n:interceptors>
+            <i9n:wire-tap channel="messageLogger"/>
+        </i9n:interceptors>
+    </i9n:channel>
+
+    <i9n:outbound-channel-adapter channel="outputApnsChannel" ref="apnsCompositeMessageHandler"/>
 </beans>
