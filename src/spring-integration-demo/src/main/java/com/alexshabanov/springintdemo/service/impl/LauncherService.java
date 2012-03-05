@@ -1,5 +1,6 @@
 package com.alexshabanov.springintdemo.service.impl;
 
+import com.alexshabanov.springintdemo.service.impl.apns.ApnsFeedbackProvider;
 import com.alexshabanov.springintdemo.service.impl.apns.model.ApnsPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,9 @@ public class LauncherService implements Runnable {
 
     @Resource(name = "apnsSenderChannel")
     private MessageChannel apnsChannel;
+
+    @Resource
+    private ApnsFeedbackProvider apnsFeedbackProvider;
 
     @Override
     public void run() {

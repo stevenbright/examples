@@ -15,7 +15,20 @@
 
     <context:component-scan base-package="com.alexshabanov.springintdemo.service.impl" />
 
+    <!-- Generic configuration -->
+
     <i9n:poller default="true" max-messages-per-poll="10" fixed-delay="100"/>
+
+    <i9n:logging-channel-adapter id="messageLogger" level="INFO"/>
+
+    <!-- APNS feedback -->
+
+    <i9n:inbound-channel-adapter id="feedbackInboundChannel" ref="apnsFeedbackProvider" method="provideFeedback">
+        <i9n:poller max-messages-per-poll="1" fixed-delay="1000"/>
+    </i9n:inbound-channel-adapter>
+    <i9n:outbound-channel-adapter channel="feedbackInboundChannel" ref="apnsFeedbackConsumer" method="consumeFeedback"/>
+
+    <!-- SMS sender -->
 
     <i9n:channel id="smsSenderChannel">
         <i9n:queue capacity="5"/>
@@ -23,8 +36,6 @@
             <i9n:wire-tap channel="messageLogger"/>
         </i9n:interceptors>
     </i9n:channel>
-
-    <i9n:logging-channel-adapter id="messageLogger" level="INFO"/>
 
     <!-- smsMessageHandler is taken from component scan -->
     <i9n:outbound-channel-adapter channel="smsSenderChannel" ref="smsMessageHandler" />
