@@ -1,7 +1,7 @@
 (ns org.cljgen.astgen)
 
 
-
+;;; Skipped form
 #_(def sp-form-var 123)
 
 (def p-person-form
@@ -27,28 +27,50 @@
     (if-not (.startsWith accessor-str prefix) (fail ["Accessor " accessor-str " expected to begin with " prefix]))
     (str (Character/toLowerCase (.charAt accessor-str prefix-len)) (.substring accessor-str (inc prefix-len)))))
 
+(def *id-field-name* "id")
+
 (defn dto-form-to-field-form [dto-form]
   (assert-same :interface (first dto-form) dto-form)
-  (concat (list :dto (second dto-form))
-    (map
-      (fn [dto-method]
-        ;; check leading marker keyword
-        (assert-same :method (first dto-method) dto-method)
+  (with-local-vars [result nil has-id false]
+    (var-set result
+      (concat (list :dto (second dto-form))
+        (map
+          (fn [dto-method]
+            ;; check leading marker keyword
+            (assert-same :method (first dto-method) dto-method)
 
-        ;; validate size
-        (let [s (count dto-method)]
-          (cond
-            (= s 3) nil
-            (= s 4) (if-not (= 0 (count (nth dto-method 3)))
-                      (fail ["Method " dto-method " expected to have empty arguments list"]))
-            :else (fail ["Form " dto-method " expected to have 3 or 4 elements"])))
 
-        ;; TODO: check we have only three methods
-        (list :field (second dto-method) (property-name "get" (nth dto-method 2))))
-      ;; sequence of :method forms
-      (rest (rest dto-form)))))
+            (let [s (count dto-method)]
+              ;; validate size
+              (cond
+                (= s 3) nil
+                (= s 4) (if-not (= 0 (count (nth dto-method 3)))
+                          (fail ["Method " dto-method " expected to have empty arguments list"]))
+                :else (fail ["Form " dto-method " expected to have 3 or 4 elements"])))
 
-;; (dto-form-to-field-form '(:interface Person (:method String getName) (:method int getAge)))
+            ;; TODO: check we have only three methods
+            (let [prop-name (property-name "get" (nth dto-method 2))]
+
+              ;; ID presence check
+              (if (= *id-field-name* prop-name)
+                (var-set has-id true))
+
+              ;; return field presentation
+              (list :field (second dto-method) prop-name)))
+          ;; sequence of :method forms
+          (rest (rest dto-form)))))
+
+    ;; add "ID" field of unknown type
+    (if-not @has-id
+      (var-set result (concat @result (list (list :field nil *id-field-name*)))))
+
+    @result))
+
+#_(dto-form-to-field-form '(:interface Person (:method String getName) (:method int getAge)))
+;;;   ->
+;;; (:dto Person (:field String "name") (:field int "age"))
+
+#_(defn print-dto-form ())
 
 (comment
 
