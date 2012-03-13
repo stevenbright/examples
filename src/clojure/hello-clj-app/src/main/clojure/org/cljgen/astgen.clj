@@ -39,7 +39,6 @@
             ;; check leading marker keyword
             (assert-same :method (first dto-method) dto-method)
 
-
             (let [s (count dto-method)]
               ;; validate size
               (cond
@@ -70,7 +69,26 @@
 ;;;   ->
 ;;; (:dto Person (:field String "name") (:field int "age"))
 
-#_(defn print-dto-form ())
+#_(def *dto-prop-form* '(:dto Person (:field String "name" :nullable true) (:field int age) (:field long id)))
+
+#_(defn print-dto-form [dto-form]
+    ;; class declaration
+    (print "public final class ")
+    (print (str (second dto-form) "Impl"))
+    (println " {")
+
+    ;; Private properties
+    (let [fields (rest (rest dto-form))]
+      (doseq [field fields]
+        (print \tab)
+        (print "private final ")
+        (print (nth field 1) (nth field 2))
+        (println ";")))
+
+    ;; closing class body block
+    (print \}))
+
+#_(do (print-dto-form *dto-prop-form*) (println))
 
 (comment
 
