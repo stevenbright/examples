@@ -1,9 +1,6 @@
 (ns org.cljgen.astgen)
 
 
-;;; Skipped form
-#_(def sp-form-var 123)
-
 (def p-person-form
   '(:ast
      (:interface Person
@@ -27,7 +24,7 @@
     (if-not (.startsWith accessor-str prefix) (fail ["Accessor " accessor-str " expected to begin with " prefix]))
     (str (Character/toLowerCase (.charAt accessor-str prefix-len)) (.substring accessor-str (inc prefix-len)))))
 
-(def *id-field-name* "id")
+(def id-field-name "id")
 
 (defn dto-form-to-field-form [dto-form]
   (assert-same :interface (first dto-form) dto-form)
@@ -51,7 +48,7 @@
             (let [prop-name (property-name "get" (nth dto-method 2))]
 
               ;; ID presence check
-              (if (= *id-field-name* prop-name)
+              (if (= id-field-name prop-name)
                 (var-set has-id true))
 
               ;; return field presentation
@@ -61,7 +58,7 @@
 
     ;; add "ID" field of unknown type
     (if-not @has-id
-      (var-set result (concat @result (list (list :field nil *id-field-name*)))))
+      (var-set result (concat @result (list (list :field nil id-field-name)))))
 
     @result))
 
@@ -69,26 +66,35 @@
 ;;;   ->
 ;;; (:dto Person (:field String "name") (:field int "age"))
 
-#_(def *dto-prop-form* '(:dto Person (:field String "name" :nullable true) (:field int age) (:field long id)))
+#_(def my-dto-prop-form '(:dto Person (:field String "name" :nullable true) (:field int age) (:field long id)))
 
-#_(defn print-dto-form [dto-form]
-    ;; class declaration
-    (print "public final class ")
-    (print (str (second dto-form) "Impl"))
-    (println " {")
+#_
+(defn print-dto-form [dto-form]
+  ;; class declaration
+  (let [class-name (str (second dto-form) "Impl")
+        fields (rest (rest dto-form))]
+    (println "public final class" class-name "{")
 
     ;; Private properties
-    (let [fields (rest (rest dto-form))]
-      (doseq [field fields]
-        (print \tab)
-        (print "private final ")
-        (print (nth field 1) (nth field 2))
-        (println ";")))
+    (doseq [field fields]
+      (println (str \tab "private final " (nth field 1) " " (nth field 2) ";")))
+
+    ;; newline before ctor
+    (println)
+
+    ;; Constructor
+    (print (str \tab "public " class-name "("))
+    ;; arglist
+    (print (apply str (interpose ", " (map (fn [field] (str (nth field 1) " " (nth field 2))) fields))))
+    (println ") {")
+    ;; initialization
+    (print (apply str (interpose ", " (map (fn [field] (str (nth field 1) " " (nth field 2))) fields))))
+    (println (str \tab "}"))
 
     ;; closing class body block
-    (print \}))
+    (print \})))
 
-#_(do (print-dto-form *dto-prop-form*) (println))
+#_(do (print-dto-form my-dto-prop-form) (println))
 
 (comment
 
