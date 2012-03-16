@@ -1,5 +1,7 @@
 (ns org.cljgen.astgen)
 
+;; load file, then do:
+;; (ns org.cljgen.astgen)
 
 (def p-person-form
   '(:ast
@@ -65,6 +67,19 @@
 #_(dto-form-to-field-form '(:interface Person (:method String getName) (:method int getAge)))
 ;;;   ->
 ;;; (:dto Person (:field String "name") (:field int "age"))
+
+(defn jout
+  "Printing facility for java objects"
+  {:static true}
+  [& more]
+  (doseq [elem more]
+    (cond
+      (coll? elem) (doseq [subelem elem] (jout subelem))
+      (char? elem) (print elem)
+      (string? elem) (print elem)
+      :else (fail ["don't know how to print " elem]))))
+
+
 
 
 ;; TODO: convenient print function that accepts strings and sequences
