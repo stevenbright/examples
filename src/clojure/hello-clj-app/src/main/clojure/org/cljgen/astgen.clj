@@ -76,26 +76,38 @@
   "Printing facility for java programming language"
   {:static true}
   [& more]
-  (letfn [(align [] (print (apply str (repeat @tab-count \tab))))
-          (put-newline [] (print \newline) (ref-set was-newline true))]
+  (letfn [(align []
+            (print (apply str (repeat @tab-count "  ")))
+            (ref-set was-newline false))
+          (align-and-print [val]
+            (align)
+            (print val))
+          (put-newline []
+            (print \newline)
+            (ref-set was-newline true))]
     (doseq [elem more]
       (cond
         (char? elem) (do
-                       ;; print spaces if it was newline
-                       (if @was-newline 
-                         (do (align) (ref-set was-newline false)))
                        ;; update tab-count
                        (cond
                          (= elem \tab) (fail "Tab is auto-applied hence unexpected in " more)
                          (= elem \newline) (put-newline)
-                         (= elem \{) (do (ref-set tab-count (inc @tab-count)) (println \{) (put-newline))
-                         (= elem \}) (do (ref-set tab-count (dec @tab-count)) (align) (println \}) (put-newline))
+                         (= elem \{) (do
+                                       (align)
+                                       (ref-set tab-count (inc @tab-count))
+                                       (print \{)
+                                       (put-newline))
+                         (= elem \}) (do
+                                       (ref-set tab-count (dec @tab-count))
+                                       ;; validate tab-count
+                                       (if (< @tab-count 0) (fail "While printing " more ", tab-count=" @tab-count))
+                                       ;; align, print '\{' and newline
+                                       (align-and-print \})
+                                       (put-newline))
                          ;; just print element itself
-                         :else (print elem))
-                       ;; validate tab-count
-                       (if (< (deref tab-count) 0) (fail "While printing " more ", tab-count=" @tab-count)))
-        (string? elem) (print elem)
-        (symbol? elem) (print (str elem))
+                         :else (align-and-print elem)))
+        (string? elem) (align-and-print elem)
+        (symbol? elem) (align-and-print (str elem))
         :else (fail "Don't know how to print " elem)))))
 
 
@@ -111,7 +123,7 @@
 
     ;; Private properties
     (doseq [field fields]
-      (j-pr "private final " (nth field 1) " " (nth field 2) \; \newline))
+      (j-pr "private final " (nth field 1) \space (nth field 2) \; \newline))
 
     ;; Constructor
     (j-pr \newline "public " class-name "(")
@@ -120,10 +132,10 @@
     (j-pr \) \space \{)
     ;; initialization
     (apply j-pr (map (fn [field] (str "this." (nth field 2) " = " (nth field 2) \; \newline)) fields))
-    (j-pr \})
+    (j-pr \} \newline)
 
     ;; getters
-    (apply j-pr (map (fn [field] (str "// getter for " (nth field 1) \newline)) fields))
+    (apply j-pr (map (fn [field] (str "// getter for " (nth field 2) \newline)) fields))
 
     ;; closing class body block
     (j-pr \})))
@@ -133,9 +145,14 @@
 ;; === Test forms ===
 ;;
 
-#_(def my-dto-prop-form '(:dto Person (:field String "name" :nullable true) (:field int age) (:field long id)))
-#_(dosync
-    (ref-set tab-count 0)
-    (print-dto-form my-dto-prop-form)
-    (println))
+#_(def j-type-traits {'String {:object true}
+                      'int {:primitive true}
+                      'long {:primitive true}})
 
+#_(dosync
+    (let [dto-form-1 '(:dto Person (:field String "name") (:field int age) (:field long id))]
+      (ref-set tab-count 0)
+      (ref-set was-newline false)
+
+      (print-dto-form my-dto-prop-form)
+      (println)))
