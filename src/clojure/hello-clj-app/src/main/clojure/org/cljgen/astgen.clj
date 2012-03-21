@@ -13,17 +13,17 @@
                  (:method Person findById [long id])
                  (:method Person findAll [int offset int limit]))))
 
-(defn fail [message-seq]
-  (throw (RuntimeException. (apply str message-seq))))
+(defn fail [& more]
+  (throw (RuntimeException. (apply str more))))
 
 (defn assert-same [expected actual form]
   (if-not (= expected actual)
-    (fail ["Expected " expected " instead of " actual " in form " form])))
+    (fail "Expected " expected " instead of " actual " in form " form)))
 
 (defn property-name [prefix accessor-symbol]
   (let [accessor-str (str accessor-symbol)
         prefix-len (count prefix)]
-    (if-not (.startsWith accessor-str prefix) (fail ["Accessor " accessor-str " expected to begin with " prefix]))
+    (if-not (.startsWith accessor-str prefix) (fail "Accessor " accessor-str " expected to begin with " prefix))
     (str (Character/toLowerCase (.charAt accessor-str prefix-len)) (.substring accessor-str (inc prefix-len)))))
 
 (def id-field-name "id")
@@ -43,8 +43,8 @@
               (cond
                 (= s 3) nil
                 (= s 4) (if-not (= 0 (count (nth dto-method 3)))
-                          (fail ["Method " dto-method " expected to have empty arguments list"]))
-                :else (fail ["Form " dto-method " expected to have 3 or 4 elements"])))
+                          (fail "Method " dto-method " expected to have empty arguments list"))
+                :else (fail "Form " dto-method " expected to have 3 or 4 elements")))
 
             ;; TODO: check we have only three methods
             (let [prop-name (property-name "get" (nth dto-method 2))]
@@ -65,52 +65,77 @@
     @result))
 
 #_(dto-form-to-field-form '(:interface Person (:method String getName) (:method int getAge)))
+
 ;;;   ->
 ;;; (:dto Person (:field String "name") (:field int "age"))
 
-(defn jout
-  "Printing facility for java objects"
+(def tab-count (ref 0))
+(def was-newline (ref false))
+
+(defn j-pr
+  "Printing facility for java programming language"
   {:static true}
   [& more]
-  (doseq [elem more]
-    (cond
-      (coll? elem) (doseq [subelem elem] (jout subelem))
-      (char? elem) (print elem)
-      (string? elem) (print elem)
-      :else (fail ["don't know how to print " elem]))))
+  (letfn [(align [] (print (apply str (repeat @tab-count \tab))))
+          (put-newline [] (print \newline) (ref-set was-newline true))]
+    (doseq [elem more]
+      (cond
+        (char? elem) (do
+                       ;; print spaces if it was newline
+                       (if @was-newline 
+                         (do (align) (ref-set was-newline false)))
+                       ;; update tab-count
+                       (cond
+                         (= elem \tab) (fail "Tab is auto-applied hence unexpected in " more)
+                         (= elem \newline) (put-newline)
+                         (= elem \{) (do (ref-set tab-count (inc @tab-count)) (println \{) (put-newline))
+                         (= elem \}) (do (ref-set tab-count (dec @tab-count)) (align) (println \}) (put-newline))
+                         ;; just print element itself
+                         :else (print elem))
+                       ;; validate tab-count
+                       (if (< (deref tab-count) 0) (fail "While printing " more ", tab-count=" @tab-count)))
+        (string? elem) (print elem)
+        (symbol? elem) (print (str elem))
+        :else (fail "Don't know how to print " elem)))))
 
 
 
 
 ;; TODO: convenient print function that accepts strings and sequences
 
-#_(def my-dto-prop-form '(:dto Person (:field String "name" :nullable true) (:field int age) (:field long id)))
-
-#_
 (defn print-dto-form [dto-form]
   ;; class declaration
   (let [class-name (str (second dto-form) "Impl")
         fields (rest (rest dto-form))]
-    (println "public final class" class-name "{")
+    (j-pr "public final class " class-name \space \{)
 
     ;; Private properties
     (doseq [field fields]
-      (println (str \tab "private final " (nth field 1) " " (nth field 2) ";")))
-
-    ;; newline before ctor
-    (println)
+      (j-pr "private final " (nth field 1) " " (nth field 2) \; \newline))
 
     ;; Constructor
-    (print (str \tab "public " class-name "("))
+    (j-pr \newline "public " class-name "(")
     ;; arglist
-    (print (apply str (interpose ", " (map (fn [field] (str (nth field 1) " " (nth field 2))) fields))))
-    (println ") {")
+    (apply j-pr (interpose ", " (map (fn [field] (str (nth field 1) " " (nth field 2))) fields)))
+    (j-pr \) \space \{)
     ;; initialization
-    (print (apply str (map (fn [field] (str \tab \tab "this." (nth field 2) " = " (nth field 2) ";" \newline)) fields)))
-    (println (str \tab "}"))
+    (apply j-pr (map (fn [field] (str "this." (nth field 2) " = " (nth field 2) \; \newline)) fields))
+    (j-pr \})
+
+    ;; getters
+    (apply j-pr (map (fn [field] (str "// getter for " (nth field 1) \newline)) fields))
 
     ;; closing class body block
-    (print \})))
+    (j-pr \})))
 
-#_(do (print-dto-form my-dto-prop-form) (println))
+
+;;
+;; === Test forms ===
+;;
+
+#_(def my-dto-prop-form '(:dto Person (:field String "name" :nullable true) (:field int age) (:field long id)))
+#_(dosync
+    (ref-set tab-count 0)
+    (print-dto-form my-dto-prop-form)
+    (println))
 
