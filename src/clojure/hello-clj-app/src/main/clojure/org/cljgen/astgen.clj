@@ -69,16 +69,27 @@
 ;;;   ->
 ;;; (:dto Person (:field String "name") (:field int "age"))
 
+
+
 (def tab-count (ref 0))
 (def was-newline (ref false))
+(def tab-unit "    ")
+(defn j-pr-reset
+  "Resets printing facility"
+  {:static true}
+  []
+  (ref-set tab-count 0)
+  (ref-set was-newline false))
 
 (defn j-pr
   "Printing facility for java programming language"
   {:static true}
   [& more]
   (letfn [(align []
-            (print (apply str (repeat @tab-count "  ")))
-            (ref-set was-newline false))
+            (let [aligned @was-newline]
+              (if aligned (print (apply str (repeat @tab-count tab-unit))))
+              (ref-set was-newline false)
+              aligned))
           (align-and-print [val]
             (align)
             (print val))
@@ -93,7 +104,8 @@
                          (= elem \tab) (fail "Tab is auto-applied hence unexpected in " more)
                          (= elem \newline) (put-newline)
                          (= elem \{) (do
-                                       (align)
+                                       ;; print space before open block if it isn't first in line
+                                       (if-not (align) (print \space))
                                        (ref-set tab-count (inc @tab-count))
                                        (print \{)
                                        (put-newline))
@@ -107,35 +119,69 @@
                          ;; just print element itself
                          :else (align-and-print elem)))
         (string? elem) (align-and-print elem)
+        (number? elem) (align-and-print (str elem)) ;; TODO: java-specific conversion should go here
         (symbol? elem) (align-and-print (str elem))
         :else (fail "Don't know how to print " elem)))))
 
+#_(dosync
+    (j-pr-reset)
+    (j-pr "json:" \{)
+    (j-pr "fld:" "12" \; \newline)
+    (j-pr "field:" \{ "abc:34" \; \newline \})
+    (j-pr \})
+    nil)
+
+
+;;
+;; concrete java form printers
+;;
+
+(defn as-camel-name
+  "Utility function that transform the given name to the approapriate string sequence in the camel style"
+  [& more]
+  (with-local-vars [first true]
+    (apply str (map (fn [val] (let [v (str val)]
+                                (if-not (empty? v)
+                                  (str
+                                    ;; first character
+                                    ((if @first #(Character/toLowerCase %) #(Character/toUpperCase %)) (.charAt v 0))
+                                    ;; rest of the string
+                                    (do (var-set first false) (if (> (.length v) 1) (.substring v 1)))))))
+                 more))))
 
 
 
-;; TODO: convenient print function that accepts strings and sequences
+(defn jfp-single-comment [^String comment-text]
+  (j-pr \newline "// " comment-text \newline))
 
-(defn print-dto-form [dto-form]
+(defn jfp-dto [dto-form]
   ;; class declaration
   (let [class-name (str (second dto-form) "Impl")
         fields (rest (rest dto-form))]
-    (j-pr "public final class " class-name \space \{)
+    (j-pr "public final class " class-name \{)
 
     ;; Private properties
     (doseq [field fields]
-      (j-pr "private final " (nth field 1) \space (nth field 2) \; \newline))
+      (j-pr "private final " (field :type) \space (field :name) \; \newline))
 
     ;; Constructor
-    (j-pr \newline "public " class-name "(")
+    (jfp-single-comment "Public constructor")
+    (j-pr "public " class-name "(")
     ;; arglist
-    (apply j-pr (interpose ", " (map (fn [field] (str (nth field 1) " " (nth field 2))) fields)))
-    (j-pr \) \space \{)
+    (apply j-pr (interpose ", " (map (fn [field] (str (field :type) " " (field :name))) fields)))
+    (j-pr \) \{)
     ;; initialization
-    (apply j-pr (map (fn [field] (str "this." (nth field 2) " = " (nth field 2) \; \newline)) fields))
-    (j-pr \} \newline)
+    (doseq [field fields]
+      (j-pr "this." (field :name) " = " (field :name) \; \newline))
+    (j-pr \})
+
+    (jfp-single-comment "Getters")
 
     ;; getters
-    (apply j-pr (map (fn [field] (str "// getter for " (nth field 2) \newline)) fields))
+    (doseq [field fields]
+      (j-pr "public final " (field :type) \space (as-camel-name "get" (field :name)) "()" \{
+        "return this." (field :name ) \; \newline
+        \}))
 
     ;; closing class body block
     (j-pr \})))
@@ -150,9 +196,8 @@
                       'long {:primitive true}})
 
 #_(dosync
-    (let [dto-form-1 '(:dto Person (:field String "name") (:field int age) (:field long id))]
+    (let [dto-form-1 '(:dto Person {:type String :name "fullName"} {:type int :name age} {:type long :name id})]
       (ref-set tab-count 0)
       (ref-set was-newline false)
 
-      (print-dto-form my-dto-prop-form)
-      (println)))
+      (jfp-dto dto-form-1)))
