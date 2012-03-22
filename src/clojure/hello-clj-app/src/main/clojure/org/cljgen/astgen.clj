@@ -70,6 +70,19 @@
 ;;; (:dto Person (:field String "name") (:field int "age"))
 
 
+;;
+;; Type traits
+;;
+(def j-type-traits {
+                     'Object {:object true}
+                     'String {:extends 'Object}
+                     'int {:primitive true}
+                     'long {:primitive true :hash-code '13}
+                     })
+
+;;
+;; Printing
+;;
 
 (def tab-count (ref 0))
 (def was-newline (ref false))
@@ -139,14 +152,14 @@
 (defn as-camel-name
   "Utility function that transform the given name to the approapriate string sequence in the camel style"
   [& more]
-  (with-local-vars [first true]
+  (with-local-vars [is-first true]
     (apply str (map (fn [val] (let [v (str val)]
                                 (if-not (empty? v)
                                   (str
                                     ;; first character
-                                    ((if @first #(Character/toLowerCase %) #(Character/toUpperCase %)) (.charAt v 0))
+                                    ((if @is-first #(Character/toLowerCase %) #(Character/toUpperCase %)) (first v))
                                     ;; rest of the string
-                                    (do (var-set first false) (if (> (.length v) 1) (.substring v 1)))))))
+                                    (do (var-set is-first false) (if (> (count v) 1) (.substring v 1)))))))
                  more))))
 
 
@@ -154,44 +167,65 @@
 (defn jfp-single-comment [^String comment-text]
   (j-pr \newline "// " comment-text \newline))
 
+(defn jfp-simple-to-string [class-name fields]
+  (j-pr "@Override" \newline "public String toString()" \{
+    "final StringBuilder builder = new StringBuilder()" \; \newline)
+  (j-pr "builder.append" \( \" class-name "#{" \" \) \; \newline)
+  (doseq [field fields]
+    (j-pr "builder.append" \( \" " " (field :name) ": " \" \) ".append" \( (field :name) \) \; \newline))
+  (j-pr "builder.append" \( \" " }" \" \) \; \newline)
+  (j-pr "return builder.toString()" \; \newline \}))
+
+(defn jfp-simple-hashcode [fields]
+  (j-pr "@Override" \newline "public int hashCode()" \{)
+  (j-pr "int result = 0" \; \newline)
+  (doseq [field fields]
+    (j-pr "// result = 31 * result + " (field :name) ".hashCode()" \; \newline))
+
+    (j-pr "return result" \; \newline \}))
+
+(defn jfp-simple-getters [fields]
+  (doseq [field fields]
+    (j-pr "public final " (field :type) \space (as-camel-name "get" (field :name)) "()" \{
+      "return " (field :name ) \; \newline
+      \})))
+
+(defn jfp-simple-constructor [class-name fields]
+  (j-pr "public " class-name "(")
+  ;; arglist
+  (apply j-pr (interpose ", " (map (fn [field] (str (field :type) " " (field :name))) fields)))
+  (j-pr \) \{)
+  ;; initialization
+  (doseq [field fields]
+    (j-pr "this." (field :name) " = " (field :name) \; \newline))
+  (j-pr \}))
+
+(defn jfp-simple-final-class-vars [fields]
+  (doseq [field fields]
+    (j-pr "private final " (field :type) \space (field :name) \; \newline)))
+
 (defn jfp-dto [dto-form]
   ;; class declaration
   (let [class-name (str (second dto-form) "Impl")
         fields (rest (rest dto-form))]
     (j-pr "public final class " class-name \{)
 
-    ;; Private properties
-    (doseq [field fields]
-      (j-pr "private final " (field :type) \space (field :name) \; \newline))
+    (jfp-single-comment "Class variables")
+    (jfp-simple-final-class-vars fields)
 
-    ;; Constructor
     (jfp-single-comment "Public constructor")
-    (j-pr "public " class-name "(")
-    ;; arglist
-    (apply j-pr (interpose ", " (map (fn [field] (str (field :type) " " (field :name))) fields)))
-    (j-pr \) \{)
-    ;; initialization
-    (doseq [field fields]
-      (j-pr "this." (field :name) " = " (field :name) \; \newline))
-    (j-pr \})
+    (jfp-simple-constructor class-name fields)
 
     (jfp-single-comment "Getters")
-    (j-pr \newline)
+    (jfp-simple-getters fields)
 
-    ;; getters
-    (doseq [field fields]
-      (j-pr "public final " (field :type) \space (as-camel-name "get" (field :name)) "()" \{
-        "return this." (field :name ) \; \newline
-        \}))
+    ;; hashCode
+    (j-pr \newline)
+    (jfp-simple-hashcode fields)
 
     ;; toString
     (j-pr \newline)
-
-    (j-pr "@Override" \newline "public String toString()" \{
-      "final StringBuilder builder = new StringBuilder()" \; \newline
-      ;;"builder"
-      "return builder.toString()" \; \newline
-      \})
+    (jfp-simple-to-string class-name fields)
 
     ;; closing class body block
     (j-pr \})))
@@ -201,13 +235,9 @@
 ;; === Test forms ===
 ;;
 
-#_(def j-type-traits {'String {:object true}
-                      'int {:primitive true}
-                      'long {:primitive true}})
-
 #_(dosync
-    (let [dto-form-1 '(:dto Person {:type String :name "fullName"} {:type int :name age} {:type long :name id})]
-      (ref-set tab-count 0)
-      (ref-set was-newline false)
+  (let [dto-form-1 '(:dto Person {:type String :name "fullName"} {:type int :name age} {:type long :name id})]
+    (ref-set tab-count 0)
+    (ref-set was-newline false)
 
-      (jfp-dto dto-form-1)))
+    (jfp-dto dto-form-1)))
