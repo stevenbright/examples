@@ -176,12 +176,22 @@
     (j-pr \})
 
     (jfp-single-comment "Getters")
+    (j-pr \newline)
 
     ;; getters
     (doseq [field fields]
       (j-pr "public final " (field :type) \space (as-camel-name "get" (field :name)) "()" \{
         "return this." (field :name ) \; \newline
         \}))
+
+    ;; toString
+    (j-pr \newline)
+
+    (j-pr "@Override" \newline "public String toString()" \{
+      "final StringBuilder builder = new StringBuilder()" \; \newline
+      ;;"builder"
+      "return builder.toString()" \; \newline
+      \})
 
     ;; closing class body block
     (j-pr \})))
