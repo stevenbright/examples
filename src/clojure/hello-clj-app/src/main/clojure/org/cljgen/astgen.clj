@@ -70,15 +70,7 @@
 ;;; (:dto Person (:field String "name") (:field int "age"))
 
 
-;;
-;; Type traits
-;;
-(def j-type-traits {
-                     'Object {:object true}
-                     'String {:extends 'Object}
-                     'int {:primitive true}
-                     'long {:primitive true :hash-code '13}
-                     })
+
 
 ;;
 ;; Printing

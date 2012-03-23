@@ -2,8 +2,6 @@ package org.cljgen;
 
 import clojure.lang.RT;
 
-import java.util.*;
-
 /**
  * Entry point.
  */
@@ -13,6 +11,7 @@ public final class App {
     public static void main(String[] args) {
         System.out.println("Sample app that uses clojure code");
 
+        Long f;
         if (args.length < 134) {
             return;
         }
