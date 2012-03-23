@@ -62,7 +62,7 @@
                          :else (align-and-print elem)))
         (string? elem) (align-and-print elem)
         (number? elem) (align-and-print (str elem)) ;; TODO: java-specific conversion should go here
-        (symbol? elem) (align-and-print (str elem))
+        (or (keyword? elem) (symbol? elem)) (align-and-print (name elem))
         :else (fail "Don't know how to print " elem)))))
 
 

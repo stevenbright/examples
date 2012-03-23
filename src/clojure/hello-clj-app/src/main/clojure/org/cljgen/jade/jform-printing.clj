@@ -25,9 +25,13 @@
   (pgf "@Override" \newline "public String toString()" \{
     "final StringBuilder builder = new StringBuilder()" \; \newline)
   (pgf "builder.append" \( \" class-name "#{" \" \) \; \newline)
-  (doseq [field fields]
-    (pgf "builder.append" \( \" " " (field :name ) ": " \" \) ".append" \( (field :name ) \) \; \newline))
-  (pgf "builder.append" \( \" " }" \" \) \; \newline)
+  (with-local-vars [next false]
+    (doseq [field fields]
+      (pgf "builder.append" \( \"
+        (if @next ", " "") (field :name )
+        ": " \" \) ".append" \( (field :name ) \) \; \newline)
+      (var-set next true)))
+  (pgf "builder.append" \( \" "}" \" \) \; \newline)
   (pgf "return builder.toString()" \; \newline \}))
 
 
@@ -35,9 +39,9 @@
   (cond
     (jtype-nullable? type) (pgf \( var " != null ? " var ".hashCode() : 0" \))
     (jtype-primitive? type) (cond
-                            (= type :int) (pgf var)
-                            (= type :long) (pgf "(int) (" var " ^ (" var " >>> 32))")
-                            :else (fail "Unsupported primitive type " type))
+                              (= type :int) (pgf var)
+                              (= type :long) (pgf "(int) (" var " ^ (" var " >>> 32))")
+                              :else (fail "Unsupported primitive type " type))
     :else (fail "Unsupported type " type)))
 
 #_(dosync
@@ -51,15 +55,45 @@
   (pgf "@Override" \newline "public int hashCode()" \{)
   (pgf "int result = 0" \; \newline)
   (doseq [field fields]
-    (pgf "// result = 31 * result + " (field :name ) ".hashCode()" \; \newline))
-
+    (pgf "result = 31 * result + ")
+    (jfp-calc-hashcode (field :name) (field :type))
+    (pgf \; \newline))
+  ;; result
   (pgf "return result" \; \newline \}))
+
+#_(dosync
+    (jfp-simple-hashcode [{:name "fullName" :type :String} {:name 'age :type :int}]))
+
+
+
+
+(defn jfp-calc-not-equals [lhs-expr rhs-expr type]
+  (cond
+    ;; if (id != null ? !id.equals(person.id) : person.id != null) return false;
+    (jtype-nullable? type) (pgf \( lhs-expr " != null ? !" lhs-expr ".equals" \( rhs-expr \) " : "
+                             rhs-expr " != null" \))
+    (jtype-primitive? type) (pgf \( lhs-expr " != " rhs-expr \))
+    :else (fail "Unsupported type " type)))
+
+(defn jfp-simple-equals [class-name fields]
+  (pgf "@Override" \newline "public boolean equals(Object o)" \{
+    "if (this == o) return true" \; \newline
+    "if (o == null || getClass() != o.getClass()) return false" \; \newline
+    \newline
+    "final " class-name " rhs = " \( class-name \) " o" \; \newline
+    \newline)
+  (doseq [field fields]
+    (pgf "if ")
+    (jfp-calc-not-equals (field :name) (str "rhs." (field :name)) (field :type))
+    (pgf " return false" \; \newline))
+  ;; result
+  (pgf \newline "return true" \; \newline \}))
 
 
 
 (defn jfp-simple-getters [fields]
   (doseq [field fields]
-    (pgf "public final " (field :type ) \space (as-camel-name "get" (field :name )) "()" \{
+    (pgf "public final " (name (field :type)) \space (as-camel-name "get" (field :name)) "()" \{
       "return " (field :name ) \; \newline
       \})))
 
@@ -68,21 +102,23 @@
 (defn jfp-simple-constructor [class-name fields]
   (pgf "public " class-name "(")
   ;; arglist
-  (apply pgf (interpose ", " (map (fn [field] (str (field :type ) " " (field :name ))) fields)))
+  (apply pgf (interpose ", " (map (fn [field] (str (name (field :type)) " " (field :name))) fields)))
   (pgf \) \{)
   ;; initialization
   (doseq [field fields]
-    (pgf "this." (field :name ) " = " (field :name ) \; \newline))
+    (pgf "this." (field :name) " = " (field :name) \; \newline))
   (pgf \}))
 
 
 
 (defn jfp-simple-final-class-vars [fields]
   (doseq [field fields]
-    (pgf "private final " (field :type ) \space (field :name ) \; \newline)))
+    (pgf "private final " (name (field :type)) \space (field :name) \; \newline)))
 
 
 
+(defn jfp-generated-annotation []
+  (pgf "@Generated" \( \" "aeroj" \" \) \newline))
 
 ;;
 ;; Complex form printer
@@ -92,6 +128,7 @@
   ;; class declaration
   (let [class-name (str (second dto-form) "Impl")
         fields (rest (rest dto-form))]
+    (jfp-generated-annotation)
     (pgf "public final class " class-name \{)
 
     (jfp-single-comment "Class variables")
@@ -107,6 +144,10 @@
     (pgf \newline)
     (jfp-simple-hashcode fields)
 
+    ;; equals
+    (pgf \newline)
+    (jfp-simple-equals class-name fields)
+
     ;; toString
     (pgf \newline)
     (jfp-simple-to-string class-name fields)
@@ -119,10 +160,10 @@
 ;; === Test forms ===
 ;;
 
-#_(do
-    (load "./util.clj"))
-
 #_(dosync
-    (let [dto-form-1 '(:dto Person {:type String :name "fullName"} {:type int :name age} {:type long :name id})]
+    (let [dto-form-1 '(:dto Person
+                            {:type :String :name "fullName"}
+                            {:type :int :name age}
+                            {:type :Long :name id})]
       (pgf-reset)
       (jfp-dto dto-form-1)))
