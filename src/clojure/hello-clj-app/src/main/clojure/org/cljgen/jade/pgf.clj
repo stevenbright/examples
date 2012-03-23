@@ -68,9 +68,10 @@
 
 
 #_(dosync
-     (pgf-reset)
-     (pgf "json:" \{)
-     (pgf "fld:" "12" \; \newline)
-     (pgf "field:" \{ "abc:34" \; \newline \})
-     (pgf \})
-     nil)
+    (pgf-reset)
+    (pgf "class Foo" \{
+        "public static void main(String[] args)" \{
+          "System.out.println(" \" "Hello, world!" \" ");" \newline
+        \}
+      \})
+    nil)

@@ -1,10 +1,16 @@
 (ns org.cljgen.jade.jform-printing)
 
+(require 'org.cljgen.jade.util)
+(use '[org.cljgen.jade.util :only (fail)])
+
 (require 'org.cljgen.jade.pgf)
 (use '[org.cljgen.jade.pgf :only (pgf pgf-reset)])
 
 (require 'org.cljgen.jade.naming)
 (use '[org.cljgen.jade.naming :only (as-camel-name)])
+
+(require 'org.cljgen.jade.jtypes)
+(use '[org.cljgen.jade.jtypes :only (jtype-primitive? jtype-nullable?)])
 
 ;;
 ;; primitive forms printing
@@ -24,6 +30,21 @@
   (pgf "builder.append" \( \" " }" \" \) \; \newline)
   (pgf "return builder.toString()" \; \newline \}))
 
+
+(defn jfp-calc-hashcode [var type]
+  (cond
+    (jtype-nullable? type) (pgf \( var " != null ? " var ".hashCode() : 0" \))
+    (jtype-primitive? type) (cond
+                            (= type :int) (pgf var)
+                            (= type :long) (pgf "(int) (" var " ^ (" var " >>> 32))")
+                            :else (fail "Unsupported primitive type " type))
+    :else (fail "Unsupported type " type)))
+
+#_(dosync
+    (jfp-calc-hashcode "a" :int) (println)
+    (jfp-calc-hashcode "a" :String) (println)
+    (jfp-calc-hashcode "a" :long) (println)
+    (println "---"))
 
 
 (defn jfp-simple-hashcode [fields]
