@@ -12,6 +12,8 @@
 (require 'org.cljgen.jade.jtypes)
 (use '[org.cljgen.jade.jtypes :only (jtype-primitive? jtype-nullable?)])
 
+
+
 ;;
 ;; primitive forms printing
 ;;
@@ -159,6 +161,36 @@
 ;;
 ;; === Test forms ===
 ;;
+
+;;
+;; TODO: print forms to certain IR (intermediate representation that then printed).
+;;
+
+#_(let [path-base "/Users/alex/proj/java-maven-tests/src/clojure/hello-clj-app/src/main/clojure/org/cljgen/jade/"]
+    (load-file (str path-base "util.clj"))
+    (load-file (str path-base "pgf.clj"))
+    (load-file (str path-base "naming.clj"))
+    (load-file (str path-base "jtypes.clj"))
+    nil)
+
+#_(dosync
+    (let [dto-form {:name "Person"
+                    :fields {
+                              "id" {:type :Long :order 0}
+                              "fullName" :String
+                              "age" :int
+                              }
+                    }
+          default-order-val 10]
+      (println dto-form)
+      (letfn [(order-of [field] (let [field-sig (second field)]
+                                  (cond
+                                    (keyword? field-sig) default-order-val
+                                    (map? field-sig) (get field-sig :order default-order-val)
+                                    :else (fail "Unknown field " field " signature: " field-sig))))]
+        (println "ordered = " (sort (fn [l r] (- (order-of l) (order-of r))) (dto-form :fields)))
+        (doseq [f (dto-form :fields)]
+          (println "  f = " f)))))
 
 #_(dosync
     (let [dto-form-1 '(:dto Person
