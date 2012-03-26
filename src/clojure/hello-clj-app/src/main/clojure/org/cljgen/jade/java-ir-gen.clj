@@ -14,22 +14,26 @@
 ;;
 
 
-#_(let [path-base "/Users/alex/proj/java-maven-tests/src/clojure/hello-clj-app/src/main/clojure/org/cljgen/jade/"
-        path-base-0 "/Users/alex/proj/java-maven-tests/src/clojure/hello-clj-app/src/main/clojure/org/cljgen/jade/"]
+#_(let [path-base "/home/steve/projects/java-maven-tests/src/clojure/hello-clj-app/src/main/clojure/org/cljgen/jade/"
+        path-base-0 "/home/steve/projects/java-maven-tests/src/clojure/hello-clj-app/src/main/clojure/org/cljgen/jade/"
+        path-base-1 "/Users/alex/proj/java-maven-tests/src/clojure/hello-clj-app/src/main/clojure/org/cljgen/jade/"]
     (load-file (str path-base "util.clj"))
     (load-file (str path-base "pgf.clj"))
     (load-file (str path-base "naming.clj"))
     (load-file (str path-base "jtypes.clj"))
     nil)
 
+
+
 ;;
 ;; =====================================================================================================================
+;; IR pretty printer
 ;;
 
-(def jif-whitespace " ")
-(def jif-tab-unit "    ")
+(def pprinter-whitespace " ")
+(def pprinter-tab-unit "    ")
 
-(defn jif-print-ir [& more]
+(defn pprint-ir [& more]
   (with-local-vars [add-space false
                     was-newline false
                     tab-count 0]
@@ -43,7 +47,7 @@
               (print-newline))
             (align []
               (let [aligned @was-newline]
-                (if aligned (print (apply str (repeat @tab-count jif-tab-unit))))
+                (if aligned (print (apply str (repeat @tab-count pprinter-tab-unit))))
                 (var-set was-newline false)
                 aligned))
             (align-and-print [val]
@@ -54,12 +58,12 @@
       (doseq [form more]
         (cond
           (or (symbol? form) (keyword? form)) (do
-                                                (if @add-space (align-and-print jif-whitespace))
+                                                (if @add-space (align-and-print pprinter-whitespace))
                                                 (align-and-print (name form))
                                                 (var-set add-space true))
           (char? form) (cond
                          (= form \{) (do
-                                       (if-not (align) (print jif-whitespace))
+                                       (if-not (align) (print pprinter-whitespace))
                                        (var-set tab-count (inc @tab-count))
                                        (print-char-and-newline \{))
                          (= form \newline) (print-newline)
@@ -67,7 +71,6 @@
                                        (var-set tab-count (dec @tab-count))
                                        ;; validate tab-count
                                        (if (< @tab-count 0) (fail "While printing " more ", tab-count=" @tab-count))
-                                       ;;(print "/* tab-count =" @tab-count ", was-newline =" @was-newline "*/")
                                        (align-and-print \})
                                        (print-newline))
                          (= form \.) (print-continous-char \.)
@@ -78,15 +81,27 @@
           (nil? form) nil ; do nothing
           :else (fail "Unknown form " form " in " more))))))
 
-#_(dosync
-    (let [desired-ir-form [
-      :public :final :class :Person \{
-        :public :static :void :main \( :String \[ \] :args \) \{
-          :System \. :out \. :println \( "Hello, world" \) \; \newline
-        \}
-      \}
-      ]]
-      (apply jif-print-ir desired-ir-form)))
+#_(do
+    (apply pprint-ir [
+                       :public :final :class :Person \{
+                       :public :static :void :main \( :String \[ \] :args \) \{
+                       :System \. :out \. :println \( "Hello, world" \) \; \newline
+                       \}
+                       \}
+                       ]))
+
+#_ (do
+     (apply pprint-ir [
+                        :public :final :class :Person :implements :Serializable\{
+                        \newline
+                        :private :static :final :long :serialVersionUID \; \newline
+                        \newline
+                        :public :static :void :main \( :String \[ \] :args \) \{
+                        :System \. :out \. :println \( "Hello, world" \) \; \newline
+                        \}
+                        \}
+                        ]))
+
 
 ;;
 ;; =====================================================================================================================
