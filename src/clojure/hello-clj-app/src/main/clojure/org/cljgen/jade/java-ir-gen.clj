@@ -90,17 +90,17 @@
                        \}
                        ]))
 
-#_ (do
-     (apply pprint-ir [
-                        :public :final :class :Person :implements :Serializable\{
-                        \newline
-                        :private :static :final :long :serialVersionUID \; \newline
-                        \newline
-                        :public :static :void :main \( :String \[ \] :args \) \{
-                        :System \. :out \. :println \( "Hello, world" \) \; \newline
-                        \}
-                        \}
-                        ]))
+#_(do
+    (apply pprint-ir [
+                       :public :final :class :Person :implements :Serializable\{
+                       \newline
+                       :private :static :final :long :serialVersionUID \; \newline
+                       \newline
+                       :public :static :void :main \( :String \[ \] :args \) \{
+                       :System \. :out \. :println \( "Hello, world" \) \; \newline
+                       \}
+                       \}
+                       ]))
 
 
 ;;
