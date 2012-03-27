@@ -21,6 +21,7 @@
     (load-file (str path-base "pgf.clj"))
     (load-file (str path-base "naming.clj"))
     (load-file (str path-base "jtypes.clj"))
+    ;;(load-file (str path-base "java-ir-gen.clj"))
     nil)
 
 
@@ -34,60 +35,87 @@
 (def pprinter-tab-unit "    ")
 
 (defn pprint-ir [& more]
-  (with-local-vars [add-space false
-                    was-newline false
-                    tab-count 0]
-    (letfn [(print-continous-char [c] (print c) (var-set add-space false))
+  (with-local-vars [tab-count 0
+                    align-state :none]
+    (letfn [(print-aligned [element next-state]
+              (cond
+                (= @align-state :whitespace) (print pprinter-whitespace)
+                (= @align-state :newline) (print (apply str (repeat @tab-count pprinter-tab-unit)))
+                (= @align-state :none) nil
+                :else (fail "Unexpected align state " align-state " when printing " more))
+              (print element)
+              (var-set align-state next-state))
             (print-newline []
               (print \newline)
-              (var-set add-space false)
-              (var-set was-newline true))
-            (print-char-and-newline [c]
-              (print c)
-              (print-newline))
-            (align []
-              (let [aligned @was-newline]
-                (if aligned (print (apply str (repeat @tab-count pprinter-tab-unit))))
-                (var-set was-newline false)
-                aligned))
-            (align-and-print [val]
-              (align)
-              (print val)
-              (var-set add-space false))]
-      ;; iterate over the forms and align
-      (doseq [form more]
-        (cond
-          (or (symbol? form) (keyword? form)) (do
-                                                (if @add-space (align-and-print pprinter-whitespace))
-                                                (align-and-print (name form))
-                                                (var-set add-space true))
-          (char? form) (cond
-                         (= form \{) (do
-                                       (if-not (align) (print pprinter-whitespace))
-                                       (var-set tab-count (inc @tab-count))
-                                       (print-char-and-newline \{))
-                         (= form \newline) (print-newline)
-                         (= form \}) (do
-                                       (var-set tab-count (dec @tab-count))
-                                       ;; validate tab-count
-                                       (if (< @tab-count 0) (fail "While printing " more ", tab-count=" @tab-count))
-                                       (align-and-print \})
-                                       (print-newline))
-                         (= form \.) (print-continous-char \.)
-                         (= form \() (print-continous-char \()
-                         (= form \tab) (fail "Tabs are auto-generated hence unexpected in " more)
-                         :else (print form))
-          (string? form) (do (align-and-print \") (print form) (print \"))
-          (map? form) (do
-                        (if @add-space (align-and-print pprinter-whitespace))
-                        (align-and-print "")
-                        (pprint-ir (form :value)))
-          (coll? form) (do
-                         (if @add-space (align-and-print pprinter-whitespace))
-                         (align-and-print "")
-                         (apply pprint-ir form))
-          (nil? form) nil ; do nothing
-          :else (fail "Unknown form " form " in " more))))))
+              (var-set align-state :newline))
+            (print-char [ch]
+              (cond
+                (= ch \tab) (fail "Tab is unexpected in " more)
+                (= ch \{) (do
+                            (print-aligned \{ :dont-care)
+                            (print-newline)
+                            (var-set tab-count (inc @tab-count)))
+                (= ch \}) (do
+                            (var-set tab-count (dec @tab-count))
+                            (print-aligned \} :dont-care)
+                            (print-newline))
+                (= ch \newline) (print-newline)
+                ;; TODO: special case for unaligned characters
+                (or (= ch \.) (= ch \;) (= ch \() (= ch \[)) (do
+                                                               (var-set align-state :none)
+                                                               (print ch))
+                (or (= ch \)) (= ch \]) (= ch \,)) (do
+                                                     (var-set align-state :whitespace)
+                                                     (print ch))
+                :else (print-aligned ch :whitespace)))
+            (print-element [element]
+              (cond
+                (or (keyword? element) (symbol? element)) (print-aligned (name element) :whitespace)
+                (char? element) (print-char element)
+                (number? element) (print-aligned (str element) :whitespace)
+                (string? element) (print-aligned (str \" element \") :none)
+                (map? element) (print-mapped-value element) ; map? should go prior to coll? since map IS a coll
+                (coll? element) (print-elements element)
+                (nil? element) nil ; do nothing
+                :else (fail "Unknown element " element " in " more)))
+            (print-mapped-value [map-element]
+              (let [val (get map-element :subst)]
+                (if (nil? val)
+                  (print-element (get map-element :value))
+                  (print-aligned val (get map-element :align :none)))))
+            (print-elements [elements]
+              (doseq [element elements]
+                (print-element element)))]
+      (print-elements more))))
+
+#_(do
+    (pprint-ir :public :static :final :class :Person \{
+      [:private :int :a \; \newline]
+      [:private :int {:value 'bobVar} \; \newline]
+      [:private :int :c \= 42 \; \newline]
+      [:private :int :ddd \= "Hello, world!" \; \newline]
+      [{:subst "// this is a comment"} \newline]
+      ;; method
+      [\newline
+       [:public :void :bar \( \) \{
+        :System \. :out \. :println \( "Hi!" \) \; \newline
+        \}]
+       \newline]
+
+      ;; method
+      [\newline
+       [:public :void :bar \( :int :a \, :long 'bbb \) \{
+        :System \. :out \. :println \( "Hi!" \) \; \newline
+        \}]
+       \newline]
+
+      ;; main
+      [\newline
+       [:public :static :void :main \( :String \[ \] :args \) \{
+        :System \. :out \. :println \( "Hello, world!" \) \; \newline
+        \}]
+       \newline]
+      \}))
 
 #_(do
     (apply pprint-ir [
@@ -156,7 +184,13 @@
       [\newline]
 
       ;; getters
-      (map (fn [field] [:public (as-camel-name "get" (name (jif-type-of field))) \newline]) fields)
+      (map
+        (fn [field]
+          (let [field-name (symbol (name (first field)))]
+            [:public (symbol (as-camel-name "get" field-name)) \( \) \{
+             :return field-name \; \newline
+             \} \newline]))
+        fields)
 
       [\}])))
 
@@ -169,20 +203,4 @@
     ;;(doall (map (fn [x] (println "x =" x)) (vals (dto-form :fields))))
     (apply pprint-ir (jif-produce-dto-ir dto-form)))
 
-;;
-;; =====================================================================================================================
-;;
-
-#_(dosync
-    (let [dto-form {:name :Person
-                    :fields {
-                              :id {:type :Long :order 0}
-                              :fullName :String
-                              :age :int
-                              }
-                    }]
-      (println dto-form)
-      (println "ordered = " (jif-ordered-fields (dto-form :fields)))
-      (doseq [f (dto-form :fields)]
-        (println "  f = " f))))
 
