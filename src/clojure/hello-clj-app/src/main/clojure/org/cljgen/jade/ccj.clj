@@ -83,7 +83,8 @@
 
    {:name 'CharSequence
     :methods [{:name 'length :returns :int}
-              {:name 'charAt :arguments [:int 'index] :returns :char}]
+              {:name 'charAt :arguments [:int 'index] :returns :char}
+              {:name 'subSequence :arguments [:int 'pos :int 'count]}]
     :interface true}
 
    {:name 'Serializable :interface true}])
@@ -136,14 +137,17 @@
    (ccj-gen-vmt-methods (ccj-object :methods))
    [\newline]])
 
+(defn ccj-gen-nested-vmt [ccj-class ccj-class-repo]
+  )
+
 #_(pprint-ir
     (multiline-ir-comments "VMT for object" "Given as a sample")
     (ccj-gen-vmt-root (ccj-scan-root ccj-objects-registry))
-    (multiline-ir-comments "VMT for object" "Sample #2")
-    (ccj-gen-vmt-root {:name 'Object
-                       :methods [{:name 'findRob :arguments [:int 'a 'String 'b] :returns 'Rob}
-                                 {:name 'toString :returns 'String}]
-                       :root true})
+    #_(multiline-ir-comments "VMT for object" "Sample #2")
+    #_(ccj-gen-vmt-root {:name 'Object
+                         :methods [{:name 'findRob :arguments [:int 'a 'String 'b] :returns 'Rob}
+                                   {:name 'toString :returns 'String}]
+                         :root true})
     [\newline])
 
 
