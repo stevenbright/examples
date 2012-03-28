@@ -2,5 +2,6 @@ This is my maven snippets.
 The only purpose is to experiment with some features :)
 
 Idea project artifacts (*.iml, *.ipr, *.iws) added to .gitignore
+.idea, .nbproject to be added to .gitignore as well.
 
 TBD
