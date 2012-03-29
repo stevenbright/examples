@@ -69,7 +69,7 @@
 
    {:name 'Class
     :extends 'Object
-    :implements 'Serializable}
+    :implements ['Serializable]}
 
    {:name 'String
     :extends 'Object
@@ -102,7 +102,9 @@
 
 
 (defn ccj-symbol-type-name [ccj-symbol-type]
-  (symbol (str "Ccj" (name ccj-symbol-type))))
+  (symbol
+    ;; prefix may go here in quotes
+    (str "Jem" (name ccj-symbol-type))))
 
 (defn ccj-type-ref [ccj-type]
   (cond
@@ -117,8 +119,6 @@
   ([] nil)
   ([ccj-type ccj-name] [[(ccj-type-ref ccj-type) ccj-name]])
   ([ccj-type ccj-name & rest] (lazy-cat (ccj-arg-list ccj-type ccj-name) (apply ccj-arg-list rest))))
-
-#_(println (ccj-arg-list :int :a :long :b))
 
 
 (defn ccj-gen-vmt-methods [methods]
@@ -137,8 +137,43 @@
    (ccj-gen-vmt-methods (ccj-object :methods))
    [\newline]])
 
-(defn ccj-gen-nested-vmt [ccj-class ccj-class-repo]
-  )
+(defn ccj-find-definition [ccj-sym ccj-class-repo]
+  (let [result (filter #(= ccj-sym (get % :name)) ccj-class-repo)]
+    (if (= (count result) 1)
+      (first result)
+      (fail "Class repository expected to contain at least one " ccj-sym))))
+
+#_(println (ccj-find-definition 'Object ccj-objects-registry))
+
+
+
+(defn ccj-gen-struct-definition [ccj-sym ccj-class-repo]
+  (let [ccj-def (ccj-find-definition ccj-sym ccj-class-repo)
+        parent-sym (ccj-def :extends)]
+    [(multiline-ir-comments (str "Struct definition for " ccj-sym))
+     :struct (ccj-symbol-type-name ccj-sym) \{
+     ;; extends
+     (if parent-sym [:struct (ccj-symbol-type-name parent-sym) 'parent \; \newline])
+     ;; implements
+     ;; TODO: infer interface impl name
+     (map
+       (fn [interface-ref]
+         [:struct (ccj-symbol-type-name interface-ref) (symbol (str (.toLowerCase (name interface-ref)) "Impl")) \; \newline])
+       (ccj-def :implements))
+     ;; TODO: infer self VMT name
+     [:struct (ccj-symbol-type-name (symbol (str ccj-sym "Vmt"))) \* 'vmt \; \newline]
+     (map (fn [field] [(ccj-type-ref (field :type)) (field :name) \; \newline]) (ccj-def :fields))
+     \}]))
+
+#_(pprint-ir
+    (ccj-gen-struct-definition 'Object ccj-objects-registry))
+
+#_(pprint-ir
+    (ccj-gen-struct-definition 'String ccj-objects-registry))
+
+
+
+
 
 #_(pprint-ir
     (multiline-ir-comments "VMT for object" "Given as a sample")
