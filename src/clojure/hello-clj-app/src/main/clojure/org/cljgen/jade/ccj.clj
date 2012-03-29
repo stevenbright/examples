@@ -74,7 +74,9 @@
    {:name 'String
     :extends 'Object
     :implements ['Serializable 'Comparable 'CharSequence]
-    :fields [{:name 'hash :type :int :modifiers :private}]
+    :fields [{:name 'hash :type :int :modifiers :private}
+             {:name 'length :type :int :modifiers [:private :final]}
+             {:name 'value :type :CharArray :modifiers [:private :final]}]
     :modifiers :final}
 
    {:name 'Comparable
@@ -158,7 +160,7 @@
      ;; TODO: infer interface impl name
      (map
        (fn [interface-ref]
-         [:struct (ccj-symbol-type-name interface-ref) (symbol (str (.toLowerCase (name interface-ref)) "Impl")) \; \newline])
+         [:struct (ccj-symbol-type-name interface-ref) (symbol (str "impl" (name interface-ref) )) \; \newline])
        (ccj-def :implements))
      ;; TODO: infer self VMT name
      [:struct (ccj-symbol-type-name (symbol (str ccj-sym "Vmt"))) \* 'vmt \; \newline]
