@@ -14,9 +14,7 @@
 ;;
 
 
-#_(let [path-base "/Users/alex/proj/java-maven-tests/src/clojure/hello-clj-app/src/main/clojure/org/cljgen/jade/"
-        path-base-0 "/home/steve/projects/java-maven-tests/src/clojure/hello-clj-app/src/main/clojure/org/cljgen/jade/"
-        path-base-1 "/Users/alex/proj/java-maven-tests/src/clojure/hello-clj-app/src/main/clojure/org/cljgen/jade/"]
+#_(let [path-base (str (System/getProperty "user.home") "/proj/java-maven-tests/src/clojure/hello-clj-app/src/main/clojure/org/cljgen/jade/")]
     (load-file (str path-base "util.clj"))
     (load-file (str path-base "naming.clj"))
     (load-file (str path-base "pprint.clj"))
