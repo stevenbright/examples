@@ -10,6 +10,9 @@ import org.springframework.ui.Model;
 import com.alexshabanov.spr31.model.Hello;
 import com.alexshabanov.spr31.service.HelloService;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpSession;
+
 @Controller
 public final class HelloController {
     private static final Logger LOG = LoggerFactory.getLogger(HelloController.class);
@@ -18,11 +21,11 @@ public final class HelloController {
     private HelloService helloService;
 
     @RequestMapping("/index.html")
-    public String index(Model model) {
+    public String index(Model model, HttpSession session, HttpServlet servlet) {
         final Hello hello = helloService.getGreeting("index.html");
         model.addAttribute(hello);
 
-        LOG.info("Hello object = {}", hello);
+        LOG.info("Hello object = {}, sessionId = {}", hello, session.getId());
 
         return "hello";
     }
