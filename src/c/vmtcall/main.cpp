@@ -51,7 +51,9 @@ int main() {
         b = new Foo();
     }
 
-    const int iterCount = 1000000;
+    for (int j = 0; j < 3; ++j) {
+
+    const int iterCount = 100000;
     long long start = nanoTime();
     for (int i = 0; i < iterCount; ++i) {
         b->foo();
@@ -65,6 +67,8 @@ int main() {
     }
     total = nanoTime() - start;
     printf("Virtual call delta: %lld nanos\n", total);
+
+    } // for j
 
     delete b;
     return 0;

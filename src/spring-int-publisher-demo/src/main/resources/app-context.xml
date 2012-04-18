@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright 2012 - 2012 Yota Lab LLC, Russia
+  ~ Copyright 2012 - 2012 Seconca Holdings Limited, Cyprus
+  ~
+  ~ This source code is Yota Lab Confidential Proprietary
+  ~ This software is protected by copyright.  All rights and titles are reserved.
+  ~ You shall not use, copy, distribute, modify, decompile, disassemble or reverse
+  ~ engineer the software. Otherwise this violation would be treated by law and
+  ~ would be subject to legal prosecution.  Legal use of the software provides
+  ~ receipt of a license from the right holder only.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:i9n="http://www.springframework.org/schema/integration"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+    <context:property-placeholder location="classpath:/app.properties"/>
+
+    <!--
+        ================================================================================================================
+        Generic spring integration config
+        ================================================================================================================
+    -->
+    <i9n:logging-channel-adapter id="messageLogger" level="TRACE" />
+    <i9n:poller default="true" max-messages-per-poll="${messaging.messagesPerPoll}" fixed-delay="${messaging.pollDelay}"/>
+
+    <task:scheduler id="messagingScheduler" pool-size="${messaging.scheduler.poolSize}"/>
+    <task:scheduled-tasks scheduler="messagingScheduler">
+        <task:scheduled ref="shredService" method="sayHello" fixed-delay="${messaging.shred.helloDelay}"/>
+    </task:scheduled-tasks>
+
+    <!--
+        ================================================================================================================
+        Services
+        ================================================================================================================
+    -->
+    <bean id="shredService" class="com.alexshabanov.intdemo.service.ShredService"/>
+
+    <!--
+        ================================================================================================================
+        Channels
+        ================================================================================================================
+    -->
+    <i9n:inbound-channel-adapter id="spocApnsFeedbackInboundChannel" ref="shredService" method="fetchFeedback">
+        <i9n:poller max-messages-per-poll="${messaging.shred.messagesPerPoll}" fixed-delay="${messaging.shred.fetchFeedbackDelay}"/>
+    </i9n:inbound-channel-adapter>
+    <i9n:outbound-channel-adapter channel="spocApnsFeedbackInboundChannel" ref="shredService" method="fireFeedback"/>
+</beans>
