@@ -7,10 +7,9 @@
 #undef HAVE_AV_CONFIG_H
 #endif
 
-#include "libavcodec/avcodec.h"
-#include "libavutil/mathematics.h"
-
-#include "libavutil/lfg.h"
+#include <libavcodec/avcodec.h>
+#include <libavutil/mathematics.h>
+#include <libavutil/lfg.h>
 
 
 static void audio_encoding_sample(const char * filename, int content_mode) {
