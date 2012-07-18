@@ -1,22 +1,27 @@
-(ns com.alexshabanov.lc)
+(ns
+  ^{:doc "Untyped lambda calculus evaluator."
+    :author "Alexander Shabanov"}
+  com.alexshabanov.lc)
 
-(def globals (atom {}))
+(def
+  ^{:doc "Global repository of the named associations."}
+  globals (atom {}))
 
 
-;;(defn tru [u v] u)
-;;(defn fls [u v] v)
-;;(defn u-or [u v] (u tru v))
-
-
-;; This notation is used to represent lambda functions
-;; E.g. myfun -> λx. λy. x (y x) is equivalent (lfun myfun [x y] (x (y x)))
 (defmacro l-fun [name args body]
+  "Creates new named association of the certain symbol with lambda function.
+  E.g. the following correspondence in the standard lambda calculus notation
+  pair = λf. λs. λb. b f s
+  is equivalent to the following definition
+  (lfun pair [b f s] (b f s))"
   `(reset! globals (assoc @globals '~name {:args '~args :body '~body})))
 
-(def indent-unit "  ")
+(def ^{:doc "Indentation unit used when printing the intermediate calculations results"}
+  indent-unit "  ")
 
-;; Evaluates λ-expression
+
 (defn l-eval-form
+  "Evaluates the given invocation of the λ-form."
   [indent l-name & args]
   (if (coll? l-name)
     (apply l-eval-form indent l-name)
