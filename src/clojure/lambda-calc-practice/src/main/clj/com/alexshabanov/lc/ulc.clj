@@ -7,93 +7,123 @@
   ^{:doc "Global repository of the named associations."}
   globals (atom {}))
 
+;; special characters used when printing
+(def lambda-char \u03bb)
+(def right-arrow-char \u2192)
 
-(defmacro l-fun [name args body]
+(defn form-as-string
+  "Converts the given form to the string representation."
+  [form]
+  (apply str
+    (cond
+      (map? form) (concat (map #(str lambda-char % ". ") (get form :args)) [(form-as-string (get form :body))])
+      (coll? form) (concat ["("] (interpose " " (map #(form-as-string %) form)) [")"])
+      :else [form])))
+
+#_(form-as-string '{:args [s z] :body (s (s (s z)))})
+#_(form-as-string '{:args [] :body (s (s (s z)))})
+
+
+(defmacro define-function
   "Creates new named association of the certain symbol with lambda function.
   E.g. the following correspondence in the standard lambda calculus notation
   pair = λf. λs. λb. b f s
   is equivalent to the following definition
-  (lfun pair [b f s] (b f s))"
+  (define-function pair [b f s] (b f s))"
+  [name args body]
   `(reset! globals (assoc @globals '~name {:args '~args :body '~body})))
+
 
 (def ^{:doc "Indentation unit used when printing the intermediate calculations results"}
   indent-unit "  ")
 
 
-(defn l-eval-form
-  "Evaluates the given invocation of the λ-form."
-  [indent l-name & args]
-  (if (coll? l-name)
-    (apply l-eval-form indent l-name)
-    (let [h (get @globals l-name)]
-      (assert (not (nil? h)) (str "There is no registered definition of " l-name))
-      (let [args-mapping (interleave (get h :args) args)
-            body (get h :body)]
-        (println indent "Evaluating " l-name " = " body "." args)
-        (letfn [(substep [form a v]
-                  (if (coll? form) (map #(substep % a v) form) (if (= form a) v form)))
-                (subst-args [form rest-args-mapping]
-                  (let [a (first rest-args-mapping)
-                        v (second rest-args-mapping)]
-                    (if (nil? a)
-                      form
-                      (let [result-form (substep form a v)]
-                        (println indent "[" a "->" v "] |-> " result-form)
-                        (recur result-form (nthnext rest-args-mapping 2))))))
-                (eval-form [form]
-                  (if (coll? form) (apply l-eval-form (str indent indent-unit) form) form))]
-          (eval-form (subst-args body args-mapping)))))))
 
-(defn l-simple-eval [form]
-  (println "---" form)
-  (let [result (apply l-eval-form "" form)]
-    (println "Result of" form "=" result)
-    (println)))
+(defn subst
+  "Substitutes entity e by using replace function f provided"
+  [f e]
+  (if (coll? e) (map #(subst f %) e) (f e)))
 
-;; Helper evaluation macro
-(defmacro l-eval [l-sym-name & more]
-  `(apply l-eval "" '~l-sym-name '~more))
+
+(defn evaluate
+  "Evaluates the given invocation of the λ-function."
+  ([form] (evaluate form {}))
+  ([form context]
+    (cond
+      (map? form) form
+      ;; function application
+      (coll? form) (let [fn-form (evaluate (first form) context)
+                         fn-args (next form)
+                         func (if (map? fn-form) fn-form (get @globals fn-form))]
+                     (println "Evaluating " form " = " (form-as-string func))
+
+                     (if (nil? func)
+                       (println "Unknown function " func)
+                       (let [args (get func :args)]
+                         ;; apply substitutions
+                         (let [subst-result
+                               (reduce (fn [curform argpair]
+                                         (let [[arg-name arg-value] argpair]
+                                           (if (= arg-value ::nothing)
+                                             curform ; leave form as is if no more arguments left
+                                             ;; subst handling
+                                             (let [result {:args (next (get curform :args))
+                                                           :body (subst (fn [x] (if (= x arg-name) arg-value x)) (get curform :body))}]
+                                               ;;(println "q = " arg-name arg-value (get curform :body))
+                                               (println "Subst " arg-name "->" arg-value " = " (form-as-string result))
+                                               result))))
+                                 (concat [func] (partition 2 (interleave args
+                                                               (if (< (count args) (count fn-args))
+                                                                 (concat fn-args (take (- (count fn-args) (count args)) (repeat ::nothing)))
+                                                                 fn-args)))))]
+                           (evaluate (if (empty? (get subst-result :args)) (get subst-result :body) subst-result) context)))))
+      ;; symbolic form or term
+      :else form)))
+
+#_(evaluate '(tru :a :b))
+#_(evaluate '(or fls tru))
 
 
 ;;
 ;; Church boolean functions
 ;;
 
-(l-fun tru [u v] u)
-(l-fun fls [u v] v)
-(l-fun and [u v] (u v fls))
+(define-function tru [u v] u)
+(define-function fls [u v] v)
+(define-function and [u v] (u v fls))
 
-(l-fun or [u v] (u tru v))
+(define-function or [u v] (u tru v))
 
-(l-fun not [u] (u fls tru))
+(define-function not [u] (u fls tru))
 
 ;; Pairs
-(l-fun pair [f s b] (b f s))
-(l-fun fst [p] (p tru))
-(l-fun snd [p] (p fls))
+(define-function pair [f s b] (b f s))
+(define-function fst [p] (p tru))
+(define-function snd [p] (p fls))
 
 ;; Evaluation doesn't work for pairs!
 #_(do
-    (l-simple-eval '(fst (pair :a :b)))
+    (evaluate '(fst (pair :a :b)))
+    (evaluate '(snd (pair :a :b)))
     nil)
 
 #_(do
-    (l-simple-eval '(or tru tru))
-    (l-simple-eval '(or tru fls))
-    (l-simple-eval '(or fls tru))
-    (l-simple-eval '(or fls fls))
+    (evaluate '(or tru tru))
+    (evaluate '(or tru fls))
+    (evaluate '(or fls tru))
+    (evaluate '(or fls fls))
     nil)
 
 #_(do
-    (l-simple-eval '(and tru tru))
-    (l-simple-eval '(and tru fls))
-    (l-simple-eval '(and fls tru))
-    (l-simple-eval '(and fls fls))
+    (evaluate '(and tru tru))
+    (evaluate '(and tru fls))
+    (evaluate '(and fls tru))
+    (evaluate '(and fls fls))
     nil)
 
 #_(do
-    (l-simple-eval '(not tru))
-    (l-simple-eval '(not fls))
+    (evaluate '(not tru))
+    (evaluate '(not fls))
     nil)
 
 
