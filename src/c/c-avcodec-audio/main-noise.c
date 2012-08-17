@@ -37,6 +37,8 @@ static void audio_encoding_sample(const char * filename, int content_mode) {
     c->sample_rate = 44100;
     c->channels = 2;
 
+    c->sample_fmt = AV_SAMPLE_FMT_S16;
+
     /* open it */
     if (avcodec_open(c, codec) < 0) {
         fprintf(stderr, "could not open codec\n");
@@ -110,7 +112,7 @@ int main(int argc, char ** argv) {
     
     puts("Avcodec initialized\n");
     
-    audio_encoding_sample("preved.mp3", 1);
+    audio_encoding_sample("preved.mp3", 0);
     return 0;
 }
 
