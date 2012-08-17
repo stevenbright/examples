@@ -105,9 +105,6 @@ static void audio_encoding_sample(const char * filename, int content_mode) {
 int main(int argc, char ** argv) {
     puts("Mew 1.0\n");
     
-    /* must be called before using avcodec lib */
-    avcodec_init();
-    
     /* register all the codecs */
     avcodec_register_all();
     
