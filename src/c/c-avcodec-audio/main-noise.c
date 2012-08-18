@@ -40,7 +40,7 @@ static void audio_encoding_sample(const char * filename, int content_mode) {
     c->sample_fmt = AV_SAMPLE_FMT_S16;
 
     /* open it */
-    if (avcodec_open(c, codec) < 0) {
+    if (avcodec_open2(c, codec, NULL) < 0) {
         fprintf(stderr, "could not open codec\n");
         exit(1);
     }
