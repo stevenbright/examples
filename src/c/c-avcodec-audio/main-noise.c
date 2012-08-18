@@ -30,13 +30,13 @@ static void audio_encoding_sample(const char * filename, int content_mode) {
         exit(1);
     }
     
-    c = avcodec_alloc_context();
+    c = avcodec_alloc_context3(codec);
     
     /* put sample parameters */
     c->bit_rate = 64000;
     c->sample_rate = 44100;
     c->channels = 2;
-
+    c->channel_layout = AV_CH_LAYOUT_STEREO;
     c->sample_fmt = AV_SAMPLE_FMT_S16;
 
     /* open it */
@@ -47,6 +47,8 @@ static void audio_encoding_sample(const char * filename, int content_mode) {
     
     /* the codec gives us the frame size, in samples */
     frame_size = c->frame_size;
+    fprintf(stdout, "frame_size = %d\n", frame_size);
+
     samples_byte_size = frame_size * sizeof(short) * c->channels;
     samples = malloc(samples_byte_size);
     outbuf_size = 10000;
@@ -80,7 +82,7 @@ static void audio_encoding_sample(const char * filename, int content_mode) {
         av_lfg_init(&prng_state, 0x20120410);
         
         /* encode some samples, 2000=>52sec */
-        for (i = 0; i < 900000; ++i) {
+        for (i = 0; i < 2000; ++i) {
             /* note, that 2-channel-wide noise sounds 'softer' than 1-channel-wide */
             int samples_uints = (samples_byte_size / sizeof(uint32_t));
             uint32_t * buf_u32 = (uint32_t *) samples;
