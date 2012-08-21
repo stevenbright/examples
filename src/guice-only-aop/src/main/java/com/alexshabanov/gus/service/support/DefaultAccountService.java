@@ -3,7 +3,7 @@ package com.alexshabanov.gus.service.support;
 import com.alexshabanov.gus.domain.Account;
 import com.alexshabanov.gus.service.AccountService;
 
-public final class DefaultAccountService implements AccountService {
+public class DefaultAccountService implements AccountService {
 
     private long startId = 100;
 

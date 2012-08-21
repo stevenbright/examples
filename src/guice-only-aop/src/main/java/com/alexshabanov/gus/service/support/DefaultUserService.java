@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-public final class DefaultUserService implements UserService {
+public class DefaultUserService implements UserService {
 
     private final Logger log = LoggerFactory.getLogger(DefaultUserService.class);
 

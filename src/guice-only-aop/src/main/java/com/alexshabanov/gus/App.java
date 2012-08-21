@@ -1,5 +1,6 @@
 package com.alexshabanov.gus;
 
+import com.alexshabanov.gus.aspect.LoggerAspect;
 import com.alexshabanov.gus.service.AccountService;
 import com.alexshabanov.gus.service.UserService;
 import com.alexshabanov.gus.service.support.DefaultAccountService;
@@ -7,6 +8,7 @@ import com.alexshabanov.gus.service.support.DefaultUserService;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.matcher.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,8 @@ public final class App implements Runnable {
         LOGGER.info("Checking injected resources");
 
         LOGGER.info("Register new user, id = {}", userService.registerNewUser());
+
+        userService.findUser(543L);
     }
 
     // app configuration
@@ -34,6 +38,10 @@ public final class App implements Runnable {
             bind(App.class);
             bind(AccountService.class).to(DefaultAccountService.class);
             bind(UserService.class).to(DefaultUserService.class);
+
+            bindInterceptor(Matchers.inPackage(DefaultUserService.class.getPackage()),
+                    Matchers.any(),
+                    new LoggerAspect());
         }
     }
 
