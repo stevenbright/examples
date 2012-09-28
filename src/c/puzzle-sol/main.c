@@ -117,9 +117,10 @@ init_field(struct field_t * f) {
 
 static void 
 print_field(struct field_t * f) {
-	for (int i = 0; i < f->h; ++i) {
+    int i, j;
+	for (i = 0; i < f->h; ++i) {
 		printf("\n");
-		for (int j = 0; j < f->w; ++j) {
+		for (j = 0; j < f->w; ++j) {
 			int c = AT2(f, i, j);
 			if (c == 0) {
 				printf(" .");
@@ -158,8 +159,10 @@ alloc_coord_arr(int allocated) {
 static void
 print_coord_arr(struct coord_arr_t * ca) {
     FILE * out = stdout;
+    int i;
+
     fputs("[", out);
-    for (int i = 0; i < ca->size; ++i) {
+    for (i = 0; i < ca->size; ++i) {
         struct coord_t * c = ca->arr + i;
         if (i > 0) { fputs(", ", out); }
         fprintf(out, "(%d, %d)", c->h, c->v);
@@ -169,8 +172,10 @@ print_coord_arr(struct coord_arr_t * ca) {
 
 static void
 find_hollow_coords(struct field_t * f, struct coord_arr_t * out_ca) {
-    for (int i = 0; i < f->h; ++i) {
-        for (int j = 0; j < f->w; ++j) {
+    int i, j;
+
+    for (i = 0; i < f->h; ++i) {
+        for (j = 0; j < f->w; ++j) {
             int c = AT2(f, i, j);
             if (c == 0) {
                 struct coord_t * c;
@@ -223,10 +228,12 @@ alloc_finder(struct field_t * field, struct coord_arr_t * coordinates) {
 
 static void
 init_finder(struct finder_t * finder) {
+    int i, j;
+
     /* init hor flags */
-    for (int i = 0; i < FIELD_SIZE; ++i) {
+    for (i = 0; i < FIELD_SIZE; ++i) {
         int flag = 0;
-        for (int j = 0; j < FIELD_SIZE; ++j) {
+        for (j = 0; j < FIELD_SIZE; ++j) {
             int c = AT2(finder->field, i, j);
             if (c == 0) { continue; }
             
@@ -241,9 +248,9 @@ init_finder(struct finder_t * finder) {
     }
     
     /* init ver flags */
-    for (int i = 0; i < FIELD_SIZE; ++i) {
+    for (i = 0; i < FIELD_SIZE; ++i) {
         int flag = 0;
-        for (int j = 0; j < FIELD_SIZE; ++j) {
+        for (j = 0; j < FIELD_SIZE; ++j) {
             int c = AT2(finder->field, j, i);
             if (c == 0) { continue; }
             
@@ -258,14 +265,15 @@ init_finder(struct finder_t * finder) {
     }
     
     /* init sq flags */
-    for (int i = 0; i < SQ_SIZE; ++i) {
-        for (int j = 0; j < SQ_SIZE; ++j) {
+    for (i = 0; i < SQ_SIZE; ++i) {
+        for (j = 0; j < SQ_SIZE; ++j) {
             int vStart = i * SQ_SIZE;
             int hStart = j * SQ_SIZE;
+            int lv, lh;
             
             int flag = 0;
-            for (int lv = vStart; lv < (vStart + SQ_SIZE); ++lv) {
-                for (int lh = hStart; lh < (hStart + SQ_SIZE); ++lh) {
+            for (lv = vStart; lv < (vStart + SQ_SIZE); ++lv) {
+                for (lh = hStart; lh < (hStart + SQ_SIZE); ++lh) {
                     int c = AT2(finder->field, lv, lh);
                     if (c == 0) { continue; }
                     
@@ -296,7 +304,8 @@ find_solution(struct finder_t * finder, int pos) {
     assert(AT2(finder->field, coord->v, coord->h) == 0);
     
     /* iterate over the available numbers 1..9 */
-    for (int i = 1; i <= 9; ++i) {
+    int i;
+    for (i = 1; i <= 9; ++i) {
         int flag = 1 << i;
         
         /* availability check */
@@ -341,6 +350,7 @@ int main() {
         struct finder_t * finder;
         struct timeval start;
         struct timeval stop;
+        int i;
         
         init_field(f);
         print_field(f);
@@ -353,7 +363,7 @@ int main() {
         finder = alloc_finder(f, ca);
         init_finder(finder);
     
-        for (int i = 0; i < RUN_TIMES; ++i) {
+        for (i = 0; i < RUN_TIMES; ++i) {
             finder->printSolution = (i == 0);
             
             /* find solution */
