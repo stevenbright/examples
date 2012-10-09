@@ -107,7 +107,9 @@ public final class KnightTour {
 
         System.out.println("KnightTour {rows} {columns}\nUsing width = " + rows + " and columns = " + columns);
 
-        findSolution(rows, columns, DEFAULT_START_ROW, DEFAULT_START_COLUMN);
+        for (int j = 0; j < 1; ++j) {
+            findSolution(rows, columns, DEFAULT_START_ROW, DEFAULT_START_COLUMN);
+        }
     }
 
     private static int getArgParam(String[] args, int index, int defaultValue) {
