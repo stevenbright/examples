@@ -17,8 +17,8 @@ public final class KnightTour {
     }
 
     private static final Move[] KNIGHT_MOVES = {
-            new Move(2, 1), new Move(2, -1), new Move(1, 2), new Move(1, -2),
-            new Move(-2, 1), new Move(-2, -1), new Move(-1, 2), new Move(-1, -2)
+            new Move(2, 1), new Move(1, 2), new Move(-1, 2), new Move(-2, 1),
+            new Move(-2, -1), new Move(-1, -2), new Move(1, -2), new Move(2, -1)
     };
 
     private static final class SolutionFinder {
@@ -40,12 +40,23 @@ public final class KnightTour {
 
         boolean move(int currentRow, int currentColumn, int currentMoveIndex) {
             board[currentRow][currentColumn] = currentMoveIndex;
+
+            // debug print
+//            System.out.println("move = " + currentMoveIndex + "; " + toString());
+//            try {
+//                int ch = System.in.read();
+//                assert ch != 0x11223344;
+//            } catch (IOException e) {
+//                // ignore
+//            }
+
             if (currentMoveIndex == maxMoves) {
                 // solution found
                 return true;
             }
 
             for (final Move move : KNIGHT_MOVES) {
+//            for (int i = 0; i < 8; ++i) { final Move move = KNIGHT_MOVES[i];
                 final int nextRow = currentRow + move.rowDelta;
                 final int nextColumn = currentColumn + move.columnDelta;
                 if (isLegalMove(nextRow, nextColumn) && move(nextRow, nextColumn, currentMoveIndex + 1)) {
@@ -83,6 +94,10 @@ public final class KnightTour {
 
     /**
      * Application's entry point.
+     * 4x4 - should not be found
+     * 6x6 - should be found
+     * 8x8 - should be found
+     *
      * @param args Provided arguments.
      */
     public static void main(String[] args) {
