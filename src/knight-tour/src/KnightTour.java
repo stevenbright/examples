@@ -41,16 +41,7 @@ public final class KnightTour {
         boolean move(int currentRow, int currentColumn, int currentMoveIndex) {
             board[currentRow][currentColumn] = currentMoveIndex;
 
-            // debug print
-//            System.out.println("move = " + currentMoveIndex + "; " + toString());
-//            try {
-//                int ch = System.in.read();
-//                assert ch != 0x11223344;
-//            } catch (IOException e) {
-//                // ignore
-//            }
-
-            if (currentMoveIndex == maxMoves) {
+            if (currentMoveIndex >= maxMoves) {
                 // solution found
                 return true;
             }
@@ -83,13 +74,21 @@ public final class KnightTour {
         }
     }
 
+    private static String formatNanoTime(long nanoTime) {
+        final long nanoUnit = 1000000000;
+        final long sec = nanoTime / nanoUnit;
+        final long nanos = (nanoTime - (sec * nanoUnit));
+        return sec + " sec " + nanos / 1000 + "." + nanos % 1000 + " msec";
+    }
+
     private static void findSolution(int rows, int columns, int startRow, int startColumn) {
         final SolutionFinder finder = new SolutionFinder(rows, columns);
         long timeSpent = System.nanoTime();
         final boolean found = finder.move(startRow, startColumn, 1);
 
         timeSpent = System.nanoTime() - timeSpent;
-        System.out.println("Solution " + (found ? "found: " + finder : "not found") + "\nTime: " + timeSpent);
+        System.out.println("Solution " + (found ? "found: " + finder : "not found") +
+                           "\nTime: " + formatNanoTime(timeSpent));
     }
 
     /**
