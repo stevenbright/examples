@@ -6,6 +6,8 @@ public final class KnightTour {
     private static final int DEFAULT_START_ROW = 0;
     private static final int DEFAULT_START_COLUMN = 0;
 
+    private static final int DEFAULT_ITERATIONS = 1;
+
     private static final class Move {
         final int rowDelta;
         final int columnDelta;
@@ -66,7 +68,7 @@ public final class KnightTour {
             builder.append("board:\n");
             for (int row = 0; row < rows; ++row) {
                 for (int column = 0; column < columns; ++column) {
-                    builder.append(String.format(" %2d", board[row][column]));
+                    builder.append(String.format(" %3d", board[row][column]));
                 }
                 builder.append("\n");
             }
@@ -103,10 +105,13 @@ public final class KnightTour {
         // infer: width and height of the board
         final int rows = getArgParam(args, 0, DEFAULT_BOARD_SIDE_SIZE);
         final int columns = getArgParam(args, 1, DEFAULT_BOARD_SIDE_SIZE);
+        final int iterations = getArgParam(args, 2, DEFAULT_ITERATIONS);
 
-        System.out.println("KnightTour {rows} {columns}\nUsing width = " + rows + " and columns = " + columns);
+        System.out.println("KnightTour {rows} {columns} {iterations}\n" +
+                           "Using rows=" + rows + ", columns=" + columns +
+                           " and iterations=" + iterations);
 
-        for (int j = 0; j < 1; ++j) {
+        for (int j = 0; j < iterations; ++j) {
             findSolution(rows, columns, DEFAULT_START_ROW, DEFAULT_START_COLUMN);
         }
     }

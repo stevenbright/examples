@@ -7,16 +7,18 @@ public sealed class KnightTour
     public const int DEFAULT_BOARD_SIDE_SIZE = 8;
     public const int DEFAULT_START_ROW = 0;
     public const int DEFAULT_START_COLUMN = 0;
-    public const int MAX_ITERATIONS = 1;
+    public const int DEFAULT_ITERATIONS = 1;
 
     public static void Main(string[] args)
     {
         var rows = GetArgParam(args, 0, DEFAULT_BOARD_SIDE_SIZE);
         var columns = GetArgParam(args, 1, DEFAULT_BOARD_SIDE_SIZE);
+        var iterations = GetArgParam(args, 2, DEFAULT_ITERATIONS);
 
-        Console.WriteLine("KnightTour <rows> <columns>\nUsing rows={0}, columns={1}", rows, columns);
+        Console.WriteLine("KnightTour <rows> <columns> <iterations>\n" +
+                          "Using rows={0}, columns={1}, iterations={2}", rows, columns, iterations);
 
-        for (var j = 0; j < MAX_ITERATIONS; ++j)
+        for (var j = 0; j < iterations; ++j)
         {
             FindSolution(rows, columns, DEFAULT_START_ROW, DEFAULT_START_COLUMN);
         }
@@ -101,7 +103,7 @@ public sealed class SolutionFinder
         {
             for (int column = 0; column < columns; ++column)
             {
-                builder.AppendFormat(" {0, 2}", board[row, column]);
+                builder.AppendFormat(" {0, 3}", board[row, column]);
             }
             builder.AppendLine();
         }  
