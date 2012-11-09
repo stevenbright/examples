@@ -1,0 +1,20 @@
+
+Mac OS X, Java 1.7.07u
+    [ ABT ] delta = 48462000
+    [IFACE] delta = 113137000
+    [ ABT ] delta = 50939000
+    [IFACE] delta = 98631000
+    [ ABT ] delta = 51709000
+    [IFACE] delta = 94379000
+    [ ABT ] delta = 52956000
+    [IFACE] delta = 103000000
+    [ ABT ] NV delta = 1000
+    [IFACE] NV delta = 285422000
+    [ ABT ] NV delta = 0
+    [IFACE] NV delta = 281335000
+    [ ABT ] NV delta = 0
+    [IFACE] NV delta = 280342000
+    [ ABT ] NV delta = 0
+    [IFACE] NV delta = 282713000
+
+
