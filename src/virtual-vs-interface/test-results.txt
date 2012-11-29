@@ -1,20 +1,75 @@
 
-Mac OS X, Java 1.7.07u
-    [ ABT ] delta = 48462000
-    [IFACE] delta = 113137000
-    [ ABT ] delta = 50939000
-    [IFACE] delta = 98631000
-    [ ABT ] delta = 51709000
-    [IFACE] delta = 94379000
-    [ ABT ] delta = 52956000
-    [IFACE] delta = 103000000
-    [ ABT ] NV delta = 1000
-    [IFACE] NV delta = 285422000
-    [ ABT ] NV delta = 0
-    [IFACE] NV delta = 281335000
-    [ ABT ] NV delta = 0
-    [IFACE] NV delta = 280342000
-    [ ABT ] NV delta = 0
-    [IFACE] NV delta = 282713000
+* Note: delta measured in NANOSECONDS (i.e. 10^-9 second)
+
+Mac OS X 10.6, Mac Book Pro MC373 with Intel Core i7, Java 1.7.07u
+    Volatile virtual call       delta = 48462000
+    Volatile interface call     delta = 113137000
+    Volatile virtual call       delta = 50939000
+    Volatile interface call     delta = 98631000
+    Volatile virtual call       delta = 51709000
+    Volatile interface call     delta = 94379000
+    Volatile virtual call       delta = 52956000
+    Volatile interface call     delta = 103000000
+    Non-volatile virtual call   delta = 1000
+    Non-volatile interface call delta = 285422000
+    Non-volatile virtual call   delta = 0
+    Non-volatile interface call delta = 281335000
+    Non-volatile virtual call   delta = 0
+    Non-volatile interface call delta = 280342000
+    Non-volatile virtual call   delta = 0
+    Non-volatile interface call delta = 282713000
+
+Debian linux, Desktop with Intel Pentium Core Duo E5200, Java 1.7.07
+
+    Volatile virtual call       delta = 100068833
+    Volatile interface call     delta = 278088408
+    Volatile virtual call       delta = 96067992
+    Volatile interface call     delta = 278217253
+    Volatile virtual call       delta = 96077704
+    Volatile interface call     delta = 278806713
+    Volatile virtual call       delta = 100081488
+    Volatile interface call     delta = 278287962
+    Non-volatile virtual call   delta = 357
+    Non-volatile interface call delta = 278081890
+    Non-volatile virtual call   delta = 437
+    Non-volatile interface call delta = 281747579
+    Non-volatile virtual call   delta = 441
+    Non-volatile interface call delta = 278084355
+    Non-volatile virtual call   delta = 422
+    Non-volatile interface call delta = 278226613
+
+Debian linux, Desktop with Intel Pentium Core Duo E5200, gcc -O2
+gcc -O2 -std=c99 -pedantic -Wall ./invokevirtualdemo.c -o iv
+
+    Non-volatile C virtual call delta = 279853000
+    Non-volatile C virtual call delta = 278124000
+    Non-volatile C virtual call delta = 278396000
+    Non-volatile C virtual call delta = 278929000
 
 
+Debian linux, Desktop with Intel Pentium Core Duo E5200, gcc -O3 -fomit-frame-pointer
+gcc -O2 -std=c99 -pedantic -Wall ./invokevirtualdemo.c -o iv
+
+    Non-volatile C virtual call delta = 254191000
+    Non-volatile C virtual call delta = 238227000
+    Non-volatile C virtual call delta = 238313000
+    Non-volatile C virtual call delta = 238294000
+
+Debian linux, Desktop with Intel Pentium Core Duo E5200, Mono 2.6.7 (Debian 2.6.7-5.1)
+
+    Volatile virtual call       delta = 79537700
+    Volatile interface call     delta = 437058800
+    Volatile virtual call       delta = 79425300
+    Volatile interface call     delta = 437198800
+    Volatile virtual call       delta = 79487300
+    Volatile interface call     delta = 436834100
+    Volatile virtual call       delta = 79427700
+    Volatile interface call     delta = 436853400
+    Non-volatile virtual call   delta = 186292400
+    Non-volatile interface call delta = 567641000
+    Non-volatile virtual call   delta = 185312600
+    Non-volatile interface call delta = 566833000
+    Non-volatile virtual call   delta = 185445800
+    Non-volatile interface call delta = 566571200
+    Non-volatile virtual call   delta = 188037300
+    Non-volatile interface call delta = 569119200

@@ -1,0 +1,49 @@
+Debian, Intel Core Duo E5600, Java 1.7.07u:
+
+# no permutations, 1000000 elements
+[Interface-based] delta = 26059775 ns, accum = 2499975000250000
+[  Class  -based] delta = 29512831 ns, accum = 2499975000250000
+[Interface-based] delta = 20105137 ns, accum = 2499975000250000
+[  Class  -based] delta = 20733624 ns, accum = 2499975000250000
+[Interface-based] delta = 19981444 ns, accum = 2499975000250000
+[  Class  -based] delta = 22219527 ns, accum = 2499975000250000
+[Interface-based] delta = 19425396 ns, accum = 2499975000250000
+[  Class  -based] delta = 13441960 ns, accum = 2499975000250000
+
+# permutations, 10000000 elements
+[Interface-based] delta = 830625939
+[  Class  -based] delta = 684923580
+[Interface-based] delta = 797132626
+[  Class  -based] delta = 816762840
+[Interface-based] delta = 861847816
+[  Class  -based] delta = 812088456
+[Interface-based] delta = 842743651
+[  Class  -based] delta = 761110150
+
+# permutations, 10000000 elements
+[Interface-based] delta = 86127044 ns
+[  Class  -based] delta = 81575317 ns
+[Interface-based] delta = 43344539 ns
+[  Class  -based] delta = 76249384 ns
+[Interface-based] delta = 80986108 ns
+[  Class  -based] delta = 77103640 ns
+[Interface-based] delta = 61279948 ns
+[  Class  -based] delta = 69338378 ns
+
+---
+C, -O2 -fomit-frame-pointer:
+Accum = 250000, delta = 6530000 ns
+Accum = 250000, delta = 10178000 ns
+Accum = 250000, delta = 6488000 ns
+
+---
+C, -O3 -fomit-frame-pointer
+gcc -O3 -fomit-frame-pointer -std=c99 VisitorBasedSample.c  -o vbs
+
+$ ./vbs 
+Accum = 250000, delta = 4379000 ns
+Accum = 250000, delta = 4366000 ns
+Accum = 250000, delta = 4379000 ns
+
+
+

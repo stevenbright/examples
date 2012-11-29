@@ -21,43 +21,47 @@ public final class InvokevirtualVsInvokeinterface {
 
     public static void main(String[] args) {
 
-        for (int u = 0; u < 4; ++u) {
-            {
-                final long start = System.nanoTime();
-                for (int k = 0; k < ITERATIONS; ++k) {
-                    av.foo();
+        for (int r = 0; r < 2; ++r) {
+            System.out.println("Iteration: #" + r);
+
+            for (int u = 0; u < 4; ++u) {
+                {
+                    final long start = System.nanoTime();
+                    for (int k = 0; k < ITERATIONS; ++k) {
+                        av.foo();
+                    }
+                    final long delta = System.nanoTime() - start;
+                    System.out.println("Volatile virtual call       delta = " + delta);
                 }
-                final long delta = System.nanoTime() - start;
-                System.out.println("[ ABT ] delta = " + delta);
+
+                {
+                    final long start = System.nanoTime();
+                    for (int k = 0; k < ITERATIONS; ++k) {
+                        iv.foo();
+                    }
+                    final long delta = System.nanoTime() - start;
+                    System.out.println("Volatile interface call     delta = " + delta);
+                }
             }
 
-            {
-                final long start = System.nanoTime();
-                for (int k = 0; k < ITERATIONS; ++k) {
-                    iv.foo();
+            for (int u = 0; u < 4; ++u) {
+                {
+                    final long start = System.nanoTime();
+                    for (int k = 0; k < ITERATIONS; ++k) {
+                        anv.foo();
+                    }
+                    final long delta = System.nanoTime() - start;
+                    System.out.println("Non-volatile virtual call   delta = " + delta);
                 }
-                final long delta = System.nanoTime() - start;
-                System.out.println("[IFACE] delta = " + delta);
-            }
-        }
 
-        for (int u = 0; u < 4; ++u) {
-            {
-                final long start = System.nanoTime();
-                for (int k = 0; k < ITERATIONS; ++k) {
-                    anv.foo();
+                {
+                    final long start = System.nanoTime();
+                    for (int k = 0; k < ITERATIONS; ++k) {
+                        inv.foo();
+                    }
+                    final long delta = System.nanoTime() - start;
+                    System.out.println("Non-volatile interface call delta = " + delta);
                 }
-                final long delta = System.nanoTime() - start;
-                System.out.println("[ ABT ] NV delta = " + delta);
-            }
-
-            {
-                final long start = System.nanoTime();
-                for (int k = 0; k < ITERATIONS; ++k) {
-                    inv.foo();
-                }
-                final long delta = System.nanoTime() - start;
-                System.out.println("[IFACE] NV delta = " + delta);
             }
         }
     }
