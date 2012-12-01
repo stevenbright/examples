@@ -1,0 +1,22 @@
+
+Mac OS X 10.8, gcc 4.2.1:
+$ gcc -std=c99 -Wall -pedantic -fomit-frame-pointer -O3 invokevirtual.c -o ivirt
+$ ./ivirt 
+Non-volatile C virtual call delta = 186615000
+Non-volatile C virtual call delta = 183594000
+Non-volatile C virtual call delta = 183509000
+Non-volatile C virtual call delta = 183799000
+
+Mac OS X 10.8, gcc 4.2.1:
+$ gcc -std=c99 -fomit-frame-pointer -O3 invokeinterface.c -o iint
+$ ./iint
+Demo with find_interface_method
+Non-volatile C interface call delta = 189352000
+Non-volatile C interface call delta = 183489000
+Non-volatile C interface call delta = 183404000
+Non-volatile C interface call delta = 184187000
+
+- NB: the difference is negligible
+
+
+
