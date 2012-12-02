@@ -252,7 +252,7 @@ int main(int argc, const char * argv[]) {
         demo_with_find_interface_method();
     } else if (argc > 1 && strcmp(argv[1], "unopt") == 0) {
         fprintf(stdout, "Demo with find_interface unoptimized\n");
-        demo_with_find_interface();
+        demo_with_find_interface_unopt();
     } else {
         fprintf(stdout, "Demo with find_interface\n");
         demo_with_find_interface();
