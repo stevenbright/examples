@@ -12,6 +12,7 @@ package com.alexshabanov.scopes;
  * </p>
  * The instances of this class are not thread safe.
  * @param <T> Element, this scope can operate with.
+ * @author Alexander Shabanov
  */
 public interface Scope<T> {
 
@@ -57,7 +58,7 @@ public interface Scope<T> {
      */
     void put(T element);
 
-    void put(Entry<T> entry);
+    void put(T element, Scope<T> scope);
 
     void join(Scope<T> childScope);
 

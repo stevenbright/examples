@@ -1,10 +1,14 @@
 package com.alexshabanov.scopes;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Default mutable, non-thread safe implementation of {@link Scope} interface.
  * @param <TElement> Element type which should be the descendant of {@link ScopedElement} interface.
+ * @author Alexander Shabanov
  */
 public final class DefaultScope<TElement extends ScopedElement> implements Scope<TElement> {
 
@@ -39,32 +43,59 @@ public final class DefaultScope<TElement extends ScopedElement> implements Scope
      */
     private EntryImpl<TElement> headEntry;
 
+    /**
+     * Joined scopes
+     */
+    private List<Scope<TElement>> joinedScopes = Collections.emptyList();
+
     public DefaultScope() {
         this.headEntry = nil();
     }
 
     @Override public void put(TElement element) {
+        put(element, this);
+    }
+
+    @Override public void put(TElement element, Scope<TElement> scope) {
         growIfNeeded();
 
         final int pos = element.getName().hashCode() & hashMask;
         final EntryImpl<TElement> clashedEntry = entries[pos];
-        final EntryImpl<TElement> newEntry = new EntryImpl<TElement>(element, clashedEntry, headEntry, this);
+        final EntryImpl<TElement> newEntry = new EntryImpl<TElement>(element, clashedEntry, headEntry, scope);
 
         entries[pos] = newEntry;
         headEntry = newEntry;
         ++entryCount;
-    }
 
-    @Override public void put(Entry<TElement> entry) {
-        throw new UnsupportedOperationException();
+        for (final Scope<TElement> joinedScope : joinedScopes) {
+            joinedScope.put(element, scope);
+        }
     }
 
     @Override public void join(Scope<TElement> childScope) {
-        throw new UnsupportedOperationException();
+        if (childScope == this) {
+            throw new IllegalArgumentException("Joining scope to self is not valid");
+        }
+
+        if (!(joinedScopes instanceof ArrayList)) {
+            joinedScopes = new ArrayList<Scope<TElement>>();
+        }
+
+        if (joinedScopes.contains(childScope)) {
+            throw new IllegalStateException("Duplicate scope " + childScope);
+        }
+
+        joinedScopes.add(childScope);
     }
 
     @Override public void tearOff(Scope<TElement> childScope) {
-        throw new UnsupportedOperationException();
+        final int index = joinedScopes.indexOf(childScope);
+        if (index < 0) {
+            throw new IllegalStateException("The specified scope is not joined to the current one");
+        }
+
+        // ok, element found
+        joinedScopes.remove(index);
     }
 
     @Override public Entry<TElement> get(String name) {

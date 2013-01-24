@@ -5,10 +5,19 @@ import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public final class ScopeTest {
     private final String name = "elem";
@@ -62,6 +71,54 @@ public final class ScopeTest {
         assertThat(Sets.newHashSet(asList(scope.get(name))), is(Sets.newHashSet(e1, e2)));
         assertThat(asList(scope.get(e3.getName())), is(Arrays.asList(e3)));
         assertThat(Sets.newHashSet(scope.getAll()), is(Sets.newHashSet(Arrays.asList(e1, e2, e3))));
+    }
+
+    @Test
+    public void shouldTriggerPutInJoinedScope() {
+        final Sym e1 = new Sym(name, 1L);
+        final Sym e2 = new Sym(name, 2L);
+        final Sym e3 = new Sym(name + "_3", 3L);
+
+        final Scope<Sym> scope2 = new DefaultScope<Sym>();
+
+        scope2.join(scope);
+
+        scope.put(e1);
+        scope2.put(e2);
+        scope.put(e3);
+
+        // first two elements shall present in both scopes
+        final Scope.Entry<Sym> entry2 = scope.get(name);
+        assertFalse(entry2.isNil());
+        assertEquals(e2, entry2.getElement());
+        assertEquals(scope2, entry2.getOwnerScope());
+
+        final Scope.Entry<Sym> entry1 = entry2.next();
+        assertFalse(entry1.isNil());
+        assertEquals(e1, entry1.getElement());
+        assertEquals(scope, entry1.getOwnerScope());
+
+        assertTrue(entry1.next().isNil());
+
+        // third element shall be present in first scope only
+        assertEquals(e3, scope.get(e3.getName()).getElement());
+        assertTrue(scope2.get(e3.getName()).isNil());
+    }
+
+    @Test
+    public void shouldTearOffScope() {
+        final Scope<Sym> scope2 = new DefaultScope<Sym>();
+
+        final Sym e1 = new Sym(name, 1L);
+        final Sym e2 = new Sym(name, 2L);
+
+        scope2.join(scope);
+        scope2.put(e1);
+        scope2.tearOff(scope);
+        scope2.put(e2);
+
+        assertThat(Sets.newHashSet(asList(scope2.get(name))), is(Sets.newHashSet(e1, e2)));
+        assertThat(Sets.newHashSet(asList(scope.get(name))), is(Sets.newHashSet(e1)));
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.alexshabanov.scopes;
 
 /**
  * Represents an arbitrary scoped symbol.
+ * @author Alexander Shabanov
  */
 public interface ScopedElement {
 
