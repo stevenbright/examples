@@ -43,6 +43,11 @@ public interface Scope<T> {
          * @return Non-null element associated with the entry this cursor points to
          */
         T getElement();
+
+        /**
+         * @return Owner scope.
+         */
+        Scope<T> getOwnerScope();
     }
 
     /**
@@ -51,6 +56,12 @@ public interface Scope<T> {
      * @param element Non-null element to be placed in this scope, must not be null.
      */
     void put(T element);
+
+    void put(Entry<T> entry);
+
+    void join(Scope<T> childScope);
+
+    void tearOff(Scope<T> childScope);
 
     /**
      * Finds element by name by searching in this scope and in the joined ones.
@@ -61,7 +72,7 @@ public interface Scope<T> {
     Entry<T> get(String name);
 
     /**
-     * Returns all the elements within the current scope
+     * Returns all the elements within the current scope including added by an external scope
      *
      * @return Non-null entry
      */

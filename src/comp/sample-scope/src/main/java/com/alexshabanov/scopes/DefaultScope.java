@@ -48,11 +48,23 @@ public final class DefaultScope<TElement extends ScopedElement> implements Scope
 
         final int pos = element.getName().hashCode() & hashMask;
         final EntryImpl<TElement> clashedEntry = entries[pos];
-        final EntryImpl<TElement> newEntry = new EntryImpl<TElement>(element, clashedEntry, headEntry);
+        final EntryImpl<TElement> newEntry = new EntryImpl<TElement>(element, clashedEntry, headEntry, this);
 
         entries[pos] = newEntry;
         headEntry = newEntry;
         ++entryCount;
+    }
+
+    @Override public void put(Entry<TElement> entry) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override public void join(Scope<TElement> childScope) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override public void tearOff(Scope<TElement> childScope) {
+        throw new UnsupportedOperationException();
     }
 
     @Override public Entry<TElement> get(String name) {
@@ -189,6 +201,8 @@ public final class DefaultScope<TElement extends ScopedElement> implements Scope
          */
         private EntryImpl<TElement> sibling;
 
+        private final Scope<TElement> ownerScope;
+
 
         @Override public boolean isNil() {
             return element == null;
@@ -201,6 +215,11 @@ public final class DefaultScope<TElement extends ScopedElement> implements Scope
             return element;
         }
 
+        @Override
+        public Scope<TElement> getOwnerScope() {
+            return ownerScope;
+        }
+
         /**
          * Constructor for non-nil entries only.
          *
@@ -210,11 +229,13 @@ public final class DefaultScope<TElement extends ScopedElement> implements Scope
          */
         public EntryImpl(TElement element,
                          EntryImpl<TElement> clashedEntry,
-                         EntryImpl<TElement> sibling) {
-            assert element != null && clashedEntry != null;
+                         EntryImpl<TElement> sibling,
+                         Scope<TElement> ownerScope) {
+            assert element != null && clashedEntry != null && ownerScope != null;
             this.element = element;
             this.clashedEntry = clashedEntry;
             this.sibling = sibling;
+            this.ownerScope = ownerScope;
         }
 
         /**
@@ -223,6 +244,7 @@ public final class DefaultScope<TElement extends ScopedElement> implements Scope
          */
         protected EntryImpl() {
             this.element = null;
+            this.ownerScope = null;
         }
 
         /**
