@@ -5,7 +5,7 @@ target
 *.jar
 .idea
 
-.class
-.exe
+*.class
+*.exe
 
 .gradle
