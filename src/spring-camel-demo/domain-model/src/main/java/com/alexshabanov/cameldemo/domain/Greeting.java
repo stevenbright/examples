@@ -1,15 +1,11 @@
 package com.alexshabanov.cameldemo.domain;
 
-import java.io.Serializable;
-
 /**
  * Greeting demo domain object
  *
  * @author Alexander Shabanov
  */
-public final class Greeting implements Serializable {
-    private static final long serialVersionUID = 1001L;
-
+public final class Greeting {
     private final String message;
     private final int count;
 
@@ -24,5 +20,13 @@ public final class Greeting implements Serializable {
 
     public int getCount() {
         return count;
+    }
+
+    @Override
+    public String toString() {
+        return "Greeting{" +
+                "message='" + getMessage() + '\'' +
+                ", count=" + getCount() +
+                '}';
     }
 }

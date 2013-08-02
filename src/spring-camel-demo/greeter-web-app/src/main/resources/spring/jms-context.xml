@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <!--JMS broker, sample for CLUSTER URL: 'failover:(tcp://12.13.14.100:61616,tcp://12.13.14.101:61616)?randomize=true'-->
+    <amq:connectionFactory id="greeterAmqConnectionFactory" brokerURL="tcp://127.0.0.1:61616"/>
+
+    <bean id="greeterJmsOperations" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="greeterAmqConnectionFactory"/>
+        <property name="defaultDestinationName" value="alexshabanov.cameldemo.greeter"/>
+    </bean>
+</beans>
