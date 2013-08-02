@@ -131,7 +131,7 @@
                         <version>7.6.8.v20121106</version>
                         <configuration>
                             <stopKey>Q</stopKey>
-                            <stopPort>53002</stopPort>
+                            <stopPort>53003</stopPort>
                             <systemProperties>
                                 <systemProperty>
                                     <name>java.util.logging.config.file</name>

@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@Service
+@Service("greetingSinkService")
 public final class GreetingSinkServiceImpl implements GreetingSinkService {
     private final List<Greeting> greetings = new CopyOnWriteArrayList<>();
 
