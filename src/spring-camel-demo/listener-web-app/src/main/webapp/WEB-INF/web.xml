@@ -5,7 +5,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     <display-name>listener-web-app</display-name>
 
-    <description>listener-web-app Web Application</description>
+    <description>Listener Web Application</description>
 
 
     <!-- Enable escaping of form submission contents -->
@@ -22,7 +22,7 @@
     <!-- Location of Java @Configuration classes that configure the components that makeup this application -->
 	<context-param>
     	<param-name>contextConfigLocation</param-name>
-    	<param-value>com.alexshabanov.cameldemo.config</param-value>
+    	<param-value>com.alexshabanov.cameldemo.listener.config</param-value>
 	</context-param>
 
     <!-- Filters -->

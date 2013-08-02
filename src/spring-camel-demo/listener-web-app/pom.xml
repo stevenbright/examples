@@ -10,11 +10,15 @@
 
     <artifactId>listener-web-app</artifactId>
     <version>${app.version}</version>
-
     <packaging>war</packaging>
     <name>Spring Camel Demo Listener</name>
 
     <dependencies>
+        <dependency>
+            <groupId>com.alexshabanov.cameldemo</groupId>
+            <artifactId>domain-model</artifactId>
+        </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>

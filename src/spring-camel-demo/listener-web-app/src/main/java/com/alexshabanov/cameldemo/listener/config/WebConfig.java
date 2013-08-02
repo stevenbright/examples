@@ -1,4 +1,4 @@
-package com.alexshabanov.cameldemo.config;
+package com.alexshabanov.cameldemo.listener.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
