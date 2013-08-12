@@ -5,7 +5,7 @@
 ;; ^- for functions
 ;;
 ;;(sb-ext:restrict-compiler-policy 'debug 3)
-;; ^- global
+;; ^- global, sbcl
 ;;
 ;;(declaim (optimize (safety 3) (debug 3) (speed 0) (space 0)))
 ;; ^- global
@@ -23,10 +23,9 @@ Uses 'Sieve of Erathosphen' algorithm adapted to common lisp"
   (let* ((limit to) ; Max expected primes
 	 (primes (make-array limit :element-type 'bit))
 	 (count 0))
-    ;; now initialize the first primes
-    (setf (aref primes 0) 1)		; prime - 2
-    (setf (aref primes 1) 1)		; prime - 3
-    ;;(setf (aref primes 3) 1)		; prime - 5
+    ;; now initialize the first non-primes that pretend to be primes - 0 and 1.
+    (setf (aref primes 0) 1)
+    (setf (aref primes 1) 1)
     
     (loop for i from 0 to (- limit 1) do
 	 (if (= 0 (aref primes i))
@@ -44,6 +43,10 @@ Uses 'Sieve of Erathosphen' algorithm adapted to common lisp"
 	 (assert (= 4 (count-of-primes 0 10))) ; primes: 2, 3, 5, 7
 	 (assert (= 168 (count-of-primes 0 1000)))
 	 (assert (= 1061 (count-of-primes 1000 10000))))
+
+;; Performance (tougher) test
+#+repl (progn
+	 (assert (= 75 (count-of-primes 1000000 1001000))))
 
 #+repl (count-of-primes 0 10)
 #+repl (let ((n (count-of-primes 0 1000)))
