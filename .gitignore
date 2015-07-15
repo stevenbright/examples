@@ -9,3 +9,5 @@ target
 *.exe
 
 .gradle
+
+.DS_Store
