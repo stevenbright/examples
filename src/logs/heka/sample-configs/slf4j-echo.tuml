@@ -1,0 +1,9 @@
+
+
+[echo_file]
+type = "FileOutput"
+path = "/dev/stdout"
+flush_count = 1
+flush_operator = "OR"
+encoder = "PayloadEncoder"
+
