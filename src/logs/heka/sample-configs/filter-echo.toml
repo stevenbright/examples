@@ -1,0 +1,40 @@
+
+[LogstreamerInput]
+log_directory = "/tmp"
+file_match = 'slp1\.log'
+decoder = "logback_decoder"
+
+[logback_decoder]
+type = "PayloadRegexDecoder"
+match_regex = '^(?P<Timestamp>[^\]]+) \[(?P<ThreadID>[^\]]+)\] (?P<Severity>[A-Z]+) (?P<InnerVariables>[^-]*) - (?P<ClassName>[^-]*) - (?P<LogMessage>[^$]*)$'
+timestamp_layout = "2006-01-02 15:04:05,999"
+timestamp_location = "UTC"
+
+[logback_decoder.severity_map]
+TRACE = 7
+DEBUG = 6
+INFO = 5
+WARN = 4
+ERROR = 3
+
+[logback_decoder.message_fields]
+Type = "logback_log"
+ServiceName = "FooService"
+Logger = "logback"
+Severity = "%Severity%"
+Payload = "%LogMessage%"
+ClassName|B = "%ClassName"
+
+#[ESJsonEncoder]
+#index = "%{Type}-%{2006.01.02}"
+#es_index_from_timestamp = true
+#type_name = "%{Type}"
+
+[RstEncoder]
+
+[LogOutput]
+#message_matcher = "Type == 'logback_file'"
+message_matcher = "TRUE"
+#encoder = "ESJsonEncoder"
+encoder = "RstEncoder"
+
