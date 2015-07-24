@@ -5,6 +5,8 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.stream.StreamComponent;
 import org.apache.camel.impl.DefaultCamelContext;
 
+import java.util.Objects;
+
 public final class ReadLineByLineSample {
 
   public static void main(String[] args) throws Exception {
@@ -49,7 +51,21 @@ public final class ReadLineByLineSample {
     @Override
     public void process(Exchange exchange) throws Exception {
       final Message in = exchange.getIn();
-      in.setBody("LINE=" + in.getBody(String.class));
+      in.setBody(new LineMessage(in.getBody(String.class)));
+    }
+  }
+
+  /** A bean, that represents parsed message */
+  private static final class LineMessage {
+    private final String message;
+
+    public LineMessage(String message) {
+      this.message = Objects.requireNonNull(message);
+    }
+
+    @Override
+    public String toString() {
+      return '<' + message + '>';
     }
   }
 }
