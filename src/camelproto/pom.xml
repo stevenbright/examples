@@ -63,6 +63,18 @@
       <artifactId>camel-core</artifactId>
       <version>${camel.version}</version>
     </dependency>
+    <!-- Camel stream - for accessing in/out java streams -->
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-stream</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
+    <!-- Camel exec - for executing camel commands: context.addComponent("exec", new ExecComponent()); -->
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-exec</artifactId>
+      <version>${camel.version}</version>
+    </dependency>
 
     <!-- JUnit -->
     <dependency>
@@ -87,7 +99,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.2.1</version>
         <configuration>
-          <mainClass>learn.Learn</mainClass>
+          <mainClass>learn.DirectToStreamSample</mainClass>
         </configuration>
       </plugin>
     </plugins>
