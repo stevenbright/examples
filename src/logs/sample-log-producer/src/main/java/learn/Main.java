@@ -30,8 +30,13 @@ public final class Main implements Runnable {
 
   @Override
   public void run() {
-    MDC.put("oid", "Main.run");
-    MDC.put("security", "none");
+    boolean mdcEnableValues = Boolean.valueOf(System.getProperty("mdc.enableSampleValues"));
+
+    if (mdcEnableValues) {
+      MDC.put("oid", "Main.run");
+      MDC.put("security", "none");
+    }
+
     log.info("Application started with args={}", Arrays.toString(args));
 
     try (final BufferedReader r = new BufferedReader(new InputStreamReader(System.in))) {
@@ -40,7 +45,9 @@ public final class Main implements Runnable {
       throw new RuntimeException(e);
     }
 
-    MDC.remove("security");
+    if (mdcEnableValues) {
+      MDC.remove("security");
+    }
     log.info("Stopping application");
   }
 
