@@ -3,7 +3,6 @@ package com.alexshabanov.camelot;
 import com.alexshabanov.camelot.camel.LogMessageProcessor;
 import com.alexshabanov.camelot.camel.MalformedLineFilter;
 import com.alexshabanov.camelot.camel.MalformedLogMessageFilter;
-import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 
@@ -14,7 +13,7 @@ import java.io.File;
  *
  * @author Alexander Shabanov
  */
-public final class Main {
+public final class CamelotMain {
   private static final String STOP_FILE = "/tmp/stop_logger";
 
   public static void main(String[] args) throws Exception {

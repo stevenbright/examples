@@ -1,7 +1,8 @@
 package com.alexshabanov.camelot.model;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents log message.
@@ -11,6 +12,12 @@ import javax.annotation.Nullable;
 public abstract class LogMessage {
 
   public abstract boolean isNull();
+
+  @Nonnull
+  public String getLogEntry() { throw new UnsupportedOperationException(); }
+
+  @Nonnull
+  public List<String> getStackTrace() { throw new UnsupportedOperationException(); }
 
   public long getUnixTime() {
     throw new UnsupportedOperationException();
@@ -22,27 +29,7 @@ public abstract class LogMessage {
   }
 
   @Nonnull
-  public String getMessage() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Nonnull
-  public String getThreadId() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Nonnull
-  public String getClassName() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Nullable
-  public String getRequestId() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Nullable
-  public String getOriginatingRequestId() {
+  public Map<String, Object> getAttributes() {
     throw new UnsupportedOperationException();
   }
 }

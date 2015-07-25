@@ -8,34 +8,40 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Base64;
+import java.util.Random;
 
-public final class Main implements Runnable {
+public final class LogProducerMain implements Runnable {
   private final Logger log;
   private final String[] args;
+  private final Random random = new Random(System.currentTimeMillis());
 
   private static final String LOG_DEBUG = "logDebug";
   private static final String LOG_INFO = "logInfo";
   private static final String LOG_WARN = "logWarn";
   private static final String LOG_ERROR = "logError";
+  private static final String LOG_EXCEPTION = "logException";
 
-  private Main(String[] args) {
+  private LogProducerMain(String[] args) {
     this.args = args;
     this.log = LoggerFactory.getLogger(getClass());
   }
 
   public static void main(String[] args) throws Exception {
     System.setProperty("logback.configurationFile", "default-logback-config.xml");
-    new Main(args).run();
+    new LogProducerMain(args).run();
+  }
+
+  private String getRandomBase64() {
+    final byte[] bytes = new byte[12];
+    random.nextBytes(bytes);
+    return Base64.getEncoder().encodeToString(bytes);
   }
 
   @Override
   public void run() {
-    boolean mdcEnableValues = Boolean.valueOf(System.getProperty("mdc.enableSampleValues"));
-
-    if (mdcEnableValues) {
-      MDC.put("oid", "Main.run");
-      MDC.put("security", "none");
-    }
+    MDC.put("oid", getRandomBase64());
+    MDC.put("rid", getRandomBase64());
 
     log.info("Application started with args={}", Arrays.toString(args));
 
@@ -45,9 +51,6 @@ public final class Main implements Runnable {
       throw new RuntimeException(e);
     }
 
-    if (mdcEnableValues) {
-      MDC.remove("security");
-    }
     log.info("Stopping application");
   }
 
@@ -56,19 +59,40 @@ public final class Main implements Runnable {
   //
 
   private void printHelp() {
-    System.out.println("Run one of the following: quit, help, " + LOG_WARN + " <optional message>, " +
-            LOG_INFO + " <optional message>, " + LOG_ERROR + " <optional message>");
+    System.out.println("Run one of the following: quit, help, clearMdc, addRidMdc, addOidMdc, " +
+            LOG_EXCEPTION + ", " +
+            LOG_WARN + " <optional message>, " +
+            LOG_INFO + " <optional message>, " +
+            LOG_ERROR + " <optional message>");
     System.out.println();
   }
 
   private void repl(BufferedReader r) throws IOException {
-    for (;;) {
+    for (int num = 0;; ++num) {
       System.out.print("> ");
       final String line = r.readLine();
       if (line == null) {
         break; // Ctrl-C
       }
       if ("quit".equals(line)) { return; }
+
+      if (line.equals("clearMdc")) {
+        MDC.clear();
+        System.out.println("All MDC entries removed");
+        continue;
+      }
+
+      if (line.equals("addRidMdc")) {
+        MDC.put("rid", getRandomBase64());
+        System.out.println("rid MDC has been added");
+        continue;
+      }
+
+      if (line.equals("addOidMdc")) {
+        MDC.put("oid", getRandomBase64());
+        System.out.println("oid MDC has been added");
+        continue;
+      }
 
       if (line.startsWith(LOG_DEBUG)) {
         String content = line.substring(LOG_DEBUG.length()).trim();
@@ -98,6 +122,15 @@ public final class Main implements Runnable {
         continue;
       }
 
+      if (line.equals(LOG_EXCEPTION)) {
+        try {
+          doErrorOperation();
+        } catch (UnsupportedOperationException e) {
+          log.error("Error operation #{} attempted", num, e);
+        }
+        continue;
+      }
+
       if (line.startsWith("help")) {
         printHelp();
         continue;
@@ -106,5 +139,13 @@ public final class Main implements Runnable {
       System.err.println("Unrecognized command: " + line);
       printHelp();
     }
+  }
+
+  private static void doErrorOperation() {
+    throwUnsupportedOperationException();
+  }
+
+  private static void throwUnsupportedOperationException() {
+    throw new UnsupportedOperationException("This operation is not supported yet");
   }
 }

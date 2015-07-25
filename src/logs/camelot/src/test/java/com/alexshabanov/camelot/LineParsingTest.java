@@ -1,77 +1,90 @@
 package com.alexshabanov.camelot;
 
 import com.alexshabanov.camelot.camel.LogMessageProcessor;
+import com.alexshabanov.camelot.common.Constants;
 import com.alexshabanov.camelot.model.LogMessage;
+import com.alexshabanov.camelot.model.Severity;
 import org.junit.Test;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class LineParsingTest {
-  private static final Pattern RECORD_PATTERN = Pattern.compile(
-      "^(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}) " +
-          "\\[([\\w\\p{Punct}]+)\\] " +
-          "(\\p{Alpha}+)\\s+" +
-          "([\\w\\,\\s\\.\\$\\=]+\\s)?" +
-          "- ([\\w\\$\\.]+) - " +
-          "(.+)$"
-  );
+public final class LineParsingTest {
 
-  private static final String MSG1 =
-      "2015-07-24 05:58:38,643 [main] INFO  security=none, oid=Main.run - learn.Main - Demo info message";
+  private static final String MSG1 = "2015-07-24 23:21:16,942 INFO learn.LogProducerMain " +
+          "oid=aJ0JLwgnBlw7+tbZ, rid=8tYCTFqDZfXJEzgD " +
+          "[learn.LogProducerMain.main()] Application started with args=[]";
 
-  private static final String MSG2 = "2015-07-24 05:58:48,307 [main] WARN  - learn.Main - Operation timed out";
+  private static final String MSG2 = "2015-07-24 23:22:20,748 WARN learn.LogProducerMain  " +
+          "[learn.LogProducerMain.main()] Operation timed out";
 
-  private static final String MSG3 = "2015-07-24 06:00:26,408 [main] ERROR oid=Main.run - learn.Main - Disk full";
+  private static final String MSG3 = "2015-07-25 00:03:08,356 ERROR learn.LogProducerMain " +
+          "rid=KhnHxNK/BbLbaiH4 " +
+          "[learn.LogProducerMain.main()] Disk full";
 
-  private final LogMessageProcessor logMessageProcessor = new LogMessageProcessor();
+  private static final String MSG4 = "2015-07-25 00:03:08,356 ERROR learn.LogProducerMain " +
+          "rid=1, oid=2, lc=3 " +
+          "[learn.LogProducerMain.main()] Disk full";
+
+  private static final String MSG5 = "2015-07-24 23:22:20,748 INFO learn.LogProducerMain " +
+      "rid=KhnHxNK/BbLbaiH4 " +
+      "[learn.LogProducerMain.main()] @metric tDelta=545, op=UserService.getUserById";
+
+  private final LogMessageProcessor processor = new LogMessageProcessor();
 
   @Test
   public void shouldMatchMsg1() {
-    final Matcher matcher = RECORD_PATTERN.matcher(MSG1);
-    assertTrue("Matcher does not matches the message", matcher.matches());
-    final LogMessage logMessage = logMessageProcessor.parse(MSG1);
+    final LogMessage logMessage = processor.parse(MSG1);
     assertFalse(logMessage.isNull());
-    assertValidGroups(matcher);
+    assertEquals(Severity.INFO, logMessage.getSeverity());
+    assertEquals(MSG1, logMessage.getLogEntry());
+    assertEquals(1437780076942L, logMessage.getUnixTime());
+    assertTrue(logMessage.getStackTrace().isEmpty());
+    assertEquals(2, logMessage.getAttributes().size());
+    assertEquals("aJ0JLwgnBlw7+tbZ", logMessage.getAttributes().get(Constants.ORIGINATING_REQUEST_ID));
+    assertEquals("8tYCTFqDZfXJEzgD", logMessage.getAttributes().get(Constants.REQUEST_ID));
   }
 
   @Test
   public void shouldMatchMsg2() {
-    final Matcher matcher = RECORD_PATTERN.matcher(MSG2);
-    assertTrue("Matcher does not matches the message", matcher.matches());
-    assertValidGroups(matcher);
+    final LogMessage logMessage = processor.parse(MSG2);
+    assertFalse(logMessage.isNull());
+    assertEquals(Severity.WARN, logMessage.getSeverity());
+    assertEquals(MSG2, logMessage.getLogEntry());
+    assertTrue(logMessage.getAttributes().isEmpty());
   }
 
   @Test
   public void shouldMatchMsg3() {
-    final Matcher matcher = RECORD_PATTERN.matcher(MSG3);
-    assertTrue("Matcher does not matches the message", matcher.matches());
-    assertValidGroups(matcher);
+    final LogMessage logMessage = processor.parse(MSG3);
+    assertFalse(logMessage.isNull());
+    assertEquals(Severity.ERROR, logMessage.getSeverity());
+    assertEquals(MSG3, logMessage.getLogEntry());
+    assertEquals(null, logMessage.getAttributes().get(Constants.ORIGINATING_REQUEST_ID));
+    assertEquals("KhnHxNK/BbLbaiH4", logMessage.getAttributes().get(Constants.REQUEST_ID));
   }
 
-  private static void assertValidGroups(Matcher matcher) {
-    final String timeGroup = matcher.group(1);
-    final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
-    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-    final Date date;
-    try {
-      date = dateFormat.parse(timeGroup);
-    } catch (ParseException e) {
-      throw new IllegalArgumentException(e);
-    }
+  @Test
+  public void shouldMatchMsg4() {
+    final LogMessage logMessage = processor.parse(MSG4);
+    assertFalse(logMessage.isNull());
+    assertEquals(Severity.ERROR, logMessage.getSeverity());
+    assertEquals(MSG4, logMessage.getLogEntry());
+    assertEquals("1", logMessage.getAttributes().get(Constants.REQUEST_ID));
+    assertEquals("2", logMessage.getAttributes().get(Constants.ORIGINATING_REQUEST_ID));
+    assertEquals("3", logMessage.getAttributes().get("lc"));
+  }
 
-    System.out.println("date=" + date);
+  @Test
+  public void shouldMatchMsg5() {
+    final LogMessage logMessage = processor.parse(MSG5);
+    assertFalse(logMessage.isNull());
+    assertEquals(Severity.INFO, logMessage.getSeverity());
+    assertEquals(MSG5, logMessage.getLogEntry());
 
-    for (int i = 1; i <= matcher.groupCount(); ++i) {
-      System.out.println("Group " + i + " = " + matcher.group(i));
-    }
-    System.out.println("  ^-- For: " + matcher.group(0) + "\n");
+    assertEquals("UserService.getUserById", logMessage.getAttributes().get(Constants.OPERATION));
+    assertEquals("545", logMessage.getAttributes().get(Constants.TIME_DELTA));
+    assertEquals("KhnHxNK/BbLbaiH4", logMessage.getAttributes().get(Constants.REQUEST_ID));
   }
 }
