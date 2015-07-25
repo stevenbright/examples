@@ -58,7 +58,7 @@ public final class CamelotMain {
     @Override
     public void configure() throws Exception {
       from("stream:file?fileName=/tmp/slp.log&scanStream=true&scanStreamDelay=100") // analog of UNIX tail
-          .split(body(String.class).tokenize("\n"))
+          .split(body(String.class).regexTokenize("\n"))
           .filter(new MalformedLineFilter())
           .process(new LogMessageProcessor())
           .filter(new MalformedLogMessageFilter())

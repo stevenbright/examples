@@ -61,7 +61,7 @@ public final class LogMessageProcessor implements Processor {
       return NullLogMessage.INSTANCE;
     }
 
-    if (matcher.groupCount() < 3) {
+    if (matcher.groupCount() < 5) {
       log.error("Count of groups is not six: actual={} for line={}", matcher.groupCount(), line);
       return NullLogMessage.INSTANCE;
     }
