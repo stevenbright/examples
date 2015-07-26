@@ -1,4 +1,4 @@
-package com.alexshabanov.camelot;
+package com.alexshabanov.camelot.route;
 
 import com.alexshabanov.camelot.camel.LogMessageProcessor;
 import com.alexshabanov.camelot.camel.MalformedLineFilter;
@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
  *
  * @author Alexander Shabanov
  */
-public final class MessageRouteTest extends CamelTestSupport {
+public final class NonAggregatingMessageRouteTest extends CamelTestSupport {
 
   @EndpointInject(uri = "mock:result")
   protected MockEndpoint resultEndpoint;

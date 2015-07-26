@@ -11,19 +11,13 @@ import java.util.*;
 public final class MaterializedLogMessage extends LogMessage {
   private final long unixTime;
   private final Severity severity;
-  private final String logEntry;
-  private List<String> stacktrace = null;
+  private List<String> lines = new ArrayList<>();
   private Map<String, Object> attributes = new HashMap<>();
 
-  public MaterializedLogMessage(long unixTime, Severity severity, String logEntry) {
+  public MaterializedLogMessage(long unixTime, @Nonnull Severity severity, @Nonnull String logEntry) {
     this.unixTime = unixTime;
     this.severity = Objects.requireNonNull(severity, "severity");
-    this.logEntry = Objects.requireNonNull(logEntry, "logEntry");
-  }
-
-  @Override
-  public boolean isNull() {
-    return false;
+    this.lines.add(Objects.requireNonNull(logEntry, "logEntry"));
   }
 
   @Override
@@ -39,20 +33,19 @@ public final class MaterializedLogMessage extends LogMessage {
 
   @Nonnull
   @Override
-  public String getLogEntry() {
-    return logEntry;
-  }
-
-  @Nonnull
-  @Override
-  public List<String> getStackTrace() {
-    return stacktrace != null ? stacktrace : Collections.<String>emptyList();
+  public List<String> getLines() {
+    return Collections.unmodifiableList(lines);
   }
 
   @Nonnull
   @Override
   public Map<String, Object> getAttributes() {
     return Collections.unmodifiableMap(attributes);
+  }
+
+  @Override
+  public void addLine(@Nonnull String value) {
+    this.lines.add(value);
   }
 
   public void putAllAttributes(@Nonnull Map<String, ?> values) {
@@ -66,7 +59,7 @@ public final class MaterializedLogMessage extends LogMessage {
             ", severity=" + getSeverity() +
             ", attributes=" + getAttributes() +
             ", logEntry='" + getLogEntry() + '\'' +
-            ", stacktrace=" + getStackTrace() +
+            ", stacktrace=" + getLines() +
             '}';
   }
 }

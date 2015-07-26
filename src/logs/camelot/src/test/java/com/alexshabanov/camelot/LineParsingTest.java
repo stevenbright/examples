@@ -6,6 +6,8 @@ import com.alexshabanov.camelot.model.LogMessage;
 import com.alexshabanov.camelot.model.Severity;
 import org.junit.Test;
 
+import java.util.Collections;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -40,7 +42,7 @@ public final class LineParsingTest {
     assertEquals(Severity.INFO, logMessage.getSeverity());
     assertEquals(MSG1, logMessage.getLogEntry());
     assertEquals(1437780076942L, logMessage.getUnixTime());
-    assertTrue(logMessage.getStackTrace().isEmpty());
+    assertEquals(Collections.singletonList(MSG1), logMessage.getLines());
     assertEquals(2, logMessage.getAttributes().size());
     assertEquals("aJ0JLwgnBlw7+tbZ", logMessage.getAttributes().get(Constants.ORIGINATING_REQUEST_ID));
     assertEquals("8tYCTFqDZfXJEzgD", logMessage.getAttributes().get(Constants.REQUEST_ID));

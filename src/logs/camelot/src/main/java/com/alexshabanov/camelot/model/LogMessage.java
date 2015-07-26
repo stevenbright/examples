@@ -11,13 +11,31 @@ import java.util.Map;
  */
 public abstract class LogMessage {
 
-  public abstract boolean isNull();
+  public boolean isNull() {
+    return false;
+  }
+
+  public boolean isMultiLinePart() {
+    return false;
+  }
 
   @Nonnull
-  public String getLogEntry() { throw new UnsupportedOperationException(); }
+  public String getLogEntry() {
+    final List<String> lines = getLines();
+    if (lines.isEmpty()) {
+      throw new IllegalStateException("Log lines are empty");
+    }
+    return lines.get(0);
+  }
 
   @Nonnull
-  public List<String> getStackTrace() { throw new UnsupportedOperationException(); }
+  public List<String> getLines() {
+    throw new UnsupportedOperationException();
+  }
+
+  public void addLine(@Nonnull String value) {
+    throw new UnsupportedOperationException();
+  }
 
   public long getUnixTime() {
     throw new UnsupportedOperationException();

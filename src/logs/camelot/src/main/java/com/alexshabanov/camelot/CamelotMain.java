@@ -3,6 +3,7 @@ package com.alexshabanov.camelot;
 import com.alexshabanov.camelot.camel.LogMessageProcessor;
 import com.alexshabanov.camelot.camel.MalformedLineFilter;
 import com.alexshabanov.camelot.camel.MalformedLogMessageFilter;
+import com.alexshabanov.camelot.camel.MultiLineAggregationStrategy;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 
@@ -61,6 +62,7 @@ public final class CamelotMain {
           .split(body(String.class).regexTokenize("\n"))
           .filter(new MalformedLineFilter())
           .process(new LogMessageProcessor())
+          .aggregate(new MultiLineAggregationStrategy()).header("id").completionSize(10000).completionInterval(200L)
           .filter(new MalformedLogMessageFilter())
           .to("stream:file?fileName=/dev/stdout")
       ;

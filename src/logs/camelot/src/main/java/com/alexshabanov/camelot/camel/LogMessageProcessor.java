@@ -1,10 +1,7 @@
 package com.alexshabanov.camelot.camel;
 
 import com.alexshabanov.camelot.common.Constants;
-import com.alexshabanov.camelot.model.LogMessage;
-import com.alexshabanov.camelot.model.MaterializedLogMessage;
-import com.alexshabanov.camelot.model.NullLogMessage;
-import com.alexshabanov.camelot.model.Severity;
+import com.alexshabanov.camelot.model.*;
 import com.alexshabanov.camelot.util.CommaSeparatedValueParser;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -41,6 +38,7 @@ public final class LogMessageProcessor implements Processor {
 
   private final Logger log = LoggerFactory.getLogger(getClass());
   private final DateFormat dateFormat;
+  private int count = 0;
 
   public LogMessageProcessor() {
     this.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
@@ -51,26 +49,35 @@ public final class LogMessageProcessor implements Processor {
   public void process(Exchange exchange) throws Exception {
     final String line = exchange.getIn().getBody(String.class);
     final LogMessage logMessage = parse(line);
+
     exchange.getOut().setBody(logMessage);
+
+    // create header that will assign unique ID - this assumes message will come in the same order as they
+    // appear in the source log file - otherwise this code will not work
+    if (!logMessage.isMultiLinePart()) {
+      ++count;
+    }
+    exchange.getOut().setHeader("id", count);
   }
 
   // visible for testing
   public LogMessage parse(String line) {
     final Matcher matcher = RECORD_PATTERN.matcher(line);
     if (!matcher.matches()) {
-      return NullLogMessage.INSTANCE;
+      return new MultiLinePartLogMessage(line);
     }
 
     if (matcher.groupCount() < 5) {
       log.error("Count of groups is not six: actual={} for line={}", matcher.groupCount(), line);
-      return NullLogMessage.INSTANCE;
+      return NullLogMessage.INSTANCE; // should not happen
     }
 
     final Date date;
     try {
       date = dateFormat.parse(matcher.group(1));
     } catch (ParseException e) {
-      return NullLogMessage.INSTANCE;
+      log.error("Malformed date in line={}", line, e);
+      return NullLogMessage.INSTANCE; // should not happen
     }
 
     final Severity severity = Severity.fromString(matcher.group(2), Severity.WARN);
