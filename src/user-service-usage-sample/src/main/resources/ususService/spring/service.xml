@@ -18,5 +18,6 @@
     </property>
   </bean>
 
+  <import resource="remote-beans.xml"/>
   <import resource="security.xml"/>
 </beans>

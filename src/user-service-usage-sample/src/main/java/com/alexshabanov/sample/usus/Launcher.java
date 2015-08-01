@@ -3,6 +3,7 @@ package com.alexshabanov.sample.usus;
 import com.truward.brikar.server.launcher.StandardLauncher;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
 
 import javax.annotation.Nonnull;
@@ -38,6 +39,11 @@ public final class Launcher extends StandardLauncher {
     final List<Handler> handlers = new ArrayList<>(super.getHandlers());
     handlers.add(resourceHandler);
     return handlers;
+  }
+
+  @Override
+  protected int getServletContextOptions() {
+    return ServletContextHandler.SESSIONS;
   }
 
   //

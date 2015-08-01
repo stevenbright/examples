@@ -3,25 +3,38 @@
              xsi:schemaLocation="
                 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                 http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd">
-  <!--
-  Default service security rules, use for development purposes only.
-  -->
-
   <http security="none" pattern="/"/>
   <http security="none" pattern="/robots.txt"/>
+  <http security="none" pattern="/index.html"/>
+  <http security="none" pattern="/favicon.ico"/>
   <http security="none" pattern="/assets/*"/>
+  <http security="none" pattern="/g/login"/>
 
-  <http create-session="never" use-expressions="true" auto-config="true">
-    <http-basic/>
-    <intercept-url pattern="/brest/**" access="hasRole('ROLE_SERVICE_USER')" />
+  <http access-denied-page="/assets/app/html/403.html" use-expressions="true" auto-config="true" disable-url-rewriting="true">
+    <intercept-url pattern="/g/**" access="hasRole('ROLE_GENERIC_USER')" />
+
+    <form-login login-page="/g/login"
+                default-target-url="/g/index"
+                authentication-failure-url="/g/login?error=1" />
+    <remember-me/>
+
+    <logout logout-url="/g/logout" logout-success-url="/g/login" />
   </http>
 
+  <!-- Spring's UserProfileService that uses Orion user service client -->
+  <beans:bean id="usus.userProfileService" class="com.truward.orion.user.service.spring.UserProfileService">
+    <beans:constructor-arg ref="usus.userServiceClient"/>
+  </beans:bean>
+
+  <!-- Authentication -->
+  <beans:bean id="usus.passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+  <beans:bean id="usus.daoAuthenticationProvider"
+              class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+    <beans:property name="passwordEncoder" ref="usus.passwordEncoder" />
+    <beans:property name="userDetailsService" ref="usus.userProfileService" />
+  </beans:bean>
+
   <authentication-manager>
-    <authentication-provider>
-      <password-encoder hash="md5"/>
-      <user-service>
-        <user name="testonly" password="098f6bcd4621d373cade4e832627b4f6" authorities="ROLE_SERVICE_USER" />
-      </user-service>
-    </authentication-provider>
+    <authentication-provider ref="usus.daoAuthenticationProvider"/>
   </authentication-manager>
 </beans:beans>

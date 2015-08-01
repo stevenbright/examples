@@ -15,13 +15,7 @@
   <bean class="com.truward.brikar.server.controller.config.ConfigReportController" /> <!-- Configuration Reporter -->
 
   <!-- Annotation driven support for MVC controllers -->
-  <mvc:annotation-driven>
-    <!-- custom marshallers -->
-    <!--<mvc:message-converters>-->
-      <!--<bean class="com.truward.brikar.protobuf.http.ProtobufHttpMessageConverter" />-->
-      <!--<bean class="com.truward.brikar.protobuf.http.json.ProtobufJsonHttpMessageConverter" />-->
-    <!--</mvc:message-converters>-->
-  </mvc:annotation-driven>
+  <mvc:annotation-driven/>
 
   <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
     <property name="alwaysUseFullPath" value="true"/>

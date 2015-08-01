@@ -15,6 +15,8 @@
 
     <spring.version>3.2.3.RELEASE</spring.version> <!-- TODO 4.1.6 -->
 
+    <user-service.version>1.0.0-SNAPSHOT</user-service.version>
+
     <brikar.version>(,2.0)</brikar.version>
 
     <!--  compiler settings -->
@@ -55,10 +57,34 @@
       <version>${slf4j.version}</version>
     </dependency>
 
-    <!-- Exposure Base -->
+    <!-- User Service Model -->
+    <dependency>
+      <groupId>com.truward.orion</groupId>
+      <artifactId>user-service-model</artifactId>
+      <version>${user-service.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.truward.orion</groupId>
+      <artifactId>user-service-spring-security</artifactId>
+      <version>${user-service.version}</version>
+    </dependency>
+
+    <!-- Brikar -->
     <dependency>
       <groupId>com.truward.brikar</groupId>
       <artifactId>brikar-server</artifactId>
+      <version>${brikar.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.truward.brikar</groupId>
+      <artifactId>brikar-client</artifactId>
+      <version>${brikar.version}</version>
+    </dependency>
+
+    <!-- Protobuf Message Converters -->
+    <dependency>
+      <groupId>com.truward.brikar.protobuf</groupId>
+      <artifactId>brikar-protobuf-http-bin</artifactId>
       <version>${brikar.version}</version>
     </dependency>
 
