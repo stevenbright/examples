@@ -15,7 +15,7 @@
 
     <spring.version>3.2.3.RELEASE</spring.version> <!-- TODO 4.1.6 -->
 
-    <user-service.version>1.0.0-SNAPSHOT</user-service.version>
+    <user-service.version>1.0.1</user-service.version>
 
     <brikar.version>(,2.0)</brikar.version>
 

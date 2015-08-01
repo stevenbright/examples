@@ -2,7 +2,7 @@
 ## Dev Mode
 
 ```
---graceful-shutdown-millis 100 --port 8081
+--graceful-shutdown-millis 100 --port 8081 --config file:/Your/path/to/usus-localdev.properties
 ```
 
 * port==8081 - this is needed to run this demo along with ``user-service-server`` on the same machine (both servers use 8080 port as the default one).
