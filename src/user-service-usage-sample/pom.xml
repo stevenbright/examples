@@ -62,6 +62,13 @@
       <version>${brikar.version}</version>
     </dependency>
 
+    <!-- Freemarker -->
+    <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+      <version>2.3.20</version>
+    </dependency>
+
     <!-- Spring security -->
     <dependency>
       <groupId>org.springframework.security</groupId>

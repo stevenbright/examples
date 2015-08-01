@@ -10,7 +10,7 @@
   <context:annotation-config/>
 
   <!-- Controllers -->
-  <bean class="com.alexshabanov.sample.usus.controller.LoginController" autowire="constructor"/>
+  <bean class="com.alexshabanov.sample.usus.controller.PublicPageController" autowire="constructor"/>
   <bean class="com.truward.brikar.server.controller.healthcheck.SimpleHealthCheckRestController" /> <!-- Healthcheck -->
   <bean class="com.truward.brikar.server.controller.config.ConfigReportController" /> <!-- Configuration Reporter -->
 
@@ -25,5 +25,24 @@
 
   <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
     <property name="alwaysUseFullPath" value="true"/>
+  </bean>
+
+  <!-- freemarker config -->
+  <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+    <property name="templateLoaderPath" value="classpath:/ususService/web/freemarker"/>
+    <property name="defaultEncoding" value="UTF-8"/>
+    <property name="freemarkerSettings">
+      <props>
+        <prop key="url_escaping_charset">UTF-8</prop>
+      </props>
+    </property>
+  </bean>
+
+  <!-- Spring MVC view resolver -->
+  <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+    <property name="cache" value="true"/>
+    <property name="prefix" value=""/>
+    <property name="suffix" value=".ftl"/>
+    <property name="contentType" value="text/html; charset=UTF-8" />
   </bean>
 </beans>
