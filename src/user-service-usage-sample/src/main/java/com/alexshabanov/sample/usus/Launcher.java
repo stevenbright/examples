@@ -25,7 +25,7 @@ public final class Launcher extends StandardLauncher {
   }
 
   public static void main(String[] args) throws Exception {
-    new Launcher().start(args);
+    new Launcher().start();
   }
 
   @Override
