@@ -15,6 +15,8 @@
 
     <spring.version>3.2.14.RELEASE</spring.version>
 
+    <utc-time.version>1.0.6</utc-time.version>
+
     <lombok-plugin.version>1.16.4.1</lombok-plugin.version>
 
     <!--  compiler settings -->
@@ -31,6 +33,25 @@
 
 
   <dependencies>
+    <!-- Eolaire Model -->
+    <dependency>
+      <groupId>com.truward.orion</groupId>
+      <artifactId>eolaire-model</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <!-- UTC time -->
+    <dependency>
+      <groupId>com.truward.time</groupId>
+      <artifactId>utc-time</artifactId>
+      <version>${utc-time.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.truward.time</groupId>
+      <artifactId>utc-time-sql</artifactId>
+      <version>${utc-time.version}</version>
+    </dependency>
+
     <!-- Logging -->
     <dependency>
       <groupId>org.slf4j</groupId>

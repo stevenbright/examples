@@ -1,5 +1,6 @@
 package com.alexshabanov.sample.eol.migration.model;
 
+import com.truward.time.UtcTime;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,7 +19,7 @@ public class BookMeta {
   private Long id;
   private String title;
   private int fileSize;
-  private Date addDate;
+  private UtcTime dateAdded;
   private Long langId;
   private Long originId;
 }
