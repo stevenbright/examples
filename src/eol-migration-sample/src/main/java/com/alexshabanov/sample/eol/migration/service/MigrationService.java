@@ -24,8 +24,12 @@ public final class MigrationService {
         return;
       }
 
-      while (dataTransferService.transferNext()) {
+      for (Long startId = null;;) {
         log.info("Moving next chunk of data");
+        startId = dataTransferService.transferNext(startId);
+        if (startId == null) {
+          break;
+        }
       }
 
       dataTransferService.complete();

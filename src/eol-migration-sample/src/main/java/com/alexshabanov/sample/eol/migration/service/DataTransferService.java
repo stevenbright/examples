@@ -28,13 +28,15 @@ public final class DataTransferService {
   public interface Contract {
     boolean prepare();
 
-    boolean transferNext();
+    Long transferNext(Long startId);
 
     void complete();
   }
 
   @Transactional
   public static final class Impl implements Contract {
+    private static final int BOOK_TRANSFER_LIMIT = 500;
+
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final JdbcOperations db;
 
@@ -86,9 +88,11 @@ public final class DataTransferService {
     }
 
     @Override
-    public boolean transferNext() {
+    public Long transferNext(Long startId) {
+      final int limit = BOOK_TRANSFER_LIMIT;
       final List<BookMeta> bookMetas = db.query("SELECT id, title, f_size, add_date, lang_id, origin_id " +
-          "FROM book_meta ORDER BY id", new BookMetaRowMapper());
+          "FROM book_meta WHERE ((? IS NULL) OR (id > ?)) ORDER BY id LIMIT ?", new BookMetaRowMapper(),
+          startId, startId, limit);
       log.info("BookMetas={}", bookMetas);
 
       for (final BookMeta bookMeta : bookMetas) {
@@ -134,11 +138,21 @@ public final class DataTransferService {
         insertBookProfile(itemId, 1, metadataBuilder.build());
       }
 
-      return false;
+      if (limit > bookMetas.size()) {
+        return null;
+      }
+
+      return bookMetas.get(bookMetas.size() - 1).getId(); // last ID
     }
 
     @Override
     public void complete() {
+      final int origBookCount = db.queryForObject("SELECT COUNT(0) FROM book_meta", Integer.class);
+      final int actualBookCount = db.queryForObject("SELECT COUNT(0) FROM item WHERE type_id=?",
+          Integer.class, bookTypeId);
+
+      assert origBookCount == actualBookCount;
+
       db.update("DROP TABLE book_genre");
       db.update("DROP TABLE book_author");
       db.update("DROP TABLE book_series");
