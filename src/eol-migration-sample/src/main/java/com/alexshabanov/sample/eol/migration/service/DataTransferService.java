@@ -35,7 +35,7 @@ public final class DataTransferService {
 
   @Transactional
   public static final class Impl implements Contract {
-    private static final int BOOK_TRANSFER_LIMIT = 500;
+    private static final int BOOK_TRANSFER_LIMIT = 1000;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final JdbcOperations db;
