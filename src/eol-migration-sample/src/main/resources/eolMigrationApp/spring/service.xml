@@ -5,4 +5,5 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
   <bean class="com.alexshabanov.sample.eol.migration.service.MigrationService$Impl" autowire="constructor"/>
+  <bean class="com.alexshabanov.sample.eol.migration.service.DataTransferService$Impl" autowire="constructor"/>
 </beans>
