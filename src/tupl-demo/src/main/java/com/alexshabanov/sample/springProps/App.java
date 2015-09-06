@@ -1,6 +1,5 @@
 package com.alexshabanov.sample.springProps;
 
-import com.alexshabanov.sample.springProps.service.FooService;
 import org.cojen.tupl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +20,9 @@ import java.util.*;
  */
 public final class App implements Runnable {
   private final Logger log;
-  private final FooService fooService;
 
-  public App(FooService fooService) {
+  public App() {
     log = LoggerFactory.getLogger(App.class);
-    this.fooService = fooService;
   }
 
   public static void main(String[] args) {
@@ -53,7 +50,6 @@ public final class App implements Runnable {
     }
 
     log.info("Application started");
-    fooService.bar();
   }
 
   //

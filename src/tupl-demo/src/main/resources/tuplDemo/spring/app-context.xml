@@ -13,7 +13,7 @@
   -->
   <context:property-placeholder />
 
-  <import resource="service/foo-service-${app.fooService.mode}.xml"/>
+  <!--<import resource="service/foo-service-${app.fooService.mode}.xml"/>-->
 
   <bean id="app" class="com.alexshabanov.sample.springProps.App" autowire="constructor"/>
 </beans>
