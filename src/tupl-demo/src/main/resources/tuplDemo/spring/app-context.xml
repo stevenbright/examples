@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+  <context:annotation-config/>
+
+  <!--
+    This directive is EXTREMELY important as it propagates Environment properties to the post-processing phase.
+    Without this, property placeholders won't work for environment variables.
+  -->
+  <context:property-placeholder />
+
+  <import resource="service/foo-service-${app.fooService.mode}.xml"/>
+
+  <bean id="app" class="com.alexshabanov.sample.springProps.App" autowire="constructor"/>
+</beans>
