@@ -1,10 +1,7 @@
 package com.alexshabanov.sample.springProps;
 
 import com.alexshabanov.sample.springProps.service.FooService;
-import org.cojen.tupl.Database;
-import org.cojen.tupl.DatabaseConfig;
-import org.cojen.tupl.DurabilityMode;
-import org.cojen.tupl.Index;
+import org.cojen.tupl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanInitializationException;
@@ -63,7 +60,7 @@ public final class App implements Runnable {
   // Private
   //
 
-  private static final String KEY = "bEklvcscLSa0dJsA";
+  private static final String KEY = "xlJ0V9XOzbMhMBch";
 
   private void demoDatabase() throws Exception {
     // See https://github.com/cojen/Tupl.git
@@ -74,19 +71,29 @@ public final class App implements Runnable {
 
     try (final Database db = Database.open(config)) {
       try (final Index userIndex = db.openIndex("users")) {
-        final byte[] key = KEY.getBytes(StandardCharsets.ISO_8859_1);
-        final byte[] output = userIndex.load(null, key);
-        if (output != null) {
-          final Person person = fromBytes(new Person(), output);
-          log.info("Found existing person={}", person);
-          return;
+        final Transaction tx = db.newTransaction();
+        try {
+          workWithPerson(tx, userIndex);
+          tx.commit();
+        } finally {
+          tx.exit();
         }
-
-        log.info("Existing person has not been found, creating a new one...");
-        userIndex.store(null, key, toBytes(newSamplePerson()));
-        log.info("Person has been stored, restart application to see the changes");
       }
     }
+  }
+
+  private void workWithPerson(Transaction tx, Index userIndex) throws IOException {
+    final byte[] key = KEY.getBytes(StandardCharsets.ISO_8859_1);
+    final byte[] output = userIndex.load(tx, key);
+    if (output != null) {
+      final Person person = fromBytes(new Person(), output);
+      log.info("Found existing person={}", person);
+      return;
+    }
+
+    log.info("Existing person has not been found, creating a new one...");
+    userIndex.store(tx, key, toBytes(newSamplePerson()));
+    log.info("Person has been stored, restart application to see the changes");
   }
 
   public static byte[] toBytes(EstimationAwareExternalizable object) throws IOException {
@@ -112,8 +119,8 @@ public final class App implements Runnable {
   private static Person newSamplePerson() {
     final Person person = new Person();
     person.id = KEY;
-    person.name = "alice";
-    person.age = 19;
+    person.name = "eva";
+    person.age = 25;
     return person;
   }
 
