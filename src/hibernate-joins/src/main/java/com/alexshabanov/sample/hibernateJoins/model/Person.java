@@ -1,9 +1,8 @@
 package com.alexshabanov.sample.hibernateJoins.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 
 /**
  */
@@ -12,9 +11,10 @@ import javax.persistence.Table;
 public class Person {
 
   @Id
-  //@GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false, unique = true, length = 11)
-  private long id;
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PersonIdSequence")
+  @SequenceGenerator(name = "PersonIdSequence", sequenceName = "seq_person", allocationSize = 1)
+  @Column(name = "id")
+  private Long id;
 
   @Column(name = "name", length = 20, nullable = false)
   private String name;
@@ -22,11 +22,11 @@ public class Person {
   @Column(name = "age", nullable = false)
   private int age;
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(long id) {
+  public void setId(Long id) {
     this.id = id;
   }
 

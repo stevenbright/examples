@@ -15,7 +15,8 @@
 
     <spring.version>3.2.14.RELEASE</spring.version>
 
-    <hibernate.version>5.0.1.Final</hibernate.version>
+    <!-- NOTE: 5.0.1.Final can't be used with spring 3.2.14 -->
+    <hibernate.version>4.1.7.Final</hibernate.version>
 
     <!--  compiler settings -->
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -66,7 +67,7 @@
     <!-- Hibernate -->
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-java8</artifactId>
+      <artifactId>hibernate-core</artifactId>
       <version>${hibernate.version}</version>
     </dependency>
     <dependency>

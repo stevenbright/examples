@@ -10,6 +10,8 @@ public final class PersonDao {
 
   public interface Contract {
     Person getPersonById(long id);
+
+    Long savePerson(Long id, String name, int age);
   }
 
   public static final class Impl implements Contract {
@@ -21,7 +23,22 @@ public final class PersonDao {
 
     @Override
     public Person getPersonById(long id) {
-      return sessionFactory.getCurrentSession().load(Person.class, id);
+      return (Person) sessionFactory.getCurrentSession().load(Person.class, id);
+    }
+
+    @Override
+    public Long savePerson(Long id, String name, int age) {
+      final Person person = new Person();
+      person.setName(name);
+      person.setAge(age);
+
+      if (id != null) {
+        person.setId(id);
+        sessionFactory.getCurrentSession().saveOrUpdate(person);
+        return id;
+      } else {
+        return (Long) sessionFactory.getCurrentSession().save(person);
+      }
     }
   }
 

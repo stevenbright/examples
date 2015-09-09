@@ -5,7 +5,6 @@ import com.alexshabanov.sample.hibernateJoins.service.PersonDao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanInitializationException;
@@ -49,9 +48,8 @@ public final class App implements Runnable {
 
       // get Runnable application bean and run it
       context.getBean("app", Runnable.class).run();
-    } finally {
-      System.out.flush();
-      System.err.flush();
+    } catch (Exception e) {
+      LoggerFactory.getLogger("App").error("Error while running application", e);
     }
   }
 
@@ -79,7 +77,7 @@ public final class App implements Runnable {
       runnable.run();
       tx.commit();
     } finally {
-      if (tx.getStatus() == TransactionStatus.ACTIVE) {
+      if (!tx.wasCommitted()) {
         tx.rollback();
       }
     }

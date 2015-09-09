@@ -8,4 +8,9 @@
         factory-method="createSessionFactory"
         destroy-method="close"
         autowire="constructor"/>
+
+  <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+    <constructor-arg ref="app.sessionFactory"/>
+    <property name="dataSource" ref="app.dataSource"/>
+  </bean>
 </beans>
