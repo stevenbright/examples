@@ -11,6 +11,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -37,6 +40,21 @@ public final class PersonDaoTest {
       // The following - won't work - 'org.hibernate.NonUniqueObjectException: a different object with the same identifier value was already associated with the session: [com.alexshabanov.sample.hibernateJoins.model.Person#100]'
       //final Long anotherId = personDao.savePerson(id, "zimm", 52);
       //assertEquals(id, anotherId);
+    } finally {
+      tx.rollback();
+    }
+  }
+
+  @Test
+  public void shouldGetCustomerWorkingInACompanyOnPosition() {
+    final Transaction tx = sessionFactory.getCurrentSession().beginTransaction();
+    try {
+      final List<Person> persons = personDao.getPersonsOnPositionInCompany("Designer", "Starbucks",
+          Date.from(Instant.parse("1995-08-23T10:00:00.00Z")));
+      assertEquals(1, persons.size());
+      final Person bob = persons.get(0);
+      assertEquals("Bob", bob.getName());
+      assertEquals(37, bob.getAge());
     } finally {
       tx.rollback();
     }
