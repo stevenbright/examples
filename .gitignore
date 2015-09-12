@@ -11,3 +11,8 @@ target
 .gradle
 
 .DS_Store
+
+# Python Virtual Environments
+.venv*
+*.pyc
+
