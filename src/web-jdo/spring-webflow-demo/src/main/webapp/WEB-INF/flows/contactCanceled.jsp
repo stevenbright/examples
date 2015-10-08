@@ -1,1 +1,0 @@
-<h2>Contact canceled</h2>

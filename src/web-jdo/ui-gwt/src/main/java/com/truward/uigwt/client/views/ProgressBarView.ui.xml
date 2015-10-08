@@ -1,9 +1,0 @@
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-    <g:HTMLPanel styleName="progress-bar-widget">
-        <div class="progress-bar" ui:field="indicatorHolder">
-            <div class="indicator" ui:field="indicator" />
-        </div>
-        <div class="progress-num"><span ui:field="progressValue">0</span>%</div>
-    </g:HTMLPanel>
-</ui:UiBinder>

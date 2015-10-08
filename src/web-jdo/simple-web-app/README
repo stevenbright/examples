@@ -1,9 +1,0 @@
-
-Represents a very simple web application template.
-
-The build configuration section in pom.xml illustrates
-running servlet by jetty plugin.
-
-The target address is:
-http://127.0.0.1:9090/simple-web-app/
-

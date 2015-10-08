@@ -1,3 +1,0 @@
-Benchmark that measures overhead introduced by the HTTP.
-
-Bare TCP/IP and HTTP are compared against each other.

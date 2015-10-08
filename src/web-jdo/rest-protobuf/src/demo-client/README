@@ -1,6 +1,0 @@
-Startup from command line:
-
-mvn exec:java -Dexec.mainClass=com.alexshabanov.restcomp.client.App
-
-
-add -Dexec.args="proto http://myhost.com/demo-web-portal/rest" if you want to test it on host myhost.com

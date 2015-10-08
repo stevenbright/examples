@@ -1,1 +1,0 @@
-This is the console client for working within JBoss infrastructure.
