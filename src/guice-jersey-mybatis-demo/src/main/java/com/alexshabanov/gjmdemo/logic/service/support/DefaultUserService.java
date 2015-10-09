@@ -2,13 +2,17 @@ package com.alexshabanov.gjmdemo.logic.service.support;
 
 import com.alexshabanov.gjmdemo.logic.model.User;
 import com.alexshabanov.gjmdemo.logic.service.UserService;
+import com.alexshabanov.gjmdemo.logic.service.mapper.UserMapper;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultUserService implements UserService {
 
   private final Map<Long, User> users = new HashMap<>();
+
+  @Inject UserMapper userMapper;
 
   public DefaultUserService() {
     final User user = new User();
@@ -36,6 +40,6 @@ public class DefaultUserService implements UserService {
 
   @Override
   public User getById(long id) {
-    return users.get(id);
+    return userMapper.getUser(id);
   }
 }

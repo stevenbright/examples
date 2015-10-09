@@ -11,4 +11,4 @@ should result in:
 Greetings, user!
 ```
 
-Try also ``curl 127.0.0.1:8080/user/1`` to see JSON output.
+Try also ``curl 127.0.0.1:8080/user/1000`` to see JSON output.

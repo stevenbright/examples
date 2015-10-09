@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alexshabanov.gjmdemo.logic.service.mapper.UserMapper">
+
+  <select id="getUserIdByUsername" resultType="java.lang.String" parameterType="java.lang.String">
+    select id from user_profile where username=#{value}
+  </select>
+
+  <select id="getUser" resultType="com.alexshabanov.gjmdemo.logic.model.User" parameterType="java.lang.String">
+    select id, username, age, note from user_profile where id=#{value}
+  </select>
+
+  <!--<insert id="brokenAdd" parameterType="org.mybatis.guice.sample.domain.User" useGeneratedKeys="true" keyProperty="id">-->
+  <!--INSERT INTO-->
+  <!--contact (id,-->
+  <!--name-->
+  <!--)-->
+  <!--VALUES (-->
+  <!--#{name}-->
+  <!--)-->
+  <!--</insert>-->
+
+</mapper>

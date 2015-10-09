@@ -18,6 +18,8 @@
     <jackson.version>2.5.4</jackson.version>
     <guice.version>4.0</guice.version>
 
+    <launcher.mainClass>com.alexshabanov.gjmdemo.Main</launcher.mainClass>
+
     <!--  compiler settings -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -50,6 +52,13 @@
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
+      <version>${guice.version}</version>
+    </dependency>
+
+    <!-- Guice/Multibindings (required by mybatis-guice) -->
+    <dependency>
+      <groupId>com.google.inject.extensions</groupId>
+      <artifactId>guice-multibindings</artifactId>
       <version>${guice.version}</version>
     </dependency>
 
@@ -150,4 +159,51 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Assembly Plugin - *ATTENTION* - this guy declares *AD HOC* config for creating an uber JAR -->
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>true</createDependencyReducedPom>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>${launcher.mainClass}</mainClass>
+                </transformer>
+              </transformers>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <!-- This is to avoid issues with digital signatures -->
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Execution from the command line - mvn exec:java starts the server -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <configuration>
+          <mainClass>${launcher.mainClass}</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
