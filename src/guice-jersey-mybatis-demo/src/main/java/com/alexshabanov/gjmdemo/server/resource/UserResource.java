@@ -20,4 +20,16 @@ public final class UserResource {
   public User getById(@PathParam("id") long id) {
     return userService.getById(id);
   }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/demo/{id}")
+  public User getDemoUserById(@PathParam("id") long id) {
+    final User user = new User();
+    user.setId(id);
+    user.setUsername("user-" + id);
+    user.setAge(1);
+    user.setNote("Note-" + id);
+    return user;
+  }
 }

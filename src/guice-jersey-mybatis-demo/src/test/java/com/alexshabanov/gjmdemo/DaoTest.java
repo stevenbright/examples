@@ -1,22 +1,15 @@
 package com.alexshabanov.gjmdemo;
 
 import com.alexshabanov.gjmdemo.logic.model.User;
-import com.alexshabanov.gjmdemo.logic.service.mapper.UserMapper;
 import com.alexshabanov.gjmdemo.logic.service.helper.DbInitializer;
+import com.alexshabanov.gjmdemo.logic.service.mapper.UserMapper;
 import com.alexshabanov.gjmdemo.server.config.DaoModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.name.Names;
-import jdk.nashorn.internal.ir.annotations.Ignore;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.mybatis.guice.MyBatisModule;
-import org.mybatis.guice.datasource.builtin.PooledDataSourceProvider;
-import org.mybatis.guice.datasource.helper.JdbcHelper;
 
 import java.util.Properties;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,12 +21,12 @@ public final class DaoTest {
   public void init() {
     final Properties myBatisProperties = new Properties();
     myBatisProperties.setProperty("mybatis.environment.id", "test");
-    // TODO: reuse the same schema!
-    myBatisProperties.setProperty("JDBC.schema", "DaoTest-" + Long.toHexString(ThreadLocalRandom.current().nextLong()));
+    myBatisProperties.setProperty("JDBC.schema", "DaoTest-user-schema");
     myBatisProperties.setProperty("JDBC.username", "sa");
     myBatisProperties.setProperty("JDBC.password", "");
     myBatisProperties.setProperty("JDBC.autoCommit", "false");
 
+    myBatisProperties.setProperty("gjmDemo.dao.diagScripts", "gjmDemo/sql/user-diag.sql");
     myBatisProperties.setProperty("gjmDemo.dao.initScripts", "gjmDemo/sql/user-schema.sql,gjmDemo/sql/user-fixture.sql");
 
     final Injector injector = Guice.createInjector(new DaoModule(myBatisProperties));
