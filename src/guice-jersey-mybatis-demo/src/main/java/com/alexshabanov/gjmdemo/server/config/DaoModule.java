@@ -6,7 +6,6 @@ import com.google.inject.name.Names;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.mybatis.guice.MyBatisModule;
 import org.mybatis.guice.datasource.builtin.PooledDataSourceProvider;
-import org.mybatis.guice.datasource.helper.JdbcHelper;
 
 import java.util.Objects;
 import java.util.Properties;
@@ -23,8 +22,6 @@ public final class DaoModule extends MyBatisModule {
 
   @Override
   protected void initialize() {
-    install(JdbcHelper.H2_IN_MEMORY_NAMED);
-
     bindDataSourceProviderType(PooledDataSourceProvider.class);
     bindTransactionFactoryType(JdbcTransactionFactory.class);
     addMapperClass(UserMapper.class);

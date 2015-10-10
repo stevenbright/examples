@@ -21,7 +21,8 @@ public final class DaoTest {
   public void init() {
     final Properties myBatisProperties = new Properties();
     myBatisProperties.setProperty("mybatis.environment.id", "test");
-    myBatisProperties.setProperty("JDBC.schema", "DaoTest-user-schema");
+    myBatisProperties.setProperty("JDBC.driver", "org.h2.Driver");
+    myBatisProperties.setProperty("JDBC.url", "jdbc:h2:mem:DaoTest-user-schema");
     myBatisProperties.setProperty("JDBC.username", "sa");
     myBatisProperties.setProperty("JDBC.password", "");
     myBatisProperties.setProperty("JDBC.autoCommit", "false");

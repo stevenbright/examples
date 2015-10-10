@@ -38,11 +38,13 @@ public final class ServerConfig extends GuiceServletContextListener {
   protected Injector getInjector() {
     final Properties myBatisProperties = new Properties();
     myBatisProperties.setProperty("mybatis.environment.id", "test");
-    myBatisProperties.setProperty("JDBC.schema", "mybatis-guice_TEST");
+    myBatisProperties.setProperty("JDBC.driver", "org.h2.Driver");
+    myBatisProperties.setProperty("JDBC.url", "jdbc:h2:mem:DaoTest-user-schema;DB_CLOSE_DELAY=-1");
     myBatisProperties.setProperty("JDBC.username", "sa");
     myBatisProperties.setProperty("JDBC.password", "");
     myBatisProperties.setProperty("JDBC.autoCommit", "false");
 
+    myBatisProperties.setProperty("gjmDemo.dao.diagScripts", "gjmDemo/sql/user-diag.sql");
     myBatisProperties.setProperty("gjmDemo.dao.initScripts", "gjmDemo/sql/user-schema.sql,gjmDemo/sql/user-fixture.sql");
 
     final Injector injector = Guice.createInjector(
