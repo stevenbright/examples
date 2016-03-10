@@ -16,3 +16,6 @@ target
 .venv*
 *.pyc
 
+# Qt User Settings
+*.pro.user
+
