@@ -1,0 +1,7 @@
+
+Installation:
+
+```
+go build
+```
+
