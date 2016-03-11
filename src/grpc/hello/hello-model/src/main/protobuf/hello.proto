@@ -1,0 +1,25 @@
+
+package alexshabanov.grpc.hello;
+
+option java_package = "com.alexshabanov.grpc.hello";
+option java_outer_classname = "HelloModel";
+
+//
+// Request / Response
+//
+
+message GreetingRequest {
+  required string name = 1;
+}
+
+message GreetingReply {
+  required string greeting = 2;
+}
+
+//
+// Service
+//
+
+service HelloService {
+  rpc GetGreeting(GreetingRequest) returns (GreetingReply) {}
+}
