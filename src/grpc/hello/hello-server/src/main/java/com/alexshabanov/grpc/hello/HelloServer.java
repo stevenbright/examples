@@ -21,7 +21,9 @@ public final class HelloServer {
 
   public HelloServer(ServerBuilder<?> serverBuilder, int port) {
     this.port = port;
-    this.server = serverBuilder.addService(HelloServiceGrpc.bindService(new HelloService())).build();
+    this.server = serverBuilder
+        .addService(HelloServiceGrpc.bindService(new HelloService()))
+        .build();
   }
 
   public HelloServer(int port) {
@@ -33,14 +35,15 @@ public final class HelloServer {
   public void start() throws IOException {
     server.start();
     log.info("Server started, listening on {}", port);
+
     Runtime.getRuntime().addShutdownHook(new Thread() {
 
       @Override
       public void run() {
         // Use stderr here since the logger may has been reset by its JVM shutdown hook.
-        System.err.println("*** shutting down gRPC server since JVM is shutting down");
+        System.err.println("Shutting down gRPC server since JVM is shutting down");
         HelloServer.this.stop();
-        System.err.println("*** server shut down");
+        System.err.println("Server shut down");
       }
     });
   }
@@ -70,7 +73,6 @@ public final class HelloServer {
     server.blockUntilShutdown();
   }
 
-
   //
   // HelloService
   //
@@ -78,7 +80,8 @@ public final class HelloServer {
   private static final class HelloService implements HelloServiceGrpc.HelloService {
 
     @Override
-    public void getGreeting(HelloModel.GreetingRequest request, StreamObserver<HelloModel.GreetingReply> responseObserver) {
+    public void getGreeting(HelloModel.GreetingRequest request,
+                            StreamObserver<HelloModel.GreetingReply> responseObserver) {
       final String name = request.getName();
       final String greeting = "Hello, " + name + " from GRPC server! Time=" + new Date();
 
