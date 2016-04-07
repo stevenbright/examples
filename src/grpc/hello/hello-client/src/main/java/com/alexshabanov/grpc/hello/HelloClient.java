@@ -54,6 +54,12 @@ public final class HelloClient {
         user = args[0]; /* Use the arg as the name to greet if provided */
       }
       client.greet(user);
+
+      String user2 = "GRPC client";
+      if (args.length > 1) {
+        user2 = args[1]; /* Use the arg as the name to greet if provided */
+      }
+      client.greet(user2);
     } finally {
       client.shutdown();
     }

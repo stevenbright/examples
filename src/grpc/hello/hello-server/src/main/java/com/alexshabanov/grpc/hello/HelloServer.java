@@ -22,7 +22,7 @@ public final class HelloServer {
   public HelloServer(ServerBuilder<?> serverBuilder, int port) {
     this.port = port;
     this.server = serverBuilder
-        .addService(HelloServiceGrpc.bindService(new HelloService()))
+        .addService(HelloServiceGrpc.bindService(new HelloServiceImpl()))
         .build();
   }
 
@@ -77,7 +77,7 @@ public final class HelloServer {
   // HelloService
   //
 
-  private static final class HelloService implements HelloServiceGrpc.HelloService {
+  private static final class HelloServiceImpl implements HelloServiceGrpc.HelloService {
 
     @Override
     public void getGreeting(HelloModel.GreetingRequest request,
