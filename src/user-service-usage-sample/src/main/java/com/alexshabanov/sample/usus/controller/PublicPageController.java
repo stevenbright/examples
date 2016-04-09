@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +17,8 @@ import java.util.Map;
 public final class PublicPageController {
 
   @RequestMapping("/index")
-  public String index() {
+  public String index(HttpServletRequest request) {
+    final String uri = request.getRequestURI();
     return "page/index";
   }
 
@@ -31,7 +33,13 @@ public final class PublicPageController {
   }
 
   @RequestMapping("/login")
-  public ModelAndView login(@RequestParam(value = "error", required = false) String loginError) {
+  public ModelAndView login(@RequestParam(value = "error", required = false) String loginError, HttpServletRequest request) {
+    final String uri = request.getRequestURI();
+    final StringBuffer sb = request.getRequestURL();
+    final String qs = request.getQueryString();
+    final String pathInfo = request.getPathInfo();
+    final String servletPath = request.getServletPath();
+    final String contextPath = request.getContextPath();
     final Map<String, Object> params = new HashMap<>();
     params.put("loginError", loginError);
     params.put("currentTime", System.currentTimeMillis());

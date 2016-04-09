@@ -1,14 +1,12 @@
 package com.alexshabanov.grpc.hello;
 
-import io.grpc.*;
-import io.grpc.protobuf.ProtoUtils;
-import io.grpc.stub.AbstractStub;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
-
-import static io.grpc.stub.ClientCalls.blockingUnaryCall;
 
 /**
  * @author Alexander Shabanov
@@ -24,7 +22,7 @@ public final class HelloClient {
     channel = ManagedChannelBuilder.forAddress(host, port)
         .usePlaintext(true) // - for debug only
         .build();
-    blockingStub = new HelloJsonStub(channel);
+    blockingStub = HelloServiceGrpc.newBlockingStub(channel);
   }
 
   public void shutdown() throws InterruptedException {
@@ -62,39 +60,6 @@ public final class HelloClient {
       client.greet(user2);
     } finally {
       client.shutdown();
-    }
-  }
-
-  //
-  // Client impl
-  //
-
-  private static final class HelloJsonStub extends AbstractStub<HelloJsonStub>
-      implements HelloServiceGrpc.HelloServiceBlockingClient {
-
-    static final MethodDescriptor<HelloModel.GreetingRequest, HelloModel.GreetingReply> METHOD_GET_GREETING =
-        MethodDescriptor.create(
-            HelloServiceGrpc.METHOD_GET_GREETING.getType(),
-            HelloServiceGrpc.METHOD_GET_GREETING.getFullMethodName(),
-            ProtoUtils.marshaller(HelloModel.GreetingRequest.getDefaultInstance()),
-            ProtoUtils.marshaller(HelloModel.GreetingReply.getDefaultInstance()));
-
-    protected HelloJsonStub(Channel channel) {
-      super(channel);
-    }
-
-    protected HelloJsonStub(Channel channel, CallOptions callOptions) {
-      super(channel, callOptions);
-    }
-
-    @Override
-    protected HelloJsonStub build(Channel channel, CallOptions callOptions) {
-      return new HelloJsonStub(channel, callOptions);
-    }
-
-    @Override
-    public HelloModel.GreetingReply getGreeting(HelloModel.GreetingRequest request) {
-      return blockingUnaryCall(getChannel(), METHOD_GET_GREETING, getCallOptions(), request);
     }
   }
 }
