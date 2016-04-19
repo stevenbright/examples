@@ -11,6 +11,10 @@
 
   <name>GRPC Hello App - Server</name>
 
+  <properties>
+    <launcher.mainClass>com.alexshabanov.grpc.hello.HelloServer</launcher.mainClass>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -28,4 +32,18 @@
       <artifactId>grpc-netty</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Execution from the command line - mvn exec:java starts the server -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <configuration>
+          <mainClass>${launcher.mainClass}</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
