@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package sample.protobufServiceStub;
+
+option java_package = "alexshabanov.sample.protobufServiceStub.model";
+option java_outer_classname = "Bookstore";
+option java_generic_services = true;
+
+//
+// Model
+//
+
+message Author {
+  int64 id = 1;
+  string name = 2;
+}
+
+message Book {
+  int64 id = 1;
+  string title = 2;
+  repeated Author authors = 3;
+}
+
+//
+// Request/Reply objects
+//
+
+message GetBookByIdRequest {
+  int64 bookId = 1;
+}
+
+message GetBookByIdReply {
+  Book book = 2;
+}
+
+//
+// Service
+//
+
+service BookService {
+  rpc GetBookById(GetBookByIdRequest) returns (GetBookByIdReply) {}
+}
