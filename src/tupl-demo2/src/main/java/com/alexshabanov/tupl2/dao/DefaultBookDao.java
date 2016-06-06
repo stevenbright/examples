@@ -32,7 +32,7 @@ public final class DefaultBookDao implements BookDao, IdSupport,
   private static final String BOOK_INDEX = "Book";
 
   private static final ByteArrayResultMapper<Author> AUTHOR_MAPPER = (id, result) ->
-      BookdbUtil.from(id, Bookdb.Author.parseFrom(result));
+      BookdbUtil.fromAuthor(id, Bookdb.Author.parseFrom(result));
 
   private final Database db;
 
@@ -99,7 +99,7 @@ public final class DefaultBookDao implements BookDao, IdSupport,
 
   @Nonnull
   private String saveAuthor(@Nonnull Transaction tx, @Nonnull Author author) {
-    return updateObject(tx, AUTHOR_INDEX, author.getId(), BookdbUtil.to(author).toByteArray());
+    return updateObject(tx, AUTHOR_INDEX, author.getId(), BookdbUtil.toAuthor(author).toByteArray());
   }
 
   @Nonnull
@@ -109,12 +109,12 @@ public final class DefaultBookDao implements BookDao, IdSupport,
 
   @Nonnull
   private Genre getGenre(@Nonnull Transaction tx, @Nonnull String id) {
-    return loadObject(tx, GENRE_INDEX, id, (unused, result) -> BookdbUtil.from(id, Bookdb.Genre.parseFrom(result)));
+    return loadObject(tx, GENRE_INDEX, id, (unused, result) -> BookdbUtil.fromGenre(id, Bookdb.Genre.parseFrom(result)));
   }
 
   @Nonnull
   public String saveGenre(@Nonnull Transaction tx, @Nonnull Genre genre) {
-    return updateObject(tx, GENRE_INDEX, genre.getId(), BookdbUtil.to(genre).toByteArray());
+    return updateObject(tx, GENRE_INDEX, genre.getId(), BookdbUtil.toGenre(genre).toByteArray());
   }
 
   @Nonnull
@@ -141,6 +141,6 @@ public final class DefaultBookDao implements BookDao, IdSupport,
   @Nonnull
   private String saveBook(@Nonnull Transaction tx, @Nonnull BookUpdate bookUpdate) {
     return updateObject(tx, BOOK_INDEX, bookUpdate.getId(),
-        BookdbUtil.to(bookUpdate).toByteArray());
+        BookdbUtil.toBook(bookUpdate).toByteArray());
   }
 }

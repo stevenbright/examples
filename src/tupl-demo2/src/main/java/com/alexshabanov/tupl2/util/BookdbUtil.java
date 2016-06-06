@@ -15,7 +15,7 @@ public final class BookdbUtil {
   private BookdbUtil() {} // Hidden
 
   @Nonnull
-  public static Bookdb.Author to(@Nonnull Author value) {
+  public static Bookdb.Author toAuthor(@Nonnull Author value) {
     return Bookdb.Author.newBuilder()
         .setName(value.getName())
         .setDescription(value.getDescription())
@@ -23,7 +23,7 @@ public final class BookdbUtil {
   }
 
   @Nonnull
-  public static Author from(@Nullable String id, @Nonnull Bookdb.Author value) {
+  public static Author fromAuthor(@Nullable String id, @Nonnull Bookdb.Author value) {
     final Author r = new Author();
     r.setId(id);
     r.setName(value.getName());
@@ -32,7 +32,7 @@ public final class BookdbUtil {
   }
 
   @Nonnull
-  public static Bookdb.Genre to(Genre value) {
+  public static Bookdb.Genre toGenre(Genre value) {
     return Bookdb.Genre.newBuilder()
         .setShortName(value.getShortName())
         .setLongName(value.getLongName())
@@ -41,7 +41,7 @@ public final class BookdbUtil {
   }
 
   @Nonnull
-  public static Genre from(@Nullable String id, @Nonnull Bookdb.Genre value) {
+  public static Genre fromGenre(@Nullable String id, @Nonnull Bookdb.Genre value) {
     final Genre r = new Genre();
     r.setId(id);
     r.setShortName(value.getShortName());
@@ -51,7 +51,7 @@ public final class BookdbUtil {
   }
 
   @Nonnull
-  public static Bookdb.Book to(@Nonnull BookUpdate value) {
+  public static Bookdb.Book toBook(@Nonnull BookUpdate value) {
     return Bookdb.Book.newBuilder()
         .setTitle(value.getTitle())
         .setIsbn(value.getIsbn())
