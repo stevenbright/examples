@@ -45,7 +45,7 @@ public final class BookDaoTest {
   public void shouldSaveAndGetAuthor() {
     final Author author = new Author();
     author.setName("Jack London");
-    author.setDescription("Famous novellist of early 20th century");
+    author.setDescription("Famous novelist of early 20th century");
 
     // insert
     final String id = bookDao.saveAuthor(author);

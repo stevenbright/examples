@@ -57,9 +57,9 @@
 
     <!-- Tupl -->
     <dependency>
-      <groupId>org.cojen</groupId>
-      <artifactId>tupl</artifactId>
-      <version>1.3</version>
+      <groupId>com.truward.tupl</groupId>
+      <artifactId>tupl-support</artifactId>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>
