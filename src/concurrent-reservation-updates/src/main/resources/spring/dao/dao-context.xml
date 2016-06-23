@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        ">
+
+  <bean id="dao.jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <property name="dataSource" ref="dao.dataSource"/>
+  </bean>
+
+  <bean id="dao.reservationDao"
+        class="com.alexshabanov.samples.reservations.service.dao.support.DefaultReservationDao"
+        autowire="constructor" />
+</beans>
