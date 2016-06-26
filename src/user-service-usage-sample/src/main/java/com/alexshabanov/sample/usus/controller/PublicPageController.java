@@ -18,7 +18,6 @@ public final class PublicPageController {
 
   @RequestMapping("/index")
   public String index(HttpServletRequest request) {
-    final String uri = request.getRequestURI();
     return "page/index";
   }
 
@@ -33,13 +32,7 @@ public final class PublicPageController {
   }
 
   @RequestMapping("/login")
-  public ModelAndView login(@RequestParam(value = "error", required = false) String loginError, HttpServletRequest request) {
-    final String uri = request.getRequestURI();
-    final StringBuffer sb = request.getRequestURL();
-    final String qs = request.getQueryString();
-    final String pathInfo = request.getPathInfo();
-    final String servletPath = request.getServletPath();
-    final String contextPath = request.getContextPath();
+  public ModelAndView login(@RequestParam(value = "error", required = false) String loginError) {
     final Map<String, Object> params = new HashMap<>();
     params.put("loginError", loginError);
     params.put("currentTime", System.currentTimeMillis());
