@@ -44,7 +44,7 @@ public final class BlogDaoApp extends BdbTransactionSupport implements Runnable 
   private void runDb() throws Exception {
     final Database dbBlogEntries = getEnvironment().openDatabase(null, "blogEntries", dbConfig);
     final BdbMapDao<Blog.BlogEntry> blogEntryMap = new ProtobufBdbMapDaoSupport<>(dbBlogEntries,
-        (k, v) -> Blog.BlogEntry.parseFrom(v.getData()));
+        (k, v) -> Blog.BlogEntry.parseFrom(v.getData()), LockMode.READ_COMMITTED);
 
     final ByteString key = ByteString.copyFrom("1", StandardCharsets.UTF_8);
 
@@ -59,9 +59,19 @@ public final class BlogDaoApp extends BdbTransactionSupport implements Runnable 
     log.info("[2.1] value={}", actualValue);
 
     // put 2.2
+    if (actualValue.getTitle().startsWith("54")) {
+      final DatabaseEntry entry = new DatabaseEntry(key.toByteArray());
+      DatabaseEntry value = new DatabaseEntry(Blog.BlogEntry.newBuilder().setTitle("12345678").build().toByteArray());
+      dbBlogEntries.put(null, entry, value);
+      final DatabaseEntry out = new DatabaseEntry();
+      dbBlogEntries.get(null, entry, out, LockMode.READ_COMMITTED);
+      log.info("[2.2] out={}", Blog.BlogEntry.parseFrom(out.getData()));
+    }
+
+    // put 2.3
     withTransactionVoid((tx) -> blogEntryMap.put(tx, key, Blog.BlogEntry.newBuilder().setTitle("12345678").build()));
     actualValue = withTransaction((tx) -> blogEntryMap.get(tx, key));
-    log.info("[2.2] value={}", actualValue);
+    log.info("[2.3] value={}", actualValue);
 
     // put 3
     blogEntryMap.put(null, key, Blog.BlogEntry.newBuilder().setTitle("789").build());

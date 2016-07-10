@@ -2,6 +2,7 @@ package com.alexshabanov.bdbsample.module;
 
 import com.alexshabanov.bdbsample.helper.Cleanup;
 import com.google.inject.AbstractModule;
+import com.sleepycat.je.CacheMode;
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
@@ -49,11 +50,12 @@ public final class BdbModule extends AbstractModule {
   }
 
   private DatabaseConfig dbConfig() {
-    final DatabaseConfig dbConfig = new DatabaseConfig();
-    dbConfig.setTransactional(true);
-    dbConfig.setAllowCreate(true);
-    dbConfig.setSortedDuplicates(true);
-    return dbConfig;
+    return new DatabaseConfig()
+        .setTransactional(true)
+        .setAllowCreate(true)
+        .setSortedDuplicates(false)
+        .setDeferredWrite(false) // SYNC writes
+        .setCacheMode(CacheMode.DEFAULT);
   }
 
   private static final class EnvironmentCleanup implements Cleanup {
