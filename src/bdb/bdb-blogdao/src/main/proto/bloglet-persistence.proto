@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package bdbsample.model;
+
+option java_package = "com.alexshabanov.bdbsample.model";
+option java_outer_classname = "Blog";
+
+/*
+ * BlogEntry --(n)--(m)--> TagEntry
+ */
+
+message BlogEntry {
+  int64 dateCreated = 1;
+  int64 dateUpdated = 2;
+  string title = 3;
+  string shortContents = 4;
+  string contents = 5;
+
+  repeated bytes tagIds = 6; // All the tags, associated with a given blog entry
+}
+
+message TagEntry {
+  string name = 1;
+
+  // TODO: Note, that this will not work efficiently when blog size will grow and thousands of
+  // TODO: (continued) blog entries will be associated with a given tag
+  repeated bytes blogEntryIds = 2; // All the blog entries, associated with a given tag
+}
