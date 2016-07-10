@@ -19,4 +19,6 @@ public interface BdbMapDao<T> {
   T get(@Nullable Transaction tx, @Nonnull ByteString key);
 
   void put(@Nullable Transaction tx, @Nonnull ByteString key, @Nonnull T value);
+
+  void delete(@Nullable Transaction tx, @Nonnull ByteString key);
 }

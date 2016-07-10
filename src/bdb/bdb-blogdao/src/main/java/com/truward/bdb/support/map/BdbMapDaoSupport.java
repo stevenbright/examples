@@ -66,6 +66,12 @@ public abstract class BdbMapDaoSupport<T> implements BdbMapDao<T> {
     }
   }
 
+  @Override
+  public void delete(@Nullable Transaction tx, @Nonnull ByteString key) {
+    final DatabaseEntry keyEntry = new DatabaseEntry(key.toByteArray());
+    database.delete(tx, keyEntry);
+  }
+
   //
   // Protected
   //

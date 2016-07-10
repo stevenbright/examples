@@ -1,5 +1,6 @@
 package com.alexshabanov.bdbsample;
 
+import com.alexshabanov.bdbsample.helper.Cleanup;
 import com.alexshabanov.bdbsample.model.Blog;
 import com.alexshabanov.bdbsample.module.BdbModule;
 import com.google.inject.AbstractModule;
@@ -48,11 +49,31 @@ public final class App implements Runnable {
         (k, v) -> Blog.BlogEntry.parseFrom(v.getData()));
 
     final ByteString key = ByteString.copyFrom("1", StandardCharsets.UTF_8);
-    final Blog.BlogEntry storeValue = Blog.BlogEntry.newBuilder().setTitle("Hello!").build();
-    blogEntryMap.put(null, key, storeValue);
 
-    final Blog.BlogEntry actualValue = blogEntryMap.get(null, key);
-    log.info("out={}", actualValue);
+    // put 1
+    blogEntryMap.put(null, key, Blog.BlogEntry.newBuilder().setTitle("54321").build());
+    Blog.BlogEntry actualValue = blogEntryMap.get(null, key);
+    log.info("[1] value={}", actualValue);
+
+    // put 2
+    blogEntryMap.put(null, key, Blog.BlogEntry.newBuilder().setTitle("12345678").build());
+    actualValue = blogEntryMap.get(null, key);
+    log.info("[2] value={}", actualValue);
+
+    // put 3
+    blogEntryMap.put(null, key, Blog.BlogEntry.newBuilder().setTitle("789").build());
+    actualValue = blogEntryMap.get(null, key);
+    log.info("[3] value={}", actualValue);
+
+    // delete
+    blogEntryMap.delete(null, key);
+    actualValue = blogEntryMap.get(null, key, Blog.BlogEntry::getDefaultInstance);
+    log.info("[4] value={}", actualValue);
+
+    // put 4
+    blogEntryMap.put(null, key, Blog.BlogEntry.newBuilder().setTitle("9 8765 4321 0").build());
+    actualValue = blogEntryMap.get(null, key);
+    log.info("[5] value={}", actualValue);
   }
 
   // app configuration
@@ -63,10 +84,14 @@ public final class App implements Runnable {
     }
   }
 
-
   public static void main(String[] args) {
     final Injector injector = Guice.createInjector(new AppModule(), new BdbModule());
     final Runnable runnableApp = injector.getInstance(App.class);
-    runnableApp.run();
+    final Cleanup cleanup = injector.getInstance(Cleanup.class);
+    try {
+      runnableApp.run();
+    } finally {
+      cleanup.run();
+    }
   }
 }
