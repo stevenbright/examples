@@ -1,5 +1,6 @@
 package com.truward.bdb.support.map;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.ByteString;
 import com.sleepycat.je.*;
 import com.truward.bdb.support.mapper.BdbEntryMapper;
@@ -7,7 +8,7 @@ import com.truward.bdb.support.mapper.BdbEntryMapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -38,7 +39,7 @@ public abstract class BdbMapDaoSupport<T> implements BdbMapDao<T> {
       try {
         return mapper.map(keyEntry, valueEntry);
       } catch (IOException e) {
-        throw new IllegalStateException(e); // TODO: another exception
+        throw new IllegalStateException("Mapping error", e); // TODO: another exception
       }
     }
 
@@ -60,6 +61,39 @@ public abstract class BdbMapDaoSupport<T> implements BdbMapDao<T> {
     return result;
   }
 
+  @Nonnull
+  @Override
+  public List<Map.Entry<ByteString, T>> getEntries(@Nullable Transaction tx, int offset, int limit) {
+    final DatabaseEntry outKey = new DatabaseEntry();
+    final DatabaseEntry outValue = new DatabaseEntry();
+    final LockMode lockMode = (this.lockMode == LockMode.READ_COMMITTED ? LockMode.DEFAULT : this.lockMode);
+    try (final Cursor cursor = database.openCursor(tx, null)) {
+      if (OperationStatus.SUCCESS != cursor.getFirst(outKey, outValue, lockMode)) {
+        return Collections.emptyList();
+      }
+
+      final List<Map.Entry<ByteString, T>> result = new ArrayList<>();
+      int pos = 0;
+      do {
+        if (pos < offset) {
+          continue;
+        }
+
+        if ((offset - pos) >= limit) {
+          break;
+        }
+
+        final ByteString key = ByteString.copyFrom(outKey.getData(), outKey.getOffset(), outKey.getSize());
+        final T value = mapper.map(outKey, outValue);
+        result.add(new AbstractMap.SimpleImmutableEntry<>(key, value));
+        ++pos;
+      } while (OperationStatus.SUCCESS == cursor.getNext(outKey, outValue, lockMode));
+      return ImmutableList.copyOf(result);
+    } catch (IOException e) {
+      throw new IllegalStateException("Mapping error", e); // TODO: another exception if value has not been properly mapped
+    }
+  }
+
   @Override
   public void put(@Nullable Transaction tx, @Nonnull ByteString key, @Nonnull T value) {
     final DatabaseEntry keyEntry = new DatabaseEntry(key.toByteArray());
@@ -67,7 +101,7 @@ public abstract class BdbMapDaoSupport<T> implements BdbMapDao<T> {
 
     final OperationStatus status = database.put(tx, keyEntry, valueEntry);
     if (status != OperationStatus.SUCCESS) {
-      throw new IllegalStateException("Unexpected result of put");
+      throw new IllegalStateException("Unexpected put result=" + status);
     }
   }
 

@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Alexander Shabanov
@@ -33,13 +35,14 @@ public class BlogEntryMapDemo extends BdbTransactionSupport implements Runnable 
   public void run() {
     log.info("Hello");
     try {
-      runDb();
+      runMultipleUpdates();
+      runScans();
     } catch (Exception e) {
       log.error("RunDB error", e);
     }
   }
 
-  private void runDb() throws Exception {
+  private void runMultipleUpdates() throws Exception {
     final Database dbBlogEntries = getEnvironment().openDatabase(null, "blogEntries", dbConfig);
     final BdbMapDao<Blog.BlogEntry> blogEntryMap = new ProtobufBdbMapDaoSupport<>(dbBlogEntries,
         (k, v) -> Blog.BlogEntry.parseFrom(v.getData()), LockMode.READ_COMMITTED);
@@ -85,5 +88,29 @@ public class BlogEntryMapDemo extends BdbTransactionSupport implements Runnable 
     blogEntryMap.put(null, key, Blog.BlogEntry.newBuilder().setTitle("9 8765 4321 0").build());
     actualValue = blogEntryMap.get(null, key);
     log.info("[5] value={}", actualValue);
+
+    // delete
+    blogEntryMap.delete(null, key);
+    actualValue = blogEntryMap.get(null, key, Blog.BlogEntry::getDefaultInstance);
+    log.info("[4] value={}", actualValue);
+  }
+
+  private void runScans() throws Exception {
+    final Database dbBlogEntries = getEnvironment().openDatabase(null, "blogEntries", dbConfig);
+    final BdbMapDao<Blog.BlogEntry> blogEntryMap = new ProtobufBdbMapDaoSupport<>(dbBlogEntries,
+        (k, v) -> Blog.BlogEntry.parseFrom(v.getData()), LockMode.READ_COMMITTED);
+
+    // add posts
+    blogEntryMap.put(null, ByteString.copyFrom("A100", StandardCharsets.UTF_8),
+        Blog.BlogEntry.newBuilder().setTitle("First one").build());
+    blogEntryMap.put(null, ByteString.copyFrom("A101", StandardCharsets.UTF_8),
+        Blog.BlogEntry.newBuilder().setTitle("Second post!").build());
+    blogEntryMap.put(null, ByteString.copyFrom("A102", StandardCharsets.UTF_8),
+        Blog.BlogEntry.newBuilder().setTitle("Third Post Title").build());
+    blogEntryMap.put(null, ByteString.copyFrom("A103", StandardCharsets.UTF_8),
+        Blog.BlogEntry.newBuilder().setTitle("And one another...").build());
+
+    log.info("Posts added, entries={}", blogEntryMap.getEntries(null, 0, 10)
+        .stream().map(Map.Entry::getValue).collect(Collectors.toList()));
   }
 }
