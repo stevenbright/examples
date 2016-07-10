@@ -7,6 +7,6 @@ import javax.annotation.Nonnull;
 /**
  * @author Alexander Shabanov
  */
-public interface BdbTransactionOperationCallback<T> {
-  T call(@Nonnull Transaction tx);
+public interface BdbTransactionOperationVoidCallback {
+  void call(@Nonnull Transaction tx);
 }

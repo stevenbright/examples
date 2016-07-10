@@ -7,6 +7,7 @@ import com.truward.bdb.support.mapper.BdbEntryMapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -15,12 +16,16 @@ import java.util.function.Supplier;
 public abstract class BdbMapDaoSupport<T> implements BdbMapDao<T> {
   private final Database database;
   private final BdbEntryMapper<T> mapper;
-  private final LockMode defaultLockMode;
+  private final LockMode lockMode;
+
+  public BdbMapDaoSupport(@Nonnull Database database, @Nonnull BdbEntryMapper<T> mapper, @Nonnull LockMode lockMode) {
+    this.database = Objects.requireNonNull(database);
+    this.mapper = Objects.requireNonNull(mapper);
+    this.lockMode = Objects.requireNonNull(lockMode);
+  }
 
   public BdbMapDaoSupport(@Nonnull Database database, @Nonnull BdbEntryMapper<T> mapper) {
-    this.database = database;
-    this.mapper = mapper;
-    this.defaultLockMode = LockMode.READ_COMMITTED;
+    this(database, mapper, LockMode.DEFAULT);
   }
 
   @Nullable
@@ -28,7 +33,7 @@ public abstract class BdbMapDaoSupport<T> implements BdbMapDao<T> {
   public T get(@Nullable Transaction tx, @Nonnull ByteString key, @Nonnull Supplier<T> defaultValueSupplier) {
     final DatabaseEntry keyEntry = new DatabaseEntry(key.toByteArray());
     final DatabaseEntry valueEntry = new DatabaseEntry();
-    final OperationStatus status = database.get(tx, keyEntry, valueEntry, defaultLockMode);
+    final OperationStatus status = database.get(tx, keyEntry, valueEntry, lockMode);
     if (status == OperationStatus.SUCCESS) {
       try {
         return mapper.map(keyEntry, valueEntry);
