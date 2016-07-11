@@ -1,6 +1,7 @@
 package com.alexshabanov.bdbsample;
 
 import com.alexshabanov.bdbsample.demo.BlogEntryMapDemo;
+import com.alexshabanov.bdbsample.demo.ConcurrentBlogEntryUpdates;
 import com.alexshabanov.bdbsample.helper.Cleanup;
 import com.alexshabanov.bdbsample.model.Blog;
 import com.alexshabanov.bdbsample.module.BdbModule;
@@ -38,9 +39,11 @@ public final class BlogDaoApp {
     protected void configure() {
       if (args.contains("blogEntryMapDemo")) {
         bind(Runnable.class).to(BlogEntryMapDemo.class);
+      } else if (args.contains("concurrentBlogEntryUpdates")) {
+        bind(Runnable.class).to(ConcurrentBlogEntryUpdates.class);
       } else {
         // default mode
-        bind(Runnable.class).to(BlogEntryMapDemo.class);
+        bind(Runnable.class).to(ConcurrentBlogEntryUpdates.class);
       }
     }
   }

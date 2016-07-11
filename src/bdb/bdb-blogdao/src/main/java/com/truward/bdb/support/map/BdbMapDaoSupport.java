@@ -19,14 +19,10 @@ public abstract class BdbMapDaoSupport<T> implements BdbMapDao<T> {
   private final BdbEntryMapper<T> mapper;
   private final LockMode lockMode;
 
-  public BdbMapDaoSupport(@Nonnull Database database, @Nonnull BdbEntryMapper<T> mapper, @Nonnull LockMode lockMode) {
-    this.database = Objects.requireNonNull(database);
-    this.mapper = Objects.requireNonNull(mapper);
-    this.lockMode = Objects.requireNonNull(lockMode);
-  }
-
-  public BdbMapDaoSupport(@Nonnull Database database, @Nonnull BdbEntryMapper<T> mapper) {
-    this(database, mapper, LockMode.DEFAULT);
+  public BdbMapDaoSupport(@Nonnull MapDaoConfig<T> config) {
+    this.database = config.getDatabase();
+    this.mapper = config.getMapper();
+    this.lockMode = config.getLockMode();
   }
 
   @Nullable

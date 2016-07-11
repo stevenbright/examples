@@ -15,8 +15,12 @@ message BlogEntry {
   string title = 3;
   string shortContents = 4;
   string contents = 5;
+  int32 likes = 6;
 
-  repeated bytes tagIds = 6; // All the tags, associated with a given blog entry
+  repeated bytes tagIds = 7; // All the tags, associated with a given blog entry
+
+  // optimistic locking
+  bytes version = 64;
 }
 
 message TagEntry {
@@ -25,4 +29,7 @@ message TagEntry {
   // TODO: Note, that this will not work efficiently when blog size will grow and thousands of
   // TODO: (continued) blog entries will be associated with a given tag
   repeated bytes blogEntryIds = 2; // All the blog entries, associated with a given tag
+
+  // optimistic locking
+  bytes version = 64;
 }

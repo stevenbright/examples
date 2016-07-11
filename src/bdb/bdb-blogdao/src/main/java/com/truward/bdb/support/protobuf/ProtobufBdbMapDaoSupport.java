@@ -5,6 +5,7 @@ import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseEntry;
 import com.sleepycat.je.LockMode;
 import com.truward.bdb.support.map.BdbMapDaoSupport;
+import com.truward.bdb.support.map.MapDaoConfig;
 import com.truward.bdb.support.mapper.BdbEntryMapper;
 
 import javax.annotation.Nonnull;
@@ -14,12 +15,8 @@ import javax.annotation.Nonnull;
  */
 public class ProtobufBdbMapDaoSupport<T extends MessageLite> extends BdbMapDaoSupport<T> {
 
-  public ProtobufBdbMapDaoSupport(@Nonnull Database database, @Nonnull BdbEntryMapper<T> mapper, @Nonnull LockMode lockMode) {
-    super(database, mapper, lockMode);
-  }
-
-  public ProtobufBdbMapDaoSupport(@Nonnull Database database, @Nonnull BdbEntryMapper<T> mapper) {
-    super(database, mapper);
+  public ProtobufBdbMapDaoSupport(@Nonnull MapDaoConfig<T> config) {
+    super(config);
   }
 
   @Nonnull
