@@ -53,7 +53,7 @@ public final class BdbModule extends AbstractModule {
     return new DatabaseConfig()
         .setTransactional(true)
         .setAllowCreate(true)
-        .setSortedDuplicates(false) // ALWAYS disallow it because of performance and hidden surprizes
+        .setSortedDuplicates(false) // should usually be disallowed
         .setDeferredWrite(false)
         .setCacheMode(CacheMode.DEFAULT);
   }

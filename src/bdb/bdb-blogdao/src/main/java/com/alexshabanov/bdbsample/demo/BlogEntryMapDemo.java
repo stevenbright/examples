@@ -1,6 +1,6 @@
 package com.alexshabanov.bdbsample.demo;
 
-import com.alexshabanov.bdbsample.dao.Mappers;
+import com.truward.bdb.support.mapper.ProtobufMappers;
 import com.alexshabanov.bdbsample.model.Blog;
 import com.google.inject.Inject;
 import com.google.protobuf.ByteString;
@@ -43,7 +43,7 @@ public final class BlogEntryMapDemo extends BdbDatabaseAccessSupport implements 
     final Database dbBlogEntries = openDatabase("blogEntries");
 
     final BdbMapDao<Blog.BlogEntry> blogEntryMap = new ProtobufBdbMapDaoSupport<>(new MapDaoConfig<>(dbBlogEntries,
-        Mappers.BLOG_ENTRY_MAPPER, LockMode.READ_COMMITTED));
+            ProtobufMappers.of(Blog.BlogEntry.getDefaultInstance()), LockMode.READ_COMMITTED));
 
     final ByteString key = KeyUtil.randomKey();
 
@@ -98,7 +98,7 @@ public final class BlogEntryMapDemo extends BdbDatabaseAccessSupport implements 
     final Database dbBlogEntries = openDatabase("blogEntries");
 
     final BdbMapDao<Blog.BlogEntry> blogEntryMap = new ProtobufBdbMapDaoSupport<>(new MapDaoConfig<>(dbBlogEntries,
-        Mappers.BLOG_ENTRY_MAPPER));
+            ProtobufMappers.of(Blog.BlogEntry.getDefaultInstance())));
 
     // add posts
     blogEntryMap.put(null, KeyUtil.randomKey(8), Blog.BlogEntry.newBuilder().setTitle("First one").build());

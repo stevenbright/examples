@@ -59,11 +59,31 @@ public abstract class BdbMapDaoSupport<T> implements BdbMapDao<T> {
 
   @Nonnull
   @Override
+  public List<T> getAsList(@Nullable Transaction tx, @Nonnull ByteString key) {
+    final List<T> result = new ArrayList<>();
+    final DatabaseEntry outKey = new DatabaseEntry();
+    final DatabaseEntry outValue = new DatabaseEntry();
+    try (final Cursor cursor = database.openCursor(tx, getDefaultCursorConfig())) {
+      OperationStatus status = cursor.getFirst(outKey, outValue, lockMode);
+      while (OperationStatus.SUCCESS == status) {
+        final T value = mapper.map(outKey, outValue);
+        result.add(value);
+        status = cursor.getNextDup(outKey, outValue, lockMode);
+      }
+    } catch (IOException e) {
+      throw new IllegalStateException("Mapping error", e); // TODO: another exception if value has not been properly mapped
+    }
+
+    return ImmutableList.copyOf(result);
+  }
+
+  @Nonnull
+  @Override
   public List<Map.Entry<ByteString, T>> getEntries(@Nullable Transaction tx, int offset, int limit) {
     final DatabaseEntry outKey = new DatabaseEntry();
     final DatabaseEntry outValue = new DatabaseEntry();
-    final LockMode lockMode = (this.lockMode == LockMode.READ_COMMITTED ? LockMode.DEFAULT : this.lockMode);
-    try (final Cursor cursor = database.openCursor(tx, null)) {
+    final LockMode lockMode = getCursorLockMode();
+    try (final Cursor cursor = database.openCursor(tx, getDefaultCursorConfig())) {
       if (OperationStatus.SUCCESS != cursor.getFirst(outKey, outValue, lockMode)) {
         return Collections.emptyList();
       }
@@ -113,4 +133,15 @@ public abstract class BdbMapDaoSupport<T> implements BdbMapDao<T> {
 
   @Nonnull
   protected abstract DatabaseEntry toDatabaseEntry(@Nonnull T value);
+
+  @Nullable
+  protected CursorConfig getDefaultCursorConfig() {
+    return null;
+  }
+
+  @Nonnull
+  protected LockMode getCursorLockMode() {
+    final LockMode lockMode = this.lockMode;
+    return (lockMode == LockMode.READ_COMMITTED ? LockMode.DEFAULT : lockMode);
+  }
 }

@@ -21,6 +21,9 @@ public interface BdbMapDao<T> {
   T get(@Nullable Transaction tx, @Nonnull ByteString key);
 
   @Nonnull
+  List<T> getAsList(@Nullable Transaction tx, @Nonnull ByteString key);
+
+  @Nonnull
   List<Map.Entry<ByteString, T>> getEntries(@Nullable Transaction tx, int offset, int limit);
 
   void put(@Nullable Transaction tx, @Nonnull ByteString key, @Nonnull T value);
