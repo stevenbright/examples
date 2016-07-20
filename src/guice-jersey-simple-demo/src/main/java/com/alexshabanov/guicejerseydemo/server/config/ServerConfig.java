@@ -32,7 +32,6 @@ public final class ServerConfig extends GuiceServletContextListener {
         bind(SampleResource.class);
         bind(UserResource.class);
 
-
         // bind jackson converters for JAXB/JSON serialization
         bind(MessageBodyReader.class).to(JacksonJsonProvider.class);
         bind(MessageBodyWriter.class).to(JacksonJsonProvider.class);
