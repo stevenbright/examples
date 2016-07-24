@@ -1,4 +1,4 @@
-package com.alexshabanov.guicejerseydemo.server;
+package com.alexshabanov.guiceresteasydemo.servlet;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -8,8 +8,6 @@ import java.io.IOException;
 /**
  * An Empty, "do nothing servlet" to add to the context. Otherwise, the filters
  * will never kick in.
- *
- * TODO: remove.
  */
 public final class EmptyServlet extends HttpServlet {
 
