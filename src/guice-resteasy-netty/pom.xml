@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.alexshabanov.demo</groupId>
-  <artifactId>guice-resteasy</artifactId>
+  <artifactId>guice-resteasy-netty</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>Guice+RestEasy Web Application</name>
+  <name>Guice+RestEasy+Netty Web Application</name>
 
   <properties>
     <launcher.mainClass>com.alexshabanov.guiceresteasydemo.GuiceResteasyDemoMain</launcher.mainClass>
