@@ -7,7 +7,7 @@ import javax.ws.rs.PathParam;
 /**
  * @author Alexander Shabanov
  */
-@Path("hello")
+@Path("rest/hello")
 public final class HelloResource  {
 
   @GET
