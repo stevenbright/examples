@@ -19,6 +19,6 @@ public class PublicPageResource {
   @GET
   @Path("index")
   public ModelAndView index() {
-    return ModelAndView.of("index");
+    return ModelAndView.of("index.ftl");
   }
 }

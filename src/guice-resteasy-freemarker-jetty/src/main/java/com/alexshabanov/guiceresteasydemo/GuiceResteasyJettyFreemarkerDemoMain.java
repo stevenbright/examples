@@ -29,7 +29,7 @@ public class GuiceResteasyJettyFreemarkerDemoMain {
     final Server server = new Server(8080);
     final ServletContextHandler servletHandler = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
 
-    servletHandler.addServlet(DummyServlet.class, "/*"); // TODO: remove
+    servletHandler.addServlet(DummyServlet.class, "/hello"); // TODO: remove
 
     servletHandler.addEventListener(injector.getInstance(GuiceResteasyBootstrapServletContextListener.class));
 
@@ -38,7 +38,7 @@ public class GuiceResteasyJettyFreemarkerDemoMain {
 
     // TODO: implement auth filter
     //servletHandler.addFilter(new FilterHolder(injector.getInstance(RequestScopeAuthFilter.class)), "/rest/*", null);
-    servletHandler.addServlet(resteasyServletHolder, "/rest/*");
+    servletHandler.addServlet(resteasyServletHolder, "/*");
 
     server.setHandler(servletHandler);
     server.start();
