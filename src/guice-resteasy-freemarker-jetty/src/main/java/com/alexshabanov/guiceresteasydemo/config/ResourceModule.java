@@ -2,11 +2,10 @@ package com.alexshabanov.guiceresteasydemo.config;
 
 import com.alexshabanov.guiceresteasydemo.resource.HelloResource;
 import com.alexshabanov.guiceresteasydemo.resource.UserResource;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.truward.protobuf.jaxrs.ProtobufJacksonProvider;
+import com.truward.protobuf.jaxrs.ProtobufProvider;
 
 /**
  * Resource module - enumeration of all the JAX RS resources.
@@ -22,11 +21,10 @@ public final class ResourceModule implements Module {
     binder.bind(UserResource.class);
 
     // mappers
-    final ObjectMapper mapper = new ObjectMapper(); // TODO: extra mapper settings
-    mapper.configure(JsonParser.Feature.ALLOW_NUMERIC_LEADING_ZEROS, true);
-    // json provider (reader/writer)
-    final JacksonJsonProvider jsonProvider = new JacksonJsonProvider(mapper);
-    // bind jackson converters for JAXB/JSON serialization
-    binder.bind(JacksonJsonProvider.class).toInstance(jsonProvider);
+    // protobuf provider (reader/writer)
+    binder.bind(ProtobufProvider.class).toInstance(new ProtobufProvider());
+
+    // optional (may be nice to have for web/nodejs apps)
+    binder.bind(ProtobufJacksonProvider.class).toInstance(new ProtobufJacksonProvider());
   }
 }

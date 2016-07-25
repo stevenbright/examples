@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package alexshabanov.demo.useraccount;
+
+option java_package = "com.alexshabanov.demo.useraccount";
+option java_outer_classname = "UserModel";
+
+enum ContactType {
+  UNKNOWN = 0;
+  PHONE = 1;
+  EMAIL = 2;
+}
+
+message Contact {
+  string number = 1;
+  ContactType type = 2;
+}
+
+message UserAccount {
+  string id = 1;
+  string nickname = 2;
+  string passwordHash = 3;
+  repeated Contact contacts = 4;
+  repeated string authorities = 5;
+  int64 created = 6;
+  bool active = 7;
+}

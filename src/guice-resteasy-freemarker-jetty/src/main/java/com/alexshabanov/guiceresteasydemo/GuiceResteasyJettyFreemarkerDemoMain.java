@@ -2,7 +2,7 @@ package com.alexshabanov.guiceresteasydemo;
 
 import com.alexshabanov.guiceresteasydemo.config.ResourceModule;
 import com.alexshabanov.guiceresteasydemo.filter.RequestScopeAuthFilter;
-import com.alexshabanov.guiceresteasydemo.servlet.EmptyServlet;
+import com.alexshabanov.guiceresteasydemo.servlet.DummyServlet;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -29,7 +29,7 @@ public class GuiceResteasyJettyFreemarkerDemoMain {
     final Server server = new Server(8080);
     final ServletContextHandler servletHandler = new ServletContextHandler(server, "/", ServletContextHandler.SESSIONS);
 
-    servletHandler.addServlet(EmptyServlet.class, "/*"); // TODO: remove
+    servletHandler.addServlet(DummyServlet.class, "/*"); // TODO: remove
 
     servletHandler.addEventListener(injector.getInstance(GuiceResteasyBootstrapServletContextListener.class));
 

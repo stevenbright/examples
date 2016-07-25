@@ -26,6 +26,7 @@ public final class HelloResource  {
     if (log.isDebugEnabled()) {
       log.debug("HelloResource.hello(name={})", name);
     }
+
     return "Hello " + name + " @ "  + System.currentTimeMillis();
   }
 }
