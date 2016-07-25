@@ -1,10 +1,8 @@
 package com.alexshabanov.guiceresteasydemo.ftl;
 
 import com.google.common.base.Strings;
-import freemarker.ext.jsp.TaglibFactory;
 import freemarker.template.*;
 import freemarker.template.utility.ObjectWrapperWithAPISupport;
-import freemarker.template.utility.StringUtil;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
