@@ -6,6 +6,7 @@ Guice + RestEasy + Freemarker + Jetty + Jackson sample app.
 # How to demo
 
 * Run GuiceResteasyDemoMain.
+* Do ``GET`` for ``http://127.0.0.1:8080/g/index`` (opens HTML page)
 * Do ``GET`` for ``http://127.0.0.1:8080/rest/hello/myapi``.
 * Do ``GET`` for ``http://127.0.0.1:8080/rest/user/1``.
 
