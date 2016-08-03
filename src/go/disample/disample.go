@@ -21,11 +21,12 @@ type StubUserService struct {
 	Users []User
 }
 
-var COUNTER int
+var STUB_USER_COUNTER int
 
-func (m StubUserService) PersistUser(name string, age int) string {
-	COUNTER := COUNTER + 1
-	id := strings.Join([]string{"A", strconv.Itoa(COUNTER)}, "")
+// NOTE: passing pointer IS IMPORTANT!
+func (m *StubUserService) PersistUser(name string, age int) string {
+	STUB_USER_COUNTER = STUB_USER_COUNTER + 1 // NOTE: DO NOT use ':=' instead of '=' here as it will result in creating local variable
+	id := strings.Join([]string{"A", strconv.Itoa(STUB_USER_COUNTER)}, "")
 
 	u := new (User)
 	u.Id = id
@@ -37,7 +38,7 @@ func (m StubUserService) PersistUser(name string, age int) string {
 	return id
 }
 
-func (m StubUserService) GetUsers() []User {
+func (m *StubUserService) GetUsers() []User {
 	return m.Users
 }
 
@@ -46,6 +47,9 @@ func main() {
 
 	u := new (StubUserService)
 	u.PersistUser("alex", 20)
+	u.PersistUser("bob", 30)
+	u.PersistUser("jane", 18)
+	u.PersistUser("cavin", 25)
 
 	fmt.Println("Users:", u.GetUsers())
 }
