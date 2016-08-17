@@ -2,10 +2,12 @@ package com.alexshabanov.guicejerseydemo.logic.service.support;
 
 import com.alexshabanov.guicejerseydemo.logic.model.User;
 import com.alexshabanov.guicejerseydemo.logic.service.UserService;
+import com.google.inject.Singleton;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Singleton
 public class DefaultUserService implements UserService {
 
   private final Map<Long, User> users = new HashMap<>();
