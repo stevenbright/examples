@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookStore.Controllers
 {
     [Route("api/book")]
-    public class BookController
+    public class BookController : Controller
     {
         [HttpGet]
         public IEnumerable<Book> Get()
